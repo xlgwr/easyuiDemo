@@ -1,0 +1,193 @@
+﻿@using Valeo.Domain.Common
+@using Valeo.Domain.Enum
+@using Valeo.Lang;
+@using Valeo.Domain.UserGrade;
+@model UserGradeModel
+@{
+    Layout = "~/Views/Shared/_Layout_Index.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <title>@(BaseRes.USE_COL_010)</title>
+    <script src="~/Scripts/forms/usergrade/usergrade.js?t=20161025003"></script>
+    <script type="text/javascript">
+    $(function () {
+        loadData();
+        $("#btnSearch").click(function () {
+            var pars = {
+
+            };
+            $('#userGradeList').datagrid('load');
+            $('#userGradeList').datagrid('clearSelections');
+        })
+
+    });
+    function loadData(pars) {
+        $('#userGradeList').datagrid({
+            url: '/UserGrade/UserGradePage',
+            //width: 1000,
+            //height: 400,
+            //width: ($(window).width() * 0.90),
+            height: ($(window).height() * 0.99) - 6,
+            //fit:true,
+            fitColumns: true, //列自适应
+            nowrap: false,
+            idField: 'Id', //主键列的列名
+            loadMsg: '正在加载信息...',
+            pagination: true, //是否有分页
+            singleSelect: true,//是否单行选择
+            pageSize: 10, //每页多少条数据
+            pageNumber: 1, //默认的页
+            pageList: [10, 20, 30],
+            striped: true,
+            queryParams: pars, //往后台传递参数
+            columns: [
+                [{
+                    field: 'UserGradeID',
+                    title: 'ID',
+                    align: 'center',
+                }, {
+                    field: 'UserGrade',
+                    title: '@BaseRes.UGD_CTL_001',
+                    align: 'center',
+                    width: 100
+                }, {
+                    field: 'Remark',
+                    title: '@BaseRes.UGD_CTL_002',
+                    align: 'center',
+                    width: 100
+                }, {
+                    field: 'AddTimeVM',
+                    title: '@BaseRes.UGD_CTL_003',
+                    align: 'center',
+                    width: 100
+                }
+                @*,                {
+                    field: 'operation', title: '@BaseRes.TSK_CTL_011', align: 'center', width: 150,
+                    formatter: function (value, row, index) {
+                        var operation = "";
+                        @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Edit))
+                         {
+                             @:operation += '<a class="l-btn l-btn-small l-btn-plain"><span class="l-btn-left l-btn-icon-left" onclick=showEditGrade(' + row.UserGradeID + ') ><span class="l-btn-text">@(BaseRes.USE_COL_009)</span><span class="l-btn-icon icon-edit">&nbsp;</span></span></a>';
+                                                                         }
+                        @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Delete))
+                        {
+                            @:operation += '<a class="l-btn l-btn-small l-btn-plain"><span class="l-btn-left l-btn-icon-left" onclick=deleteGrade(' + row.UserGradeID + ') ><span class="l-btn-text">@(BaseRes.TSK_CTL_012)</span><span class="l-btn-icon icon-remove">&nbsp;</span></span></a>';
+
+                        }
+                        return operation;
+                    }
+                }*@
+                ]
+            ],
+            onLoadSuccess: function (data) {
+                console.log(data);
+                $('#userGradeList').datagrid('clearSelections');
+            },
+            toolbar: [
+                @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Create))
+                {
+                    @:{ text: '@(BaseRes.USE_COL_010)', iconCls: 'icon-add', handler: function () { showAdd('@(BaseRes.UGD_TIT_002)'); } }, '-',
+                }
+                @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Edit))
+                {
+                @:{ text: '修改', id: 'btnEdits', iconCls: 'icon-edit', handler: function () { showEditGrade(); } }, '-',
+                }
+                @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Delete))
+                {
+                @:{ text: '删除', id: 'btnDeletes', iconCls: 'icon-remove', handler: function () { deleteGrade(); } },
+                }
+            ]
+        });
+    }
+
+
+    //点击修改用户级别
+    function showEditGrade() {
+
+        var currrow = $('#userGradeList').datagrid('getSelected');
+        if (!currrow) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', "请选择要修改的记录。", 'error');
+            return;
+        }
+
+        $('#editdlg').dialog({
+            title: '修改用户级别',
+            closed: false,
+            cache: false,
+            href: '/UserGrade/Add?UserGradeID=' + currrow.UserGradeID + '&edit=true',
+            modal: true
+        });
+    }
+
+
+    function deleteGrades() {
+        var checkedrows = $('#userGradeList').datagrid('getChecked');
+        if (checkedrows.length == 0) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', "@BaseRes.UGD_MSG_002", 'info');
+            return;
+        }
+        var para = {}
+        for (var i = 0; i < checkedrows.length; i++) {
+            para["gradeIds[" + i + "]"] = checkedrows[i].UserGradeID;
+        }
+        $.messager.confirm('@BaseRes.COM_CTL_NOTICE', '@(BaseRes.UGD_MSG_001)', function (r) {
+            if (r) {
+                $.post('/UserGrade/Deletes', para, function (res) {
+                    if (res.result) {
+                        $('#userGradeList').datagrid('reload');
+                    } else {
+                        $.messager.alert('@BaseRes.COM_CTL_NOTICE', res.Msg, 'info');
+                    }
+                }, "json");
+            }
+        });
+    }
+
+    function deleteGrade() {
+
+        var currrow = $('#userGradeList').datagrid('getSelected');
+        if (!currrow) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', "请选择要删除的记录。", 'error');
+            return;
+        }
+
+        $.messager.confirm('@BaseRes.COM_CTL_NOTICE', '@(BaseRes.UGD_MSG_001)', function (r) {
+            if (r) {
+                $.post('/UserGrade/Deletes', "gradeIds=" + currrow.UserGradeID, function (res) {
+                    if (res.result) {
+                        $('#userGradeList').datagrid('reload');
+                    } else {
+                        $.messager.alert('@BaseRes.COM_CTL_NOTICE', res.Msg, 'info');
+                    }
+                });
+            }
+        });
+    }
+
+
+
+
+
+</script>
+
+</head>
+<body><div class="mar10" data-options="fit:true,plain:true">
+    <div class="padd10">
+        <table id="userGradeList" title="查询结果" style="width: 99%;"></table>
+    </div>
+</div>
+
+    <div id="editdlg" class="easyui-dialog" style="width:600px;height:380px;padding:5px;" data-options="
+				toolbar: '#dlg-toolbar',
+				buttons: '#dlg-buttons',
+				closed:true,maximized:true
+			">
+    </div>
+
+</body>
+</html>

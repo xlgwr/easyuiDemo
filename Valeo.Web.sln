@@ -1,0 +1,53 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valeo.DbUtility", "Valeo.DbUtility\Valeo.DbUtility.csproj", "{58FE70A3-31A0-4EBB-8897-3E6DEEE810DE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valeo.Domain", "Valeo.Domain\Valeo.Domain.csproj", "{FA11F13A-6BE5-4474-A7EE-3F30EB8554B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valeo.Service", "Valeo.Service\Valeo.Service.csproj", "{541F9BA9-D2E9-4D37-98B1-70FDB4B69785}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valeo.Web", "Valeo.Web\Valeo.Web.csproj", "{CF58F39C-A5A6-42DF-ACA4-AD17F31EC419}"
+	ProjectSection(ProjectDependencies) = postProject
+		{02EEFCFB-F524-49B7-8783-5A08EC0D84FB} = {02EEFCFB-F524-49B7-8783-5A08EC0D84FB}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valeo.Lang", "Valeo.Lang\Valeo.Lang.csproj", "{02EEFCFB-F524-49B7-8783-5A08EC0D84FB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{58FE70A3-31A0-4EBB-8897-3E6DEEE810DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58FE70A3-31A0-4EBB-8897-3E6DEEE810DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58FE70A3-31A0-4EBB-8897-3E6DEEE810DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58FE70A3-31A0-4EBB-8897-3E6DEEE810DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA11F13A-6BE5-4474-A7EE-3F30EB8554B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA11F13A-6BE5-4474-A7EE-3F30EB8554B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA11F13A-6BE5-4474-A7EE-3F30EB8554B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA11F13A-6BE5-4474-A7EE-3F30EB8554B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{541F9BA9-D2E9-4D37-98B1-70FDB4B69785}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{541F9BA9-D2E9-4D37-98B1-70FDB4B69785}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{541F9BA9-D2E9-4D37-98B1-70FDB4B69785}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{541F9BA9-D2E9-4D37-98B1-70FDB4B69785}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF58F39C-A5A6-42DF-ACA4-AD17F31EC419}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF58F39C-A5A6-42DF-ACA4-AD17F31EC419}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF58F39C-A5A6-42DF-ACA4-AD17F31EC419}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF58F39C-A5A6-42DF-ACA4-AD17F31EC419}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02EEFCFB-F524-49B7-8783-5A08EC0D84FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02EEFCFB-F524-49B7-8783-5A08EC0D84FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02EEFCFB-F524-49B7-8783-5A08EC0D84FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02EEFCFB-F524-49B7-8783-5A08EC0D84FB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
+	EndGlobalSection
+EndGlobal

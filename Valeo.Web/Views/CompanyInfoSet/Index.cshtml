@@ -1,0 +1,227 @@
+﻿@using Valeo.Domain.Common
+@using Valeo.Domain.Enum
+@using Valeo.Lang
+@{
+    Layout = "~/Views/Shared/_Layout_Index.cshtml";
+}
+<script src="~/Scripts/jQuery.Form.js"></script>
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+    <div class="mar10" data-options="fit:true,plain:true">
+        <div class="padd10">
+            <div class="easyui-panel" title="@BaseRes.MML_COL_016" style="width: 99%; padding: 10px; margin-bottom:10px">
+                <form id="CompanySetForm">
+                    <table>
+                        <tr>
+                            <td class="title95">@BaseRes.CIS_COL_002</td>
+                            <td><input type="text" class="easyui-textbox" name="Comvalue" id="Comvalue" data-options="validType:'length[0,64]'" value="" /></td>
+                            <td class="title95">@BaseRes.CIS_COL_003</td>
+                            <td>
+                                <input id="Comtype" name="Comtype" class="easyui-validatebox easyui-numberbox" type="text" data-options="validType:'length[0,64]'">
+                            </td>
+
+                        </tr>
+
+                    </table>
+                </form>
+                <div class="textcenter">
+                    @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Search))
+                    {
+                        <a href="javascript:void(0)" id="btnSerach" class="easyui-linkbutton c6 width70">@BaseRes.PAC_COL_006</a>
+                    }
+                    <a href="javascript:void(0)" id="" class="easyui-linkbutton c9 width70" onclick="$('#CompanySetForm').form('clear'); $.parser.parse('#CompanySetForm');
+">@BaseRes.COM_CTL_RESET</a>
+                </div>
+            </div>
+
+            <table id="data" title="@BaseRes.MML_COL_020" style="width: 99%;"></table>
+        </div>
+    </div>
+
+    <div id="editdlg" class="easyui-window" title="@BaseRes.MML_COL_021" data-options="modal:true,closed:true,iconCls:'icon-add',maximized:true" style="width:650px;height:500px;padding:5px;">
+    </div>
+
+    <script type="text/javascript">
+    $(function () {
+        loadData();
+        $("#btnSerach").click(function () {
+            debugger;
+            if (!$("#CompanySetForm").form('validate')) {
+                return false;
+            }
+            var pars = {
+                Comvalue: $("#Comvalue").val(),
+                Comtype: $("#Comtype").val()
+            };
+            var url='/CompanyInfoSet/GetComList';
+            loadData(pars,url);
+        });
+    });
+
+    comPanyjs = {
+        closeDialog: function () {
+            $('#editdlg').dialog('close');
+        }
+
+    }
+    function loadData(pars,url) {
+        $('#data').datagrid({
+            url: url,
+            data: { "total": 0, "rows": [] },
+            height: ($(window).height() * 0.93) - 127,
+            fitColumns: true, //列自适应
+            nowrap: false,
+            idField: 'Comkey', //主键列的列名
+            loadMsg: '@BaseRes.COM_LOADING',
+            pagination: true, //是否有分页
+            singleSelect: true,//是否单行选择
+            pageSize: 50, //每页多少条数据
+            pageNumber: 1, //默认的页
+            striped: true,
+            pageList: [50, 100, 150, 200],
+            queryParams: pars, //往后台传递参数
+            columns: [
+                [
+                    //{ field: 'ComboxListId', checkbox: true, align: 'center', width: 100 },
+                    {
+                    field: 'Comkey',
+                    title: '@BaseRes.CIS_COL_004',
+                    align: 'center',
+                    width: 100, sortable: true
+                }, {
+                    field: 'Comvalue',
+                    title: '@BaseRes.CIS_COL_005',
+                    align: 'center',
+                    width: 100, sortable: true
+                }, {
+                    field: 'Remark',
+                    title: '@BaseRes.CIS_COL_006',
+                    align: 'center',
+                    width: 100, sortable: true
+                }, {
+                    field: 'Comtype',
+                    title: '@BaseRes.SPS_COL_004',
+                    align: 'center',
+                    width: 100, sortable: true
+                }, {
+                    field: 'DspNo',
+                    title: '@BaseRes.SPS_COL_005',
+                    align: 'center',
+                    width: 100, sortable: true
+                }@*, {
+                    field: 'operator',
+                    title: '@BaseRes.SPS_COL_006',
+                    align: 'center',
+                    width: 50,
+                    formatter: function (value, row, index) {
+                        var operationhtml = '';
+                        @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Edit))
+                        {
+                            @:operationhtml += '<a class="l-btn l-btn-small l-btn-plain"><span class="l-btn-left l-btn-icon-left" onclick=Edit("' + row.Comkey + '","修改") ><span class="l-btn-text">修改</span><span class="l-btn-icon icon-edit">&nbsp;</span></span></a>';
+
+                        }
+                                
+
+                        return operationhtml;
+                    }
+                }*@]
+            ],
+            onClickRow: function (rowIndex, rowData) {
+                tmprow = rowData;
+            },
+            onLoadSuccess: function (data) {
+                $('#data').datagrid('clearSelections');
+            },
+            onDblClickRow: function (rowIndex, rowData) {
+                @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Edit))
+                {
+                    @:Edit(rowData.Comkey, "@BaseRes.CIS_COL_007", true);
+                }
+                   
+            }, toolbar: [
+                @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Edit))
+                {
+                    @: {text: '@BaseRes.MGC_CTL_008', iconCls: 'icon-edit', handler: function () {
+                    @:      var selectRows = $('#data').datagrid('getSelected');
+                    @:      if (!selectRows) {
+                    @:          $.messager.alert('@BaseRes.COM_CTL_NOTICE', "@BaseRes.MGC_CTL_031");
+                    @:          return;
+                    @:      }
+                    @:  Edit(selectRows.Comkey, "@BaseRes.CIS_COL_007", true);
+                    @: }
+                    @:},'-',
+                }
+            {
+                text: '@BaseRes.CIS_COL_008',
+                iconCls: 'icon_webedite',
+                handler: function () {
+                var selectRows = $('#data').datagrid('getSelected');
+                if (!selectRows) {
+                    $.messager.alert('@BaseRes.COM_CTL_NOTICE', "@BaseRes.OEC_COL_182");
+                    return;
+                }
+                    Edit(selectRows.Comkey, "@BaseRes.CIS_COL_008", false);
+        }
+    }
+            ]
+        });
+    }
+
+    function showAdd(title) {
+        $('#editdlg').dialog({
+            title: title,
+            closed: false,
+            cache: false,
+            href: '/CompanyInfoSet/Add',
+            modal: true,
+            onLoad: function () {
+
+            }
+        });
+    }
+
+    function Edit(Comkey, title, isEdit) {
+        $('#editdlg').dialog({
+            title: title,
+            closed: false,
+            cache: false,
+            iconCls: isEdit ? "icon-edit" : "icon_webedite",
+            href: '/CompanyInfoSet/Edit?Comkey=' + Comkey + '&isEdit=' + isEdit,
+            modal: true
+        });
+    }
+
+    function DeletComPany() {
+        checkedrows = $('#data').datagrid('getSelected');
+        if (checkedrows.length == 0) {
+            $.messager.alert("@BaseRes.COM_CTL_NOTICE", "@BaseRes.CIS_COL_009");
+          
+            return;
+        }
+
+        $.messager.alert("@BaseRes.COM_CTL_NOTICE", "@BaseRes.OEC_COL_070", "info", function () {
+            $.ajax({
+                type: 'POST',
+                url: "/CompanyInfoSet/DeleteData",
+                data: {
+                    Comkey: checkedrows.Comkey
+                },
+                success: function (data) {
+                    if (data.result == 1) {
+                        $('#data').datagrid('reload');    // reload the user data
+                    } else {
+                        $.messager.alert("@BaseRes.COM_CTL_NOTICE", data.Msg);
+                    }
+                }
+            });
+        });
+    }
+    </script>
+    </body>
+    </html>

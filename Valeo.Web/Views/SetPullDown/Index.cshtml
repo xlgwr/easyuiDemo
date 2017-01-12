@@ -1,0 +1,301 @@
+﻿@using Valeo.Domain
+@using Valeo.Domain.Common
+@using Valeo.Domain.Enum
+@using Valeo.Lang
+@{
+    Layout = "~/Views/Shared/_Layout_Index.cshtml";
+}
+<script src="~/Scripts/jQuery.Form.js"></script>
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link href="@Url.Content("~/Content/index.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/themes/default/easyui.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/themes/icon.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/demo.css")" rel="stylesheet" type="text/css" />
+
+    <link href="@Url.Content("~/Content/index.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/index.css")" rel="stylesheet" type="text/css" />
+
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+    <div id="layout_div" class="easyui-layout"  >
+
+       
+
+        <div id="west" data-options="region:'west',title:''" collapsible:true" style="width:170px;"   >
+
+            @*@{var ComboxList = (List<ComboxModel>)ViewBag.ComboxList;}
+            @foreach (var item in ComboxList)
+            {
+                <div class="easyui-panel" data-options="title:'@item.ComboxName',border:false,fit:true">
+                </div>
+            }*@
+            
+            @*<div class="easyui-panel" data-options="title:'下拉项目',border:false,fit:true">
+            </div>*@
+            <div id="nav" class="easyui-accordion" fit="true">
+                @{var ComboxList = (List<ComboxModel>)ViewBag.ComboxList;}
+
+                <div title="@BaseRes.SPD_COL_006" class="ofauto padd5">
+
+                    <ul class="leftnav">
+
+                        @foreach (var item in ComboxList)
+                        {
+                            <li><a href="javascript:void(0)" onclick="aClick(@item.ComboxId);" class="btn_menu">@item.ComboxName</a></li>
+                        }
+                    </ul>
+                </div>
+                </div>
+            </div>
+
+        
+
+
+            <div data-options="region:'center'" title="">
+
+                <table id="data" title="@BaseRes.SCH_CTL_014" ></table>
+            </div>
+     </div>
+  
+    <div id="adddlg" class="easyui-window" data-options="modal:true,closed:true,iconCls:'icon-add',maximized:true" style="width: 650px; height: 500px; padding: 5px;">
+    </div>
+
+      <script type="text/javascript">
+          var comBoxName1 = "";
+          $("#layout_div").height($(window).height());
+          $("#layout_div").width($(window).width());
+        //  $('#nav1').accordion({
+        //      animate: false,
+        //      border: false,
+        //      collapsible: false,
+        //      icon: "icon_webedite",
+
+        //      onSelect: function (title, index) {
+                 
+        //          GetComboxList(title)
+        //      }
+        //});
+
+
+    
+
+    function aClick(comboxName){
+        comBoxName1 = comboxName;
+        var pars = {
+            ComboxId: comboxName
+        };
+        var url = "/SetPullDown/GetComboxList";
+        @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Search))
+        {
+            @:loadData(pars, url);
+        }
+    }
+
+    function GetComboxList(comboxName) {
+
+        
+
+    }
+
+    function loadData(pars, url) {
+        $('#data').datagrid({
+            url: url,
+         
+            //height: 400,
+            height: ($(window).height() * 0.99),
+            //fit:true,
+            fitColumns: true, //列自适应
+            nowrap: false,
+            idField: 'ComboxListKey', //主键列的列名
+            loadMsg: '@BaseRes.OEC_COL_048',
+            pagination: true, //是否有分页
+            singleSelect: true,//是否单行选择
+            pageSize: 50, //每页多少条数据
+            pageNumber: 1, //默认的页
+            striped: true,
+            pageList: [50, 100, 150, 200],
+            queryParams: pars, //往后台传递参数
+            columns: [
+                [
+                    //{ field: 'ComboxListId', checkbox: true, align: 'center', width: 100 },
+                    {
+                    field: 'ComboxListKey',
+                    title: '@BaseRes.SPD_COL_007',
+                    align: 'center',
+                    width: 50, sortable: true
+                }, {
+                    field: 'ComboxListName',
+                    title: '@BaseRes.SPD_COL_008',
+                    align: 'center',
+                    width: 50, sortable: true
+                }, {
+                    field: 'DspNo',
+                    title: '@BaseRes.SPD_COL_009',
+                    align: 'center',
+                    width: 50, sortable: true
+                }, {
+                    field: 'LanguageCode',
+                    title: '@BaseRes.SPD_COL_010',
+                    align: 'center',
+                    width: 50, sortable: true
+                }, {
+                    field: 'Remark',
+                    title: '@BaseRes.SPD_COL_011',
+                    align: 'center',
+                    width: 50, sortable: true
+                }@*, {
+                    field: 'operation',
+                    title: '操作',
+                    align: 'center',
+                    width: 50,
+                    formatter: function (value, row, index) {
+                        var operationhtml = "";
+                        @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Edit))
+                            {
+                                 @:operationhtml += '<a class="l-btn l-btn-small l-btn-plain"><span class="l-btn-left l-btn-icon-left" onclick=Edit("' + row.ComboxListId + '","修改") ><span class="l-btn-text">修改</span><span class="l-btn-icon icon-edit">&nbsp;</span></span></a>';
+                                                                            }
+                        @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Delete))
+                            {
+                               @:operationhtml += '<a class="l-btn l-btn-small l-btn-plain"><span class="l-btn-left l-btn-icon-left" onclick=DeletCombox("' + row.ComboxListId + '") ><span class="l-btn-text">删除</span><span class="l-btn-icon icon-remove">&nbsp;</span></span></a>';
+
+                            }
+                        return operationhtml;
+                    }
+                }*@]
+            ],onLoadSuccess: function (data) {
+                $('#data').datagrid('clearSelections');
+            },
+            onDblClickRow: function (rowIndex, rowData) {
+                @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Edit))
+                {
+                    @:Edit(rowData.ComboxListId, "@BaseRes.SPD_COL_012", true);
+                }
+                   
+            }, toolbar: [
+                @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Create))
+                {
+                    @:{ text: '@BaseRes.SPD_COL_013', iconCls: 'icon-add btn_menu', handler: function () { showAdd('@BaseRes.SPD_COL_013', comBoxName1); } }, '-',
+                }
+                 @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Edit))
+                {
+                    @: {text: '@BaseRes.MGC_CTL_008', iconCls: 'icon-edit', handler: function () {
+                    @:      var selectRows = $('#data').datagrid('getSelected');
+                    @:      if (!selectRows) {
+                    @:          $.messager.alert('@BaseRes.COM_CTL_NOTICE', "@BaseRes.MGC_CTL_031");
+                    @:          return;
+                    @:      }
+                    @:  Edit(selectRows.ComboxListId, "@BaseRes.SPD_COL_012", true);
+                    @: }
+                    @:}, '-',
+                 }
+                 {
+                     text: '@BaseRes.OSP_CTL_161',
+                     iconCls: 'icon_webedite',
+                     handler: function () {
+                         var selectRows = $('#data').datagrid('getSelected');
+                         if (!selectRows) {
+                             $.messager.alert('@BaseRes.COM_CTL_NOTICE', "@BaseRes.OEC_COL_182");
+                             return;
+                         }
+                         Edit(selectRows.ComboxListId, "@BaseRes.OSP_CTL_161", false);
+                     }
+                 }, '-',
+                 @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Delete))
+                {
+                     @: { text: '@(BaseRes.PAC_COL_019)', iconCls: 'icon-remove', handler: function () { DeletCombox(); } }
+                 }
+
+            ]
+        });
+    }
+
+      function showAdd(title, comBoxName1) {
+        $('#adddlg').dialog({
+            title: title,
+            closed: false,
+            cache: false,
+            iconCls: "icon-add",
+            href: '/SetPullDown/Add?comboxId=' + comBoxName1,
+            modal: true,
+            onLoad: function () {
+
+            }
+        });
+    }
+
+      function Edit(ComboxListId,title,isEdit) {
+        $('#adddlg').dialog({
+            title: title,
+            closed: false,
+            cache: false,
+            iconCls: isEdit ? "icon-edit" : "icon_webedite",
+            href: '/SetPullDown/Edit?ComboxListId=' + ComboxListId + '&isEdit=' + isEdit,
+            modal: true
+        });
+    }
+
+    function DeletCombox() {
+        @*checkedrows = $('#data').datagrid('getSelected');
+        if (checkedrows.length == 0) {
+            $.messager.alert("@BaseRes.COM_CTL_NOTICE", "请选择要删除的数据！");
+
+            return;
+        }*@
+       
+        var checkedrows = $('#data').datagrid('getChecked');
+        
+        if (checkedrows.length == 0) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', "@(BaseRes.PAC_COL_020)");
+            return;
+        }
+
+        var para = {}
+        for (var i = 0; i < checkedrows.length; i++) {
+            para["ComboxListId[" + i + "]"] = checkedrows[i].ComboxListId;
+        }
+        $.messager.confirm('@BaseRes.COM_CTL_NOTICE', '@BaseRes.MML_COL_015', function (r) {
+            if (r) {
+                $.post('/SetPullDown/DeleteData', para, function (res) {
+
+                    if (res.result == 1) {
+                        $('#data').datagrid('reload');
+                    } else {
+
+                        $.messager.alert('@BaseRes.COM_CTL_NOTICE', res.Msg);
+                    }
+                });
+
+                @*$.ajax({
+                    type: 'POST',
+                    url: "/SetPullDown/DeleteData",
+                    data: {
+                        ComboxListId: ComboxListId
+                    },
+                    success: function (data) {
+                        if (data.result == 1) {
+                            $('#data').datagrid('reload');    // reload the user data
+                        } else {
+                            $.messager.alert("@BaseRes.COM_CTL_NOTICE", data.Msg);
+
+                        }
+                    }
+                });*@
+            }
+
+        });
+    }
+    comboxjs = {
+        closeDialog: function () {
+            $('#adddlg').dialog('close');
+        }
+    }
+      </script>
+</body>
+
+
+</html>

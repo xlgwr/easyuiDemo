@@ -1,0 +1,377 @@
+﻿@using Valeo.Domain.Common
+@using Valeo.Domain.Enum
+@using Valeo.Lang;
+@{
+
+    Layout = "~/Views/Shared/_Layout_Index.cshtml";
+}
+@{
+    List<SelectListItem> ProductList = ViewBag.ProductList;
+    
+}
+<script src="~/Scripts/forms/EasyuiVerification.js"></script>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>@ViewBag.Title</title>
+</head>
+<body>
+    <div class="mar10" data-options="fit:true,plain:true">
+        <div class="padd10">
+            <div class="easyui-panel" title="@BaseRes.INV_COL_001" style="width:99%;padding:10px;margin-bottom: 10px;">
+                <form id="ProductForm">
+                    <table style="width:auto;">
+                        <tr>
+                            <td class="title95">@BaseRes.IRC_COL_026</td>
+                            <td>
+                                <input class="easyui-validatebox easyui-datebox  filewidth" type="datetime" name="OrderDateFrom" id="OrderDateFrom" data-options="required:false,validType:['DateDay'],onSelect:function(){fullnum('OrderDateFrom','OrderDateTo')}">
+                            </td>
+                            <td class="tdcenter">@BaseRes.IRC_COL_027</td>
+                            <td>
+                                <input class="easyui-validatebox easyui-datebox  filewidth" type="datetime" name="OrderDateTo" id="OrderDateTo" data-options="required:false,validType:['DateDay'],onSelect:function(){fullnum('OrderDateFrom','OrderDateTo')}">
+                            </td>
+                            <td class="title95">@BaseRes.MLO_COL_030</td>
+                            <td>
+                                <input type="text" class="easyui-textbox filewidth" id="MemberName" name="MemberName" data-options="
+			                iconWidth: 22,
+			                icons: [ {
+				                iconCls:'icon-search',
+				                handler: function(e){
+					                ShowMemberSearchDlg();
+				                }
+			                }],validType:'length[0,64]'
+			                " />
+                                <input type="hidden" id="MemberID" name="MemberID" value="-1" />
+                            </td>
+
+                            <td class="title95">@BaseRes.IRC_COL_036</td>
+                            <td>
+                                @Html.DropDownList("ProductID", ProductList, new { @class = "easyui-combobox filewidth" })
+                            </td>
+
+                            
+                        </tr>
+                        <tr>
+                            <td class="title95">@BaseRes.IRC_COL_037</td>
+                            <td>
+                                <select name="Currency" class="easyui-combobox filewidth" data-options="editable:false" editable="false" id="Currency">
+                                    <option value="-1" selected="selected">@(BaseRes.PAC_COL_003)</option>
+                                    @{var currencys = (List<Valeo.Domain.Parameter.ParameterModel>)ViewBag.Currencys;}
+                                    @foreach (var item in currencys)
+                                    {
+                                        <option value="@item.Paramvalue">@item.Paramvalue</option>
+                                    }
+                                </select>
+
+                            </td>
+                        </tr>
+
+
+                    </table>
+                    <div class="textcenter">
+                        @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Search))
+                        {
+                            <a href="javascript:void(0)" id="btnSerach" class="easyui-linkbutton c6 width70">@BaseRes.IRC_COL_028</a>
+                        }
+                       
+
+                        <a href="javascript:void(0)" id="btnSerachReset" class="easyui-linkbutton c9 width70" onclick="$('#ProductForm').form('clear'); $.parser.parse('#ProductForm');">@BaseRes.MLO_COL_043</a>
+                    </div>
+                </form>
+            </div>
+
+            <table id="date" title="@BaseRes.MML_COL_020" style="width:99%;"></table>
+        </div>
+    </div>
+
+    <div id="searchdlg" class="easyui-window" title="" data-options="modal:true,closed:true,iconCls:'icon-add',maximized:true" style="width: 1150px; height: 550px;"></div>
+
+    <script type="text/javascript">
+    function ShowMemberSearchDlg() {
+        $('#searchdlg').dialog({
+            title: "@BaseRes.MLO_COL_020",
+            closed: false,
+            cache: false,
+            //maximized: true,
+            href: '/SearchDialog/MemberSearch?functionName=GetMemberNameSearch',
+            modal: true
+        });
+    }
+
+    function closeDialogSearch() {
+        $('#searchdlg').dialog('close');
+    }
+
+    function GetMemberNameSearch(memberRow) {
+        //console.log(memberRow)
+        $("#MemberID").val(memberRow.MemberID);
+        $("#MemberName").textbox('setValue', memberRow.MemberName);
+    }
+
+    function showMember(memberName, title) {
+        $('#searchdlg').dialog({
+            title: title,
+            closed: false,
+            cache: false,
+            maximized: true,
+            href: '/MemberList/Edit?memberName=' + memberName,
+            modal: true
+        });
+    }
+
+    $(function () {
+        loadData();
+
+        var now = new Date();
+        var date = new Date(now.getTime() - 7 * 24 * 3600 * 1000);
+        var fdate = (date.getFullYear()) + "-" + (date.getMonth() + 1) + "-" + (date.getDate());
+        var tdate = (new Date().getFullYear()) + "-" + (new Date().getMonth() + 1) + "-" + (new Date().getDate());
+
+        function stringToDate(str) {
+            var tempStrs = str.split(" ");
+            var dateStrs = tempStrs[0].split("-");
+            var year = parseInt(dateStrs[0], 10);
+            var month = parseInt(dateStrs[1], 10) - 1;
+            var day = parseInt(dateStrs[2], 10);
+
+            var date = new Date(year, month, day);
+            return date;
+        }
+
+        $('#OrderDateFrom').datebox().datebox('calendar').calendar({
+            validator: function (date) {
+                debugger;
+                var edate = $("#OrderDateTo").datebox('getValue');
+                if (edate == "") {
+                    return date;
+                } else {
+                    var now = stringToDate(edate);
+                    return date <= now;
+                }
+            }
+        });
+        $('#OrderDateTo').datebox().datebox('calendar').calendar({
+            validator: function (date) {
+                debugger;
+                var sdate = $("#OrderDateFrom").datebox('getValue');
+                if (sdate == "") {
+                    return date;
+                } else {
+                    var now = stringToDate(sdate);
+                    return now <= date;
+                }
+            }
+        });
+
+        $("#btnSerachReset").click(function () {
+
+            $("#OrderDateFrom").datebox('setValue', fdate);
+            $("#OrderDateTo").datebox('setValue', tdate);
+
+        });
+
+
+
+        $("#OrderDateFrom").datebox('setValue', fdate);
+        $("#OrderDateTo").datebox('setValue', tdate);
+
+
+        $("#btnSerach").click(function () {
+            if ($("#ProductForm").form('validate') && fullnum('OrderDateFrom', 'OrderDateTo')) {
+                var currcy = $.trim($("#Currency").combobox('getValue'));
+                if (currcy == -1) {
+                    $dateIndex.datagrid({ showFooter: false });
+                } else {
+                    $dateIndex.datagrid({ showFooter: true });
+                }
+
+                var pars = {
+                    MemberName: $.trim($("#MemberName").val()),
+                    OrderDateFrom: $("#OrderDateFrom").datetimebox('getValue'),
+                    OrderDateTo: $("#OrderDateTo").datetimebox('getValue'),
+                    ProductID: $.trim($("#ProductID").combobox('getValue')),
+                    Currency: currcy
+                };
+                var urlPars = "/ProductConsume/ListPage";
+                loadData(pars, urlPars);
+            }
+        });
+
+        $(window).resize(function () {
+            $('#date').datagrid('resize', {
+                height: ($(window).height()) - 150
+            }).datagrid('resize', {
+                height: ($(window).height()) - 150
+            });
+        });
+    });
+
+    var $dateIndex = undefined;//全局表格获取
+    function loadData(pars, urlPars) {
+        $dateIndex = $('#date').datagrid({
+            url: urlPars,
+            data: { "total": 0, "rows": [] },
+            height: ($(window).height() * 0.99) - 150,
+            //fit:true,
+            fitColumns: true, //列自适应
+            nowrap: false,
+            idField: 'OrderListID',//主键列的列名
+            loadMsg: '@BaseRes.MLO_COL_021',
+            pagination: true,//是否有分页
+            singleSelect: true,//是否单行选择
+            checkOnSelect: true,
+            selectOnCheck: true,
+            pageSize: 50,//每页多少条数据
+            pageNumber: 1,//默认的页
+            pageList: [50, 100, 150, 200],
+            queryParams: pars, //往后台传递参数
+            striped: true,
+            //showFooter: true,
+            columns: [
+                [
+                    //{ field: 'OrderListID', checkbox: true, align: 'center' },
+                    { field: 'OrderID', title: '@BaseRes.TSK_CTL_043', align: 'center', width: 60, sortable: true },
+
+                    { field: 'PayDateVM', title: '支付日期', align: 'center', width: 60, sortable: true },
+                    {
+                        field: 'MemberName', title: '@BaseRes.CPW_CTL_004', align: 'center', width: 30, sortable: true,
+                        formatter: function (value, row, index) {
+                            if (value == undefined) {
+                                return null;
+                            }
+                            return '<a class="l-btn l-btn-small l-btn-plain" onclick=parent.lookMember("' + value + '") ><span class="l-btn-text" >' + value + '</span></a>';
+
+                        }
+                    },
+                    { field: 'ProductName', title: '@BaseRes.INV_ADD_022', align: 'center', width: 60, sortable: true },
+                    { field: 'UnitsBuy', title: '次数', align: 'right', width: 30, sortable: true },
+                    { field: 'Price', title: '@BaseRes.INV_ADD_024', align: 'right', width: 30, sortable: true },
+                    { field: 'TotalAmount', title: '@BaseRes.INV_EDT_005', align: 'right', width: 30, sortable: true },
+                    { field: 'Currency', title: '@BaseRes.IRC_COL_012', align: 'center', width: 30, sortable: true },
+                    { field: 'PayFromVM', title: '支付来源', align: 'center', width: 35, sortable: true },
+                    {
+
+                        field: 'PayWay', title: '@BaseRes.IRC_COL_038', align: 'center', width: 60, sortable: true,
+                        formatter: function (value, row, index) {
+                            if (value == 0) {
+                                return '@BaseRes.IRC_COL_039';
+                            }
+                            if (value == 1) {
+                                return '@BaseRes.IRC_COL_040';
+                            }
+                            if (value == 2) {
+                                return '@BaseRes.IRC_COL_041';
+                            }
+                            if (value == 3) {
+                                return '@BaseRes.IRC_COL_042';
+                            }
+                            if (value == -1) {
+                                return '';
+                            }
+                            return value;
+                        }
+                    }
+
+                ]
+            ], onLoadSuccess: function (data) {
+                $('#productList').datagrid('clearSelections');
+
+                $(".datagrid-htable td div").css({
+                    "text-align": "center"
+                });
+
+            }, onSelect: function (rowIndex, rowData) {
+                tmprow = rowData;
+            }, onCheck: function (rowIndex, rowData) {
+                tmprow = rowData;
+            },
+            onClickRow: function (rowIndex, rowData) {
+                tmprow = rowData;
+            },
+            toolbar: [
+
+
+                        @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Export))
+                        {
+                            @:{ text: '@BaseRes.OEC_COL_047', iconCls: 'icon_export', handler: function () { newExport(); } }
+                        }
+
+
+            ]
+        });
+    }
+
+    function newExport() {
+        var selectRows = $('#date').datagrid('getData'); console.log(selectRows.total);
+        if (selectRows.total < 1) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', "导出数据不能为空。", "info"); return;
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/ProductConsume/GetCountExport',
+            data: {
+                MemberName: $.trim($("#MemberName").val()),
+                OrderDateFrom: $("#OrderDateFrom").datetimebox('getValue'),
+                OrderDateTo: $("#OrderDateTo").datetimebox('getValue'),
+                ProductID: $.trim($("#ProductID").combobox('getValue')),
+                Currency: $.trim($("#Currency").combobox('getValue'))
+            },
+            success: function (data) {
+                debugger;
+                if (data.result) {
+                    newExport1();
+                } else {
+                    $.messager.alert('@BaseRes.COM_CTL_NOTICE', data.Msg, "info");
+                }
+            }
+        });
+    }
+
+    function newExport1() {
+        var rpt_quanxian = new Array();
+        var column = new Object();
+        column.MemberName = $.trim($("#MemberName").val()),
+        column.OrderDateFrom = $("#OrderDateFrom").datetimebox('getValue'),
+        column.OrderDateTo = $("#OrderDateTo").datetimebox('getValue'),
+        column.ProductID = $.trim($("#ProductID").combobox('getValue')),
+        column.Currency = $.trim($("#Currency").combobox('getValue'))
+        rpt_quanxian.push(column);
+        window.location.href = "/ProductConsume/NewExport?condition=" + JSON.stringify(rpt_quanxian);
+    }
+
+    function exportInvoice() {
+        var checkedrows = $('#date').datagrid('getChecked');
+        if (checkedrows.length == 0) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE ', "@BaseRes.IRC_COL_031");
+            return;
+        }
+
+        var postForm = document.createElement("form");
+        postForm.method = "post";
+        postForm.action = "/ProductConsume/Export";
+        postForm.target = "LookInvoice";
+
+        var input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "strInvoiceIds";
+        var strA = "";
+        for (var i = 0; i < checkedrows.length; i++) {
+            strA += checkedrows[i].OrderListID + ',';
+            //para["caseIds[" + i + "]"] = checkedrows[i].Id;
+        }
+        input.value = strA;
+        postForm.appendChild(input);
+        document.body.appendChild(postForm);
+        postForm.submit();
+        //用完之后，不要忘记删掉
+        postForm.removeChild(input);
+        document.body.removeChild(postForm);
+
+        //var form = $("#SearchInvoice");//定义一个form表单
+        //form.submit();//表单提交
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,296 @@
+﻿@using Valeo.Domain.Common
+@using Valeo.Domain.Enum
+@using Valeo.Lang;
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>数据级别设定</title>
+    <link href="~/Content/themes/default/easyui.css" rel="stylesheet" />
+    <link href="~/Content/themes/icon.css" rel="stylesheet" />
+    <link href="~/Content/themes/color.css" rel="stylesheet" />
+    <link href="~/Content/demo.css" rel="stylesheet" />
+    <link href="~/Content/style_all.css?v=2" rel="stylesheet" />
+
+</head>
+<body>
+    <div class="mar10" data-options="fit:true,plain:true">
+        <div class="padd10">
+            <table id="date"></table>
+        </div>
+    </div>
+    <!--
+        作者：152645239@qq.com
+        时间：2016-07-06
+        描述：新增弹出框
+    -->
+    <div id="adddlg" class="easyui-dialog" title="新增" style="width:600px;height:400px;padding:5px;" data-options="
+
+			toolbar: '#dlg-toolbar',
+			buttons: '#dlg-buttons',
+			closed:true,maximized:true
+		">
+        <div class="easyui-layout" data-options="fit:true">
+            <div data-options="region:'center'" class="padd10">
+                <form id="ffadd" class="easyui-form" method="post" action="/DatalevelList/Add" data-options="novalidate:true">
+                    <table class="sec">
+
+
+                        <tr>
+                            <td class="title95">@BaseRes.DLL_TIT_005:</td>
+                            <td>
+                                <input type="text" class="easyui-textbox" id="DataGrade" name="DataGrade" />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="title95" valign="top">@BaseRes.DLL_TIT_006:</td>
+                            <td>
+                                <textarea rows="15" cols="70" id="Remark" name="Remark"></textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="title95" valign="center" align="center">
+                                &nbsp;
+                            </td>
+                            <td>
+                                &nbsp;
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <div data-options="region:'south',border:false" style="text-align:right;padding:5px 0 0;">
+                <a class="easyui-linkbutton width80" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="javascript:submitForm('ffadd', 'adddlg')">@BaseRes.DLL_SEA_001</a>
+                <a class="easyui-linkbutton width80" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="javascript:closeDialog('adddlg')">@BaseRes.DLL_SEA_002</a>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="editdlg" class="easyui-dialog" title="修改" style="width:600px;height:400px;padding:5px;" data-options="
+
+			toolbar: '#dlg-toolbar',
+			buttons: '#dlg-buttons',
+			closed:true,maximized:true
+		">
+        <div class="easyui-layout" data-options="fit:true">
+            <div data-options="region:'center'" class="padd10">
+                <form id="ffedit" class="easyui-form" method="post" action="/DatalevelList/Edit" data-options="novalidate:true">
+                    <table class="sec">
+                        <tr>
+                            <td class="title95">ID:</td>
+                            <td>
+                                <input type="text" class="easyui-textbox" name="DataGradeID" readonly="readonly" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="title95">@BaseRes.DLL_TIT_005:</td>
+                            <td>
+                                <input type="text" class="easyui-textbox" name="DataGrade" />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="title95" valign="top">@BaseRes.DLL_TIT_006:</td>
+                            <td>
+                                <textarea rows="15" cols="70" name="Remark"></textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="title95" valign="center" align="center">
+                                &nbsp;
+                            </td>
+                            <td>
+                                &nbsp;
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <div data-options="region:'south',border:false" style="text-align:right;padding:5px 0 0;">
+                <a class="easyui-linkbutton width80" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="javascript: submitForm('ffedit', 'editdlg')">@BaseRes.DLL_SEA_001</a>
+                <a class="easyui-linkbutton width80" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="javascript: closeDialog('editdlg')">@BaseRes.DLL_SEA_002</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/Scripts/jquery.min.js"></script>
+    <script src="~/Scripts/jquery.easyui.min.js"></script>
+    <script src="~/Scripts/easyui-lang-zh_CN.js"></script>
+
+    <script type="text/javascript">
+        var tmprow = undefined;
+        var tmpdata = undefined;
+
+        $(function () {
+            loadData();
+        });
+
+        function loadData(pars) {
+            $('#date').datagrid({
+                url: '/DatalevelList/ListPage',
+                //width: 1000,
+                //height: 400,
+                // width: ($(window).width() * 0.90),
+                height: ($(window).height() * 0.93) - 6,
+                //fit:true,
+                fitColumns: true, //列自适应
+                nowrap: false,
+                idField: 'DataGradeID', //主键列的列名
+                loadMsg: '正在加载信息...',
+                pagination: true, //是否有分页
+                singleSelect: true,//是否单行选择
+                pageSize: 50, //每页多少条数据
+                pageNumber: 1, //默认的页
+                pageList: [50, 100, 150, 200],
+                striped: true,
+                queryParams: pars, //往后台传递参数
+                columns: [
+                    [
+                    {
+                        field: 'DataGrade',
+                        title: '@BaseRes.DLL_COL_001',
+                        align: 'center',
+                        width: 50
+                    }, {
+                        field: 'Remark',
+                        title: '@BaseRes.DLL_COL_002',
+                        align: 'center',
+                        width: 100
+                    }
+                    @*, {
+                    field: 'operator',
+                    title: '@BaseRes.DLL_COL_003',
+                    align: 'center',
+                    width: 100,
+                    formatter: function (value, row, index) {
+                        var operationhtml = '';
+                            @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Edit))
+                            {
+                                @:operationhtml += '<a class="l-btn l-btn-small l-btn-plain"><span class="l-btn-left l-btn-icon-left" onclick=showEdit("' + row.DataGradeID + '") ><span class="l-btn-text">@(BaseRes.USE_COL_009)</span><span class="l-btn-icon icon-edit">&nbsp;</span></span></a>';
+
+                            }
+                            @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Delete))
+                            {
+                                @:operationhtml += '<a class="l-btn l-btn-small l-btn-plain"><span class="l-btn-left l-btn-icon-left" onclick=deleteItem("' + row.DataGradeID + '") ><span class="l-btn-text">@(BaseRes.TSK_CTL_012)</span><span class="l-btn-icon icon-remove">&nbsp;</span></span></a>';
+
+                            }
+                            return operationhtml;
+                    }
+                }*@
+                    ]
+                ],
+                onClickRow: function (rowIndex, rowData) {
+                    tmprow = rowData;
+                },
+                onLoadSuccess: function (data) {
+                    tmpdata = data;
+                    $('#date').datagrid('clearSelections');
+                },
+                toolbar: [
+                    @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Create))
+                    {
+                        @:{ text: '@BaseRes.DLL_TIT_001', iconCls: 'icon-add', handler: function () { showAdds() } }, '-',
+                    }
+                    @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Edit))
+                    {
+                    @:{ text: '修改', id: 'btnEdits', iconCls: 'icon-edit', handler: function () { showEdit(); } }, '-',
+                    }
+                    @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Delete))
+                    {
+                    @:{ text: '删除', id: 'btnDeletes', iconCls: 'icon-remove', handler: function () { deleteItem(); } }, '-',
+                    }
+
+                ]
+            });
+        }
+        function showAdds() {
+            var submitform = $('#ffadd');
+            submitform[0].reset();
+            $('#adddlg').dialog('open');
+        }
+        function findData(data, id) {
+            var row = undefined;
+            //console.log(data, id);
+            if (data.rows) {
+                for (var i = 0; i < data.rows.length; i++) {
+                    var tmprow = data.rows[i];
+                    if (id == tmprow.DataGradeID) {
+                        row = tmprow;
+                        break;
+                    }
+                }
+            }
+            return row;
+        }
+        ////
+        function showEdit(id) {
+            var submitform = $('#ffedit');
+            //var currrow = findData(tmpdata, id);
+            //console.log(currrow);
+
+            var currrow = $('#date').datagrid('getSelected');
+            if (!currrow) {
+                $.messager.alert('@BaseRes.COM_CTL_NOTICE', "请选择要修改的记录。", 'error');
+                return;
+            }
+
+            if (currrow) {
+                submitform.form('load', {
+                    DataGradeID: currrow.DataGradeID,
+                    DataGrade: currrow.DataGrade,
+                    Remark: currrow.Remark
+                });
+                $('#editdlg').dialog('open')
+            } else {
+                $.messager.alert('@BaseRes.COM_CTL_NOTICE', "@BaseRes.DLL_MSG_001", 'info')
+            }
+
+        }
+
+        function submitForm(formId, dialog) {
+            var submitform = $('#' + formId);
+            $.ajax({
+                type: 'POST',
+                url: submitform.attr('action'),
+                data: submitform.serialize(),
+                success: function (data) {
+                    if (data.result) {
+                        submitform[0].reset();
+                        closeDialog(dialog);
+                        loadData();
+                    } else {
+
+                    }
+                }
+            });
+        }
+        function deleteItem() {
+            var currrow = $('#date').datagrid('getSelected');
+            if (!currrow) {
+                $.messager.alert('@BaseRes.COM_CTL_NOTICE', "请选择要删除的记录。", 'error');
+                return;
+            }
+            $.messager.confirm('提示信息', '@BaseRes.DLL_TIT_004', function (r) {
+                if (r) {
+                    $.post('/DatalevelList/Delete', "dataGradeID=" + currrow.DataGradeID, function (res) {
+                        if (res.result) {
+                            $('#date').datagrid('reload');
+                        } else {
+                            $.messager.alert('@BaseRes.COM_CTL_NOTICE', res.Msg, 'info');
+                        }
+                    });
+                }
+            });
+        }
+        function closeDialog(formId) {
+            var submitform = $('#' + formId);
+            submitform.dialog('close');
+        }
+    </script>
+</body>
+</html>

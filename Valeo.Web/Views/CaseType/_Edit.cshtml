@@ -1,0 +1,103 @@
+﻿@using Valeo.Domain.ParameterSetting
+@using Valeo.Lang
+@model CaseTypeVM
+@{
+    Layout = null;
+}
+@{
+    List<SelectListItem> ListCourt = ViewBag.ListCourt;         //法院
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>_Edit</title>
+</head>
+<body>
+    <div class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'center'" class="padd10">
+            <form id="CaseTypeForm1" action="/CaseType/@(Model.CaseTypeID==0? "AddSave" : "EditSave")" class="easyui-form class=" easyui-form" method="post" >
+                <table class="sec">
+
+
+                    <tr>
+                        <td>@BaseRes.PTC_COL_003</td>
+                        <td>
+                            <input type="hidden" id="CaseTypeID" name="CaseTypeID" value="@Model.CaseTypeID" />
+                            <input type="text" class="easyui-textbox filewidth" id="CaseType" name="CaseType" value="@Model.CaseType" data-options="required:true,validType:'length[0,16]'" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>@BaseRes.PTC_COL_004</td>
+                        <td><input type="text" class="easyui-textbox filewidth" id="CaseType_En" name="CaseType_En" value="@Model.CaseType_En" data-options="validType:'length[0,64]'" /></td>
+                    </tr>
+                    <tr>
+                        <td>@BaseRes.PTC_COL_005</td>
+                        <td><input type="text" class="easyui-textbox filewidth" id="CaseType_Cn" name="CaseType_Cn" value="@Model.CaseType_Cn" data-options="validType:'length[0,64]'" /></td>
+                    </tr>
+                    <tr>
+                        <td>@BaseRes.PTC_COL_006</td>
+                        <td>
+                            @Html.DropDownList("CourtID", ListCourt, new { @class = "easyui-combobox filewidth" })
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>@BaseRes.PTC_COL_007</td>
+                        <td>
+                            <select class="easyui-combobox filewidth" id="Tykpe" name="Tykpe">
+                                <option @(Model.Tykpe == 1 ? "selected=selected" : "") value="1">@BaseRes.PTC_COL_009</option>
+                                <option @(Model.Tykpe == 2 ? "selected=selected" : "") value="2">@BaseRes.PTC_COL_010</option>
+
+                            </select>
+                        </td>
+                    </tr>
+
+                </table>
+            </form>
+
+
+        </div>
+
+        <div data-options="region:'south',border:false" style="text-align: right; padding: 5px 0 0;">
+            @if (Model.CaseTypeID == 0 || ViewBag.IsEdit)
+            {
+                <a class="easyui-linkbutton width80" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="javascript:editcomCourt()">@BaseRes.OFC_EDT_037</a>
+                <a class="easyui-linkbutton width80" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="javascript:comPanyjs.closeDialog()">@BaseRes.OFC_EDT_038</a>
+            }
+            else
+            {
+                <a class="easyui-linkbutton width80" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="javascript:comPanyjs.closeDialog()">@BaseRes.ONC_COL_049</a>
+            }
+            
+        </div>
+    </div>
+
+    <script type="text/javascript">
+    function editcomCourt() {
+        if (!$("#CaseTypeForm1").form('validate')) {
+            return false;
+        }
+        var submitform = $('#CaseTypeForm1');
+        $.ajax({
+            type: 'POST',
+            url: submitform.attr('action'),
+            data: submitform.serialize(),
+            success: function (data) {
+                if (data.result == 1) {
+                    submitform[0].reset();
+                    comPanyjs.closeDialog();
+                    loadData();
+                    $.messager.alert("@BaseRes.COM_CTL_NOTICE", data.Msg);
+                } else {
+                    $.messager.alert("@BaseRes.COM_CTL_NOTICE", data.Msg);
+                }
+            }
+        });
+    }
+    </script>
+
+</body>
+</html>

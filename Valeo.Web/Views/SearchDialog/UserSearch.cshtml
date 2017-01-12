@@ -1,0 +1,168 @@
+﻿@using Valeo.Lang;
+@{
+    Layout = null;
+}
+<div class="mar10" data-options="fit:true,plain:true">
+    <div class="easyui-panel" title="查询条件" style="width:98%;padding: 10px; margin-bottom: 10px;">
+        <form id="SearchForm">
+            <table>
+                <tr>
+                    <td class="title95">@BaseRes.USE_SEA_001</td>
+                    <td>
+                        <input type="text" class="easyui-textbox" id="searchUserName" name="Surname" value="" />
+                    </td>
+                    <td class="title95">@BaseRes.USE_SEA_002</td>
+                    <td>
+                        <input type="text" class="easyui-textbox" id="searchFullName_En" name="Surname" value="" />
+                    </td>
+                    <td class="title95">@BaseRes.USE_SEA_003</td>
+                    <td>
+                        <input type="text" class="easyui-textbox" id="searchFullName_Tm" name="Surname" value="" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="title95">@BaseRes.USE_SEA_004</td>
+                    <td>
+                        <input type="text" class="easyui-textbox" id="searchFullName_Cn" name="Surname" value="" />
+                    </td>
+                    <td class="title95">@BaseRes.USE_SEA_005</td>
+                    <td>
+                        <select name="memberGradeId" class="easyui-combobox filewidth" id="searchUserGradeID">
+                            <option value="0">@BaseRes.USE_SEA_006</option>
+                            @{var userGrades = (List<Valeo.Domain.UserGrade.UserGradeModelVM>)ViewBag.UserGrades;}
+                            @foreach (var item in userGrades)
+                                    {
+                            <option value="@item.UserGradeID">@item.UserGrade</option>
+                                    }
+                        </select>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="8">
+                        <div class="textcenter">
+                            <a href="javascript:void(0)" id="sbtnSerach" onclick="onSearchUser();" class="easyui-linkbutton c6 width70">@BaseRes.USE_SEA_007</a>
+                            <a href="javascript:void(0)" onclick="$('#SearchForm').form('clear'); $.parser.parse('#SearchForm');" class="easyui-linkbutton c9 width70">重置</a>
+                        </div>
+                    </td>
+
+                </tr>
+            </table>
+        </form>
+    </div>
+    <table id="userList" title="查询结果" style="width:99%;"></table>
+    <div data-options="region:'south',border:false" style="width: 99%;text-align:right;padding:10px 0 0;">
+        <a class="easyui-linkbutton width80" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="clickAffirm1()">确认</a>
+        <a class="easyui-linkbutton width80" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="closeDialogSearch()">取消</a>
+    </div>
+</div>
+
+<script src="~/Scripts/forms/SearchDialog/SearchDialog.js"></script>
+<script type="text/javascript">
+    function SearchOnDblClickRow(r) {
+        @(ViewBag.FunctionName)(r);
+        closeDialogSearch();
+    }
+    function clickAffirm1() {
+        var getSelected = $('#userList').datagrid('getSelected');
+        @(ViewBag.FunctionName)(getSelected);
+        closeDialogSearch();
+    }
+    function closeDialogSearch() {
+        $('#searchdlg').dialog('close');
+    }
+
+    $(function () {
+        SerachloadData();
+    });
+    function onSearchUser() {
+        $('#userList').datagrid('load', {
+            UserName: $("#searchUserName").val(),
+            FullName_En: $("#searchFullName_En").val(),
+            FullName_Cn: $("#searchFullName_Cn").val(),
+            FullName_Tm: $("#searchFullName_Tm").val(),
+            UserGradeID: $("#searchUserGradeID").val()
+        });
+        $('#userList').datagrid('clearSelections');
+    }
+    function SerachloadData(pars) {
+        $('#userList').datagrid({
+            url: '/User/UserPage',
+            //width: 1000,
+            height: 250,
+            //width: ($(window).width() * 0.90),
+            //height: ($(window).height() * 0.3),
+            //fit:true,
+            fitColumns: true, //列自适应
+            checkbox: true,
+            nowrap: false,
+            idField: 'UserID', //主键列的列名
+            loadMsg: '正在加载信息...',
+            pagination: true, //是否有分页
+            singleSelect: true,//是否单行选择
+            pageSize: 50, //每页多少条数据
+            pageNumber: 1, //默认的页
+            pageList: [50, 100, 150, 200],
+            queryParams: pars, //往后台传递参数
+            onDblClickRow: function (rowIndex, rowData) {
+                SearchOnDblClickRow(rowData);
+            },
+            columns: [[
+                    {
+                        field: 'UserID',
+                        title: '@BaseRes.USE_COL_001',
+                        align: 'center',
+                        width: 100, sortable: true
+                    }, {
+                        field: 'UserName',
+                        title: '@BaseRes.USE_COL_002',
+                        align: 'center',
+                        width: 100, sortable: true
+                    }, {
+                        field: 'FullName_En',
+                        title: '@(BaseRes.USE_COL_003)',
+                        align: 'center',
+                        width: 100, sortable: true
+                    }, {
+                        field: 'FullName_Tm',
+                        title: '@(BaseRes.USE_COL_004)',
+                        align: 'center',
+                        width: 100, sortable: true
+                    }, {
+                        field: 'FullName_Cn',
+                        title: '@(BaseRes.USE_COL_005)',
+                        align: 'center',
+                        width: 100, sortable: true
+                    }, {
+                        field: 'Status',
+                        title: '@(BaseRes.USE_COL_006)',
+                        align: 'center',
+                        width: 100,
+                        formatter: function (value, row, index) {
+                            if (value == 1) {
+                                return '@(BaseRes.USE_COL_012)';
+                            } else {
+                                return '@(BaseRes.USE_COL_013)';
+                            }
+                        }
+
+                    }, {
+                        field: 'UserGradeName',
+                        title: '@(BaseRes.USE_COL_007)',
+                        align: 'center',
+                        width: 100
+                    }, {
+                        field: 'Remark',
+                        title: '@(BaseRes.USE_COL_011)',
+                        align: 'center',
+                        width: 100
+                    }]
+            ],
+            onLoadSuccess: function (data) {
+                $('#userList').datagrid('clearSelections');
+            }
+        });
+    }
+
+
+</script>

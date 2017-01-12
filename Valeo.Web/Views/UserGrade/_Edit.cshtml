@@ -1,0 +1,155 @@
+﻿@using Valeo.Lang;
+@using Valeo.Domain;
+@{
+    Layout = null;
+}
+
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'center'" class="padd10new">
+        <form id="gradeAddForms">
+            <table>
+                <tr>
+                    <td class="title95">@BaseRes.UGD_CTL_005</td>
+                    <td>
+                        <input type="text" class="easyui-textbox" readonly="readonly" id="UserGrade" name="UserGrade" value="@ViewBag.DataGrades.UserGrade" data-options="validType:'length[1,8]'" />
+                        <input type="text" hidden="hidden" id="UserGradeID" name="UserGradeID" value="@ViewBag.DataGrades.UserGradeID" />
+                    </td>
+                    <td class="title95">@BaseRes.UGD_CTL_006</td>
+                    <td>
+                        <select name="Status" class="easyui-combobox filewidth" data-options="editable:false" panelheight="auto" id="FedexArea">
+                            <option @(@ViewBag.DataGrades.Status == 1 ? "selected=selected" : "") value="1" selected="selected">@BaseRes.USE_COL_012</option>
+                            <option @(@ViewBag.DataGrades.Status == 0 ? "selected=selected" : "") value="0">@BaseRes.USE_COL_013</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="title95">@BaseRes.UGD_CTL_007</td>
+                    <td colspan="3">
+                        <table id="dataGradeList" data-options="onClickCell: onClickCell "></table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="title95" align="center">
+                        @BaseRes.UGD_CTL_008
+                    </td>
+                    <td colspan="3">
+                        <textarea id="Remark" name="Remark" class="easyui-validatebox" style="width: 99%;" rows="3" data-options="validType:'length[0,256]'">@ViewBag.DataGrades.Remark</textarea>
+                    </td>
+                </tr>
+            </table>
+        </form>
+
+    </div>
+    <div data-options="region:'south',border:false" style="text-align:right;padding:5px 0 0;">
+        <a class="easyui-linkbutton width80" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="addGrade(true)">@BaseRes.UGD_CTL_009</a>
+        <a class="easyui-linkbutton width80" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="closeDialog()">@BaseRes.UGD_CTL_010</a>
+    </div>
+</div>
+
+
+<script>
+    $.extend($.fn.datagrid.methods, {
+        editCell: function (jq, param) {
+            return jq.each(function () {
+                var opts = $(this).datagrid('options');
+                var fields = $(this).datagrid('getColumnFields', true).concat($(this).datagrid('getColumnFields'));
+                for (var i = 0; i < fields.length; i++) {
+                    var col = $(this).datagrid('getColumnOption', fields[i]);
+                    col.editor1 = col.editor;
+                    if (fields[i] != param.field) {
+                        col.editor = null;
+                    }
+                }
+                $(this).datagrid('beginEdit', param.index);
+                for (var i = 0; i < fields.length; i++) {
+                    var col = $(this).datagrid('getColumnOption', fields[i]);
+                    col.editor = col.editor1;
+                }
+            });
+        }
+    });
+
+    $(function () {
+        var pars = {
+            UserGradeID: $("#UserGradeID").val()
+        }
+        loadGradeData(pars);
+    })
+
+    function loadGradeData(pars) {
+        $('#dataGradeList').datagrid({
+            url: '/UserGrade/DataGradeEdit',
+            width: 400,
+            height: 180,
+            //width: ($(window).width() * 0.90),
+            //height: ($(window).height() * 0.99) - 6,
+            //fit:true,
+            fitColumns: false, //列自适应
+            nowrap: false,
+            idField: 'Id', //主键列的列名
+            loadMsg: '正在加载信息...',
+            pagination: false, //是否有分页
+            singleSelect: false,//是否单行选择
+            pageSize: 10, //每页多少条数据
+            pageNumber: 1, //默认的页
+            pageList: [10, 20, 30],
+            queryParams: pars, //往后台传递参数
+            columns: [
+                [
+                    {
+                        field: 'DataGradeID',hidden:true, align: 'center',
+                    }, {
+
+                    field: 'Status',  title: '选择', align: 'center',
+                    editor: { type: 'checkbox', options: { on: '1', off: '0' } },
+                    formatter: function (value, rowData, rowIndex) {
+                        return checkboxFormatter(value, rowData, rowIndex);
+
+                    },
+
+                }, {
+                    field: 'DataGrade',
+                    title: '@BaseRes.UGD_CTL_001',
+                    align: 'center',
+                    width: 350
+                }]
+            ],
+            onLoadSuccess: function (data) {
+                $('#dataGradeList').datagrid('clearSelections');
+            }
+    });
+    }
+
+
+
+    //格式化checkbox
+    function checkboxFormatter(value, rowData, rowIndex) {
+
+        if (value == 1) {
+            return '<input type="checkbox" checked="checked" >';
+        } else if (value == 0) {
+            return '<input type="checkbox" >';
+        } 
+    }
+
+
+    //点击表格中checkbobox方法
+    function onClickCell(index, field) {
+
+        var dd = $('#dataGradeList').datagrid('getRows');
+        
+        if (dd[index][field] == 2) {
+            if (endEditing()) {
+                editIndex = index;
+            }
+            return;
+        }
+        if (endEditing()) {
+            $('#dataGradeList').datagrid('selectRow', index)
+                    .datagrid('editCell', { index: index, field: field });
+            editIndex = index;
+        }
+    }
+
+
+</script>

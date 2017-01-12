@@ -1,0 +1,1395 @@
+﻿
+@{
+    Layout = null;
+    
+}
+<style>
+    .datagrid-btable .textbox {
+        width:auto !important
+    }
+</style>
+<form id="EditOnlineEntityForm" action="/SearchDialog/AddSave" class="easyui-form class=" easyui-form" method="post" data-options="novalidate:true">
+    <div class="easyui-tabs" style="width:100%;height:auto">
+        @if (ViewBag.Type.Equals("1"))
+        {
+            <div title="公司">
+                <table id="sec" style="width: 100%;">
+                    <tr>
+                        <td>公司编号:</td>
+                        <td><input type="text" class="easyui-textbox" id="CRNo" name="companyInfo.CRNo" value=" " /></td>
+                        <td>公司营业执照号码:</td>
+                        <td><input type="text" class="easyui-textbox" id="CIBRNO" name="companyInfo.CIBRNO" value=" " /></td>
+                        <td>公司全名_英文:</td>
+                        <td>
+                            <input type="text" class="easyui-textbox" id="FullName_En" name="companyInfo.FullName_En" value=" " />
+                        </td>
+                        <td>公司全名_中文:</td>
+                        <td>
+                            <input type="text" class="easyui-textbox" id="FullName_Cn" name="companyInfo.FullName_Cn" />
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>公司国别:</td>
+                        <td><input type="text" class="easyui-textbox" id="CountryID" name="companyInfo.CountryID" value=" " /></td>
+                        <td>公司类别:</td>
+                        <td>
+                            <input type="text" class="easyui-textbox" id="CompanyType" name="companyInfo.CompanyType" />
+                        </td>
+                        <td>成立日期:</td>
+                        <td>
+                            <input type="text" class="easyui-datebox" id="IncorporationDate" name="companyInfo.IncorporationDate" />
+                        </td>
+                        <td>注册资本:</td>
+                        <td>
+                            <input type="text" class="easyui-textbox" id="AuthorizedCapital" name="companyInfo.AuthorizedCapital" />
+                        </td>
+                        <td>地域:</td>
+                        <td>
+                            <select class="easyui-combobox" id="Areas" name="companyInfo.Areas">
+                                <option value="0">本地</option>
+                                <option value="1">国外</option>
+                                <option value="2">其他</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>注册地址:</td>
+                        <td>
+                            <input type="text" class="easyui-textbox" id="PlaceRegistration" name="companyInfo.PlaceRegistration" />
+                        </td>
+                        <td>是否上市:</td>
+                        <td>
+                            <select class="easyui-combobox" name="companyInfo.Listed" id="Listed">
+                                <option value="0">未上市</option>
+                                <option value="1">已上市</option>
+                            </select>
+                        </td>
+                        <td>已发行股票:</td>
+                        <td>
+                            <select class="easyui-combobox" id="IssuedShares" name="companyInfo.IssuedShares">
+                                <option value="0">未发行 </option>
+                                <option value="1">已发行</option>
+                            </select>
+                        </td>
+                        <td>现状:</td>
+                        <td>
+                            <input type="text" class="easyui-textbox" id="ActiveStatus" name="companyInfo.ActiveStatus" value=" " />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>清盘模式:</td>
+                        <td>
+                            <input type="text" class="easyui-textbox" id="WindingUpMode" name="companyInfo.WindingUpMode" />
+                        </td>
+                        <td>已告解散日期:</td>
+                        <td>
+                            <input type="text" class="easyui-datebox" id="DissolutionDate" name="companyInfo.DissolutionDate" value="" />
+                        </td>
+                        <td>押记登记册:</td>
+                        <td>
+                            <input type="text" class="easyui-textbox" id="RegisterOfCharges" name="companyInfo.RegisterOfCharges" value=" " />
+                        </td>
+                        <td>重要事项:</td>
+                        <td>
+                            <input type="text" class="easyui-textbox" id="ImportantNote" name="companyInfo.ImportantNote" value=" " />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>备注:</td>
+                        <td colspan="7">
+                            <input type="text" class="easyui-textbox" style="width: 70%;" id="Remarks" name="companyInfo.Remarks" />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div title="个人" hidden="hidden">
+                <table id="sec" style="width: 100%;">
+                    <tr>
+                        <td>全名:</td>
+                        <td><input type="text" class="easyui-textbox" id="FullName_En" name="personInfo.FullName_En" value=" " /></td>
+                        <td>简体姓名:</td>
+                        <td>
+                            <input type="text" class="easyui-textbox" id="FullName_Cn" name="personInfo.FullName_Cn" value=" " />
+                        </td>
+                        <td>别名_英文:</td>
+                        <td>
+                            <input type="text" class="easyui-textbox" id="Alias_En" name="personInfo.Alias_En" />
+                        </td>
+                        <td>别名_中文:</td>
+                        <td>
+                            <input type="text" class="easyui-textbox" id="Alias_Cn" name="personInfo.Alias_Cn" />
+                        </td>
+                    </tr>
+                    <tr>
+                        
+                        <td>昵称:</td>
+                        <td>
+                            <input type="text" class="easyui-textbox" id="Nickname" name="personInfo.Nickname" />
+                        </td>
+                        <td>性别:</td>
+                        <td>
+                            <select class="easyui-combobox" id="Gender" name="personInfo.Gender">
+                                <option value="0">男</option>
+                                <option value="1">女</option>
+                                <option value="2">其他</option>
+                            </select>
+                        </td>
+                        <td>生日:</td>
+                        <td>
+                            <input type="text" class="easyui-datebox" id="Birthdate" name="personInfo.Birthdate" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>婚姻状态:</td>
+                        <td>
+                            <select class="easyui-combobox" id="MaritalStatus" name="personInfo.MaritalStatus">
+                                <option value="0">未婚</option>
+                                <option value="1">已婚</option>
+                                <option value="2">离婚</option>
+                                <option value="3">鳏寡</option>
+                                <option value="4">其他</option>
+                            </select>
+                        </td>
+                        <td>汉字编码:</td>
+                        <td>
+                            <input type="text" class="easyui-textbox" id="ChineseCode" name="personInfo.ChineseCode" value=" " />
+                        </td>
+                        <td>国籍:</td>
+                        <td><input type="text" class="easyui-textbox" id="Nationality" name="personInfo.Nationality" value=" " /></td>
+                        <td>出生地:</td>
+                        <td>
+                            <input type="text" class="easyui-textbox" id="PlaceBirth" name="personInfo.PlaceBirth" value=" " />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        }
+
+
+
+    </div>
+    <table cellpadding="0" cellspacing="0" style="width:100%">
+
+
+        <tr>
+
+            <td valign="top" width="50%">
+                <table id="dgRelation" class="easyui-datagrid" title="关系表"></table>
+            </td>
+            <td valign="top" colspan="2">
+                <table id="dgPhone" class="easyui-datagrid" title="电话表"></table>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" colspan="3">
+                <table id="dgAddress" class="easyui-datagrid" title="地址表"></table>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top">
+                <table id="dgEmails" class="easyui-datagrid" title="邮件表"></table>
+            </td>
+            <td valign="top" colspan="2">
+                <table id="dgBankAccount" class="easyui-datagrid" title="银行帐户"></table>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top">
+                <table id="dgIDDocument" class="easyui-datagrid" title="证件表"></table>
+            </td>
+            <td valign="top">
+                <table id="dgSocialNetwork" class="easyui-datagrid" title="社交帐号"></table>
+            </td>
+            <td valign="top">
+                &nbsp;
+            </td>
+        </tr>
+        <tr>
+            <td valign="top">
+                <table id="dgMediaReport" class="easyui-datagrid" title="媒体报导"></table>
+            </td>
+            <td valign="top"></td>
+        </tr>
+
+        @if (ViewBag.Type.Equals("0"))
+        {
+            <tr>
+                <td valign="top">
+                    <table id="dgEmploymentHistory" class="easyui-datagrid" title="工作经验"></table>
+                </td>
+                <td valign="top">
+                    <table id="dgEducation" class="easyui-datagrid" title="教育经历"></table>
+                </td>
+            </tr>
+        }
+    </table>
+</form>
+
+    <div data-options="region:'south',border:false" style="text-align: right; padding: 5px 0 0;">
+        <a class="easyui-linkbutton width80" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="javascript:editOnlineCourt()">保存</a>
+        <a class="easyui-linkbutton width80" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="javascript: onlineEntityjs.closeDialog()">取消</a>
+    </div>
+
+    <script type="text/javascript">
+    var phoneData = [];
+    var addressData = [];
+
+    relationdg = {
+        editIndex: undefined,
+        thisdg: $("#dgRelation"),
+        bindDatagrid: function (data) {
+            relationdg.thisdg.datagrid({
+                data: data,
+                height: 200,
+                singleSelect: true,
+                columns: [
+                    [
+                        { field: 'PhoneID', hidden: true },
+                        { field: 'Entityid', hidden: true },
+                        {
+                            field: 'PhoneType',
+                            title: '关系',
+                            width: 150,
+                            formatter: function (value, row) {
+
+                                return value;
+                            },
+                            editor: {
+                                type: 'combobox',
+                                options: {
+                                    editable: false,
+                                    data: [{ value: 0, text: '相等', selected: true },
+                                        { value: 1, text: '夫妻' },
+                                        { value: 2, text: '父子' },
+                                        { value: 3, text: '父女' }]
+                                }
+                            }
+                        },
+                        { field: 'PhoneNumber', title: '关联者', width: 150, editor: 'numberbox' },
+                        {
+                            field: 'operation',
+                            title: '操作',
+                            align: 'center',
+                            width: 150,
+                            formatter: function (value, row, index) {
+                                var operationhtml = '<span class="l-btn-left l-btn-icon-left" onclick=relationdg.deleteRow("' + index + '") ><span class="l-btn-text">删除</span><span class="l-btn-icon icon-remove">&nbsp;</span></span>';
+                                return operationhtml;
+                            }
+                        }
+                    ]
+                ],
+                toolbar: [
+                    {
+                        text: '新增',
+                        iconCls: 'icon-add',
+                        handler: function () { relationdg.append(); }
+                    }, {
+                        text: '确定',
+                        iconCls: 'icon-save',
+                        handler: function () { relationdg.accept(); }
+                    }
+                ],
+                onClickRow: function (index) {
+                    relationdg.onClickRow(index);
+                }
+            });
+        },
+        endEditing: function () {
+            if (relationdg.editIndex == undefined) {
+
+                return true;
+            }
+            if (relationdg.thisdg.datagrid('validateRow', relationdg.editIndex)) {
+
+                var ed = relationdg.thisdg.datagrid('getEditor', { index: relationdg.editIndex, field: 'PhoneType' });
+                var phoneTypeValue = $(ed.target).combobox('getValue');
+                relationdg.thisdg.datagrid('getRows')[relationdg.editIndex]['PhoneType'] = phoneTypeValue;
+                relationdg.thisdg.datagrid('endEdit', relationdg.editIndex);
+                relationdg.editIndex = undefined;
+                return true;
+            } else {
+                return false;
+            }
+        },
+        onClickRow: function (index) {
+            if (relationdg.editIndex != index) {
+                if (relationdg.endEditing()) {
+                    relationdg.thisdg.datagrid('selectRow', index)
+                        .datagrid('beginEdit', index);
+                    relationdg.editIndex = index;
+                } else {
+                    relationdg.thisdg.datagrid('selectRow', relationdg.editIndex);
+                }
+            }
+        },
+        append: function () {
+            if (relationdg.endEditing()) {
+                relationdg.thisdg.datagrid('appendRow', { status: 'P' });
+                relationdg.editIndex = relationdg.thisdg.datagrid('getRows').length - 1;
+                relationdg.thisdg.datagrid('selectRow', relationdg.editIndex)
+                    .datagrid('beginEdit', relationdg.editIndex);
+            }
+        },
+        removeit: function () {
+            if (relationdg.editIndex == undefined) {
+                return
+            }
+            relationdg.thisdg.datagrid('cancelEdit', relationdg.editIndex)
+                .datagrid('deleteRow', relationdg.editIndex);
+            relationdg.editIndex = undefined;
+        },
+        deleteRow: function (i) {
+            if (relationdg.endEditing()) {
+                relationdg.thisdg.datagrid('deleteRow', i);
+                relationdg.bindDatagrid(relationdg.thisdg.datagrid("getRows"));
+            }
+        },
+        accept: function () {
+            if (relationdg.endEditing()) {
+                relationdg.thisdg.datagrid('acceptChanges');
+            }
+        },
+        reject: function () {
+            relationdg.thisdg.datagrid('rejectChanges');
+            relationdg.editIndex = undefined;
+        }
+    }
+
+    phonedg = {
+        editIndex: undefined,
+        thisdg: $("#dgPhone"),
+        bindDatagrid: function(data) {
+            phonedg.thisdg.datagrid({
+                data: data,
+                height: 200,
+                singleSelect: true,
+                columns: [
+                    [
+                        { field: 'PhoneID', hidden: true },
+                        { field: 'Entityid', hidden: true },
+                        {
+                            field: 'PhoneType',
+                            title: '电话类型',
+                            width: 150,
+                            formatter: function(value, row) {
+                                if (value == 1) {
+                                    return "座机号";
+                                } else if (value == 2) {
+                                    return "手机号";
+                                } else if (value == 3) {
+                                    return "传真号码";
+                                } else if (value == 4) {
+                                    return "配偶";
+                                } else {
+                                    return value;
+                                }
+                            },
+                            editor: {
+                                type: 'combobox',
+                                options: {
+                                    editable: false,
+                                    data: [{ value: 1, text: '座机号', selected: true }, { value: 2, text: '手机号' }, { value: 3, text: '传真号码' }, { value: 4, text: '配偶' }]
+                                }
+                            }
+                        },
+                        { field: 'PhoneNumber', title: '电话号码', width: 150, editor: 'numberbox' },
+                        {
+                            field: 'operation',
+                            title: '操作',
+                            align: 'center',
+                            width: 150,
+                            formatter: function(value, row, index) {
+                                var operationhtml = '<span class="l-btn-left l-btn-icon-left" onclick=phonedg.deleteRow("' + index + '") ><span class="l-btn-text">删除</span><span class="l-btn-icon icon-remove">&nbsp;</span></span>';
+                                return operationhtml;
+                            }
+                        }
+                    ]
+                ],
+                toolbar: [
+                    {
+                        text: '新增',
+                        iconCls: 'icon-add',
+                        handler: function() { phonedg.append(); }
+                    }, {
+                        text: '确定',
+                        iconCls: 'icon-save',
+                        handler: function() { phonedg.accept(); }
+                    }
+                ],
+                onClickRow: function(index) {
+                    phonedg.onClickRow(index);
+                }
+            });
+        },
+        endEditing: function() {
+            if (phonedg.editIndex == undefined) {
+
+                return true;
+            }
+            if (phonedg.thisdg.datagrid('validateRow', phonedg.editIndex)) {
+
+                var ed = phonedg.thisdg.datagrid('getEditor', { index: phonedg.editIndex, field: 'PhoneType' });
+                var phoneTypeValue = $(ed.target).combobox('getValue');
+                phonedg.thisdg.datagrid('getRows')[phonedg.editIndex]['PhoneType'] = phoneTypeValue;
+                phonedg.thisdg.datagrid('endEdit', phonedg.editIndex);
+                phonedg.editIndex = undefined;
+                return true;
+            } else {
+                return false;
+            }
+        },
+        onClickRow: function(index) {
+            if (phonedg.editIndex != index) {
+                if (phonedg.endEditing()) {
+                    phonedg.thisdg.datagrid('selectRow', index)
+                        .datagrid('beginEdit', index);
+                    phonedg.editIndex = index;
+                } else {
+                    phonedg.thisdg.datagrid('selectRow', phonedg.editIndex);
+                }
+            }
+        },
+        append: function() {
+            if (phonedg.endEditing()) {
+                phonedg.thisdg.datagrid('appendRow', { status: 'P' });
+                phonedg.editIndex = phonedg.thisdg.datagrid('getRows').length - 1;
+                phonedg.thisdg.datagrid('selectRow', phonedg.editIndex)
+                    .datagrid('beginEdit', phonedg.editIndex);
+            }
+        },
+        removeit: function() {
+            if (phonedg.editIndex == undefined) {
+                return
+            }
+            phonedg.thisdg.datagrid('cancelEdit', phonedg.editIndex)
+                .datagrid('deleteRow', phonedg.editIndex);
+            phonedg.editIndex = undefined;
+        },
+        deleteRow: function(i) {
+            if (phonedg.endEditing()) {
+                phonedg.thisdg.datagrid('deleteRow', i);
+                phonedg.bindDatagrid(phonedg.thisdg.datagrid("getRows"));
+            }
+        },
+        accept: function() {
+            if (phonedg.endEditing()) {
+                phonedg.thisdg.datagrid('acceptChanges');
+            }
+        },
+        reject: function() {
+            phonedg.thisdg.datagrid('rejectChanges');
+            phonedg.editIndex = undefined;
+        }
+    }
+
+    addressdg = {
+        editIndex: undefined,
+        thisdg: $("#dgAddress"),
+        bindDatagrid: function(data) {
+            addressdg.thisdg.datagrid({
+                data: data,
+                height: 200,
+                singleSelect: true,
+                columns: [
+                    [
+                        { field: 'AddressID', hidden: true },
+                        { field: 'Entityid', hidden: true },
+                        { field: 'Address', title: '地址', width: 150, editor: 'textbox' },
+                        { field: 'BuildName', title: '大厦名称', width: 150, editor: 'textbox' },
+                        { field: 'Street', title: '街道', width: 150, editor: 'textbox' },
+                        { field: 'StreetNumber', title: '街号牌', width: 150, editor: 'textbox' },
+                        { field: 'SeatNO', title: '座号', width: 150, editor: 'textbox' },
+                        { field: 'Floor', title: '楼层', width: 150, editor: 'textbox' },
+                        { field: 'RoomNO', title: '单位', width: 150, editor: 'textbox' },
+                        { field: 'HouseNO', title: '屋号', width: 150, editor: 'textbox' },
+                        { field: 'Area', title: '区域', width: 150, editor: 'textbox' },
+                        { field: 'City', title: '城市', width: 150, editor: 'textbox' },
+                        { field: 'Province', title: '省', width: 150, editor: 'textbox' },
+                        {
+                            field: 'Country',
+                            title: '国家',
+                            width: 150,
+                            editor: 'textbox'
+                        },
+                        { field: 'LotType', title: '地段类型', width: 150, editor: 'textbox' },
+                        { field: 'LotNo', title: '地段编号', width: 150, editor: 'textbox' },
+                        { field: 'Section', title: '分段', width: 150, editor: 'textbox' },
+                        { field: 'Subsection', title: '小分段', width: 150, editor: 'textbox' },
+                        { field: 'POBox', title: '邮政信箱', width: 150, editor: 'textbox' },
+                        { field: 'PostalCode', title: '邮政编码', width: 150, editor: 'textbox' },
+                        { field: 'AddressType', title: '住址', width: 150, editor: 'textbox' },
+                        {
+                            field: 'OwnerShip',
+                            title: '所有权',
+                            width: 150,
+                            formatter: function(value, row) {
+                                if (value == 1) {
+                                    return "拥有Owned";
+                                } else if (value == 2) {
+                                    return "租用Rented";
+                                } else {
+                                    return value;
+                                }
+                            },
+                            editor: {
+                                type: 'combobox',
+                                options: {
+                                    editable: false,
+                                    data: [{ value: 1, text: '拥有Owned', selected: true }, { value: 2, text: '租用Rented' }]
+                                }
+                            }
+                        },
+                        { field: 'PhoneNumber', title: '电话号码', width: 150, editor: 'numberbox' },
+                        {
+                            field: 'operation',
+                            title: '操作',
+                            align: 'center',
+                            width: 150,
+                            formatter: function(value, row, index) {
+                                var operationhtml = '<span class="l-btn-left l-btn-icon-left" onclick=addressdg.deleteRow("' + index + '") ><span class="l-btn-text">删除</span><span class="l-btn-icon icon-remove">&nbsp;</span></span>';
+                                return operationhtml;
+                            }
+                        }
+                    ]
+                ],
+                toolbar: [
+                    {
+                        text: '新增',
+                        iconCls: 'icon-add',
+                        handler: function() { addressdg.append(); }
+                    }, {
+                        text: '确定',
+                        iconCls: 'icon-save',
+                        handler: function() { addressdg.accept(); }
+                    }
+                ],
+                onClickRow: function(index) {
+                    addressdg.onClickRow(index);
+                }
+            });
+        },
+        endEditing: function() {
+            if (addressdg.editIndex == undefined) {
+
+                return true;
+            }
+            if (addressdg.thisdg.datagrid('validateRow', addressdg.editIndex)) {
+
+                var ed = addressdg.thisdg.datagrid('getEditor', { index: addressdg.editIndex, field: 'OwnerShip' });
+                var phoneTypeValue = $(ed.target).combobox('getValue');
+                addressdg.thisdg.datagrid('getRows')[addressdg.editIndex]['OwnerShip'] = phoneTypeValue;
+                addressdg.thisdg.datagrid('endEdit', addressdg.editIndex);
+                addressdg.editIndex = undefined;
+                return true;
+            } else {
+                return false;
+            }
+        },
+        onClickRow: function(index) {
+            if (addressdg.editIndex != index) {
+                if (addressdg.endEditing()) {
+                    addressdg.thisdg.datagrid('selectRow', index)
+                        .datagrid('beginEdit', index);
+                    addressdg.editIndex = index;
+                } else {
+                    addressdg.thisdg.datagrid('selectRow', addressdg.editIndex);
+                }
+            }
+        },
+        append: function() {
+            if (addressdg.endEditing()) {
+                addressdg.thisdg.datagrid('appendRow', { status: 'P' });
+                addressdg.editIndex = addressdg.thisdg.datagrid('getRows').length - 1;
+                addressdg.thisdg.datagrid('selectRow', addressdg.editIndex)
+                    .datagrid('beginEdit', addressdg.editIndex);
+            }
+        },
+        removeit: function() {
+            if (addressdg.editIndex == undefined) {
+                return
+            }
+            addressdg.thisdg.datagrid('cancelEdit', addressdg.editIndex)
+                .datagrid('deleteRow', addressdg.editIndex);
+            addressdg.editIndex = undefined;
+        },
+        deleteRow: function(i) {
+            if (addressdg.endEditing()) {
+                addressdg.thisdg.datagrid('deleteRow', i);
+                addressdg.bindDatagrid(addressdg.thisdg.datagrid("getRows"));
+            }
+        },
+        accept: function() {
+            if (addressdg.endEditing()) {
+                addressdg.thisdg.datagrid('acceptChanges');
+            }
+        },
+        reject: function() {
+            addressdg.thisdg.datagrid('rejectChanges');
+            addressdg.editIndex = undefined;
+        }
+    }
+    emailsdg = {
+        editIndex: undefined,
+        thisdg: $("#dgEmails"),
+        bindDatagrid: function (data) {
+            emailsdg.thisdg.datagrid({
+                data: data,
+                height: 200,
+                singleSelect: true,
+                columns: [
+                    [
+                        { field: 'Emailid', hidden: true },
+                        { field: 'Entityid', hidden: true },
+                        { field: 'Email', title: '电邮', width: 150, editor: 'textbox' },
+                        {
+                            field: 'operation',
+                            title: '操作',
+                            align: 'center',
+                            width: 150,
+                            formatter: function (value, row, index) {
+                                var operationhtml = '<span class="l-btn-left l-btn-icon-left" onclick=emailsdg.deleteRow("' + index + '") ><span class="l-btn-text">删除</span><span class="l-btn-icon icon-remove">&nbsp;</span></span>';
+                                return operationhtml;
+                            }
+                        }
+                    ]
+                ],
+                toolbar: [
+                    {
+                        text: '新增',
+                        iconCls: 'icon-add',
+                        handler: function () { emailsdg.append(); }
+                    }, {
+                        text: '确定',
+                        iconCls: 'icon-save',
+                        handler: function () { emailsdg.accept(); }
+                    }
+                ],
+                onClickRow: function (index) {
+                    emailsdg.onClickRow(index);
+                }
+            });
+        },
+        endEditing: function () {
+            if (emailsdg.editIndex == undefined) {
+
+                return true;
+            }
+            if (emailsdg.thisdg.datagrid('validateRow', emailsdg.editIndex)) {
+                emailsdg.thisdg.datagrid('endEdit', emailsdg.editIndex);
+                emailsdg.editIndex = undefined;
+                return true;
+            } else {
+                return false;
+            }
+        },
+        onClickRow: function (index) {
+            if (emailsdg.editIndex != index) {
+                if (emailsdg.endEditing()) {
+                    emailsdg.thisdg.datagrid('selectRow', index)
+                        .datagrid('beginEdit', index);
+                    emailsdg.editIndex = index;
+                } else {
+                    emailsdg.thisdg.datagrid('selectRow', emailsdg.editIndex);
+                }
+            }
+        },
+        append: function () {
+            if (emailsdg.endEditing()) {
+                emailsdg.thisdg.datagrid('appendRow', { status: 'P' });
+                emailsdg.editIndex = emailsdg.thisdg.datagrid('getRows').length - 1;
+                emailsdg.thisdg.datagrid('selectRow', emailsdg.editIndex)
+                    .datagrid('beginEdit', emailsdg.editIndex);
+            }
+        },
+        removeit: function () {
+            if (emailsdg.editIndex == undefined) {
+                return
+            }
+            emailsdg.thisdg.datagrid('cancelEdit', emailsdg.editIndex)
+                .datagrid('deleteRow', emailsdg.editIndex);
+            emailsdg.editIndex = undefined;
+        },
+        deleteRow: function (i) {
+            if (emailsdg.endEditing()) {
+                emailsdg.thisdg.datagrid('deleteRow', i);
+                emailsdg.bindDatagrid(emailsdg.thisdg.datagrid("getRows"));
+            }
+        },
+        accept: function () {
+            if (emailsdg.endEditing()) {
+                emailsdg.thisdg.datagrid('acceptChanges');
+            }
+        },
+        reject: function () {
+            emailsdg.thisdg.datagrid('rejectChanges');
+            emailsdg.editIndex = undefined;
+        }
+    }
+    bankAccountdg = {
+        editIndex: undefined,
+        thisdg: $("#dgBankAccount"),
+        bindDatagrid: function (data) {
+            bankAccountdg.thisdg.datagrid({
+                data: data,
+                height: 200,
+                singleSelect: true,
+                columns: [
+                    [
+                        { field: 'BankAccountID', hidden: true },
+                        { field: 'Entityid', hidden: true },
+                        { field: 'Bank', title: '银行', width: 150, editor: 'textbox' },
+                        { field: 'AccountType', title: '帐户类别', width: 150, editor: 'textbox' },
+                        { field: 'AccountName', title: '帐户名称', width: 150, editor: 'textbox' },
+                        { field: 'AccountNumber', title: '帐号', width: 150, editor: 'textbox' },
+                        { field: 'DateOpened', title: '开户日期', width: 150, editor: 'datebox' },
+                        {
+                            field: 'operation',
+                            title: '操作',
+                            align: 'center',
+                            width: 150,
+                            formatter: function (value, row, index) {
+                                var operationhtml = '<span class="l-btn-left l-btn-icon-left" onclick=bankAccountdg.deleteRow("' + index + '") ><span class="l-btn-text">删除</span><span class="l-btn-icon icon-remove">&nbsp;</span></span>';
+                                return operationhtml;
+                            }
+                        }
+                    ]
+                ],
+                toolbar: [
+                    {
+                        text: '新增',
+                        iconCls: 'icon-add',
+                        handler: function () { bankAccountdg.append(); }
+                    }, {
+                        text: '确定',
+                        iconCls: 'icon-save',
+                        handler: function () { bankAccountdg.accept(); }
+                    }
+                ],
+                onClickRow: function (index) {
+                    bankAccountdg.onClickRow(index);
+                }
+            });
+        },
+        endEditing: function () {
+            if (bankAccountdg.editIndex == undefined) {
+
+                return true;
+            }
+            if (bankAccountdg.thisdg.datagrid('validateRow', bankAccountdg.editIndex)) {
+
+                bankAccountdg.thisdg.datagrid('endEdit', bankAccountdg.editIndex);
+                bankAccountdg.editIndex = undefined;
+                return true;
+            } else {
+                return false;
+            }
+        },
+        onClickRow: function (index) {
+            if (bankAccountdg.editIndex != index) {
+                if (bankAccountdg.endEditing()) {
+                    bankAccountdg.thisdg.datagrid('selectRow', index)
+                        .datagrid('beginEdit', index);
+                    bankAccountdg.editIndex = index;
+                } else {
+                    bankAccountdg.thisdg.datagrid('selectRow', bankAccountdg.editIndex);
+                }
+            }
+        },
+        append: function () {
+            if (bankAccountdg.endEditing()) {
+                bankAccountdg.thisdg.datagrid('appendRow', { status: 'P' });
+                bankAccountdg.editIndex = bankAccountdg.thisdg.datagrid('getRows').length - 1;
+                bankAccountdg.thisdg.datagrid('selectRow', bankAccountdg.editIndex)
+                    .datagrid('beginEdit', bankAccountdg.editIndex);
+            }
+        },
+        removeit: function () {
+            if (bankAccountdg.editIndex == undefined) {
+                return
+            }
+            bankAccountdg.thisdg.datagrid('cancelEdit', bankAccountdg.editIndex)
+                .datagrid('deleteRow', bankAccountdg.editIndex);
+            bankAccountdg.editIndex = undefined;
+        },
+        deleteRow: function (i) {
+            if (bankAccountdg.endEditing()) {
+                bankAccountdg.thisdg.datagrid('deleteRow', i);
+                bankAccountdg.bindDatagrid(bankAccountdg.thisdg.datagrid("getRows"));
+            }
+        },
+        accept: function () {
+            if (bankAccountdg.endEditing()) {
+                bankAccountdg.thisdg.datagrid('acceptChanges');
+            }
+        },
+        reject: function () {
+            bankAccountdg.thisdg.datagrid('rejectChanges');
+            bankAccountdg.editIndex = undefined;
+        }
+    }
+    idDocumentdg = {
+        editIndex: undefined,
+        thisdg: $("#dgIDDocument"),
+        bindDatagrid: function (data) {
+            idDocumentdg.thisdg.datagrid({
+                data: data,
+                height: 200,
+                singleSelect: true,
+                columns: [
+                    [
+                        { field: 'IDDocumentID', hidden: true },
+                        { field: 'Entityid', hidden: true },
+                        { field: 'Type', title: '证件类别', width: 150, editor: 'textbox' },
+                        { field: 'AccountType', title: '帐户类别', width: 150, editor: 'textbox' },
+                        { field: 'Countryid', title: '国籍', width: 150, editor: 'textbox' },
+                        { field: 'IDNumber', title: '证件编号', width: 150, editor: 'textbox' },
+                        { field: 'CertificateDate', title: '办证日期', width: 150, editor: 'datebox' },
+                        {
+                            field: 'operation',
+                            title: '操作',
+                            align: 'center',
+                            width: 150,
+                            formatter: function (value, row, index) {
+                                var operationhtml = '<span class="l-btn-left l-btn-icon-left" onclick=idDocumentdg.deleteRow("' + index + '") ><span class="l-btn-text">删除</span><span class="l-btn-icon icon-remove">&nbsp;</span></span>';
+                                return operationhtml;
+                            }
+                        }
+                    ]
+                ],
+                toolbar: [
+                    {
+                        text: '新增',
+                        iconCls: 'icon-add',
+                        handler: function () { idDocumentdg.append(); }
+                    }, {
+                        text: '确定',
+                        iconCls: 'icon-save',
+                        handler: function () { idDocumentdg.accept(); }
+                    }
+                ],
+                onClickRow: function (index) {
+                    idDocumentdg.onClickRow(index);
+                }
+            });
+        },
+        endEditing: function () {
+            if (idDocumentdg.editIndex == undefined) {
+
+                return true;
+            }
+            if (idDocumentdg.thisdg.datagrid('validateRow', idDocumentdg.editIndex)) {
+
+                idDocumentdg.thisdg.datagrid('endEdit', idDocumentdg.editIndex);
+                idDocumentdg.editIndex = undefined;
+                return true;
+            } else {
+                return false;
+            }
+        },
+        onClickRow: function (index) {
+            if (idDocumentdg.editIndex != index) {
+                if (idDocumentdg.endEditing()) {
+                    idDocumentdg.thisdg.datagrid('selectRow', index)
+                        .datagrid('beginEdit', index);
+                    idDocumentdg.editIndex = index;
+                } else {
+                    idDocumentdg.thisdg.datagrid('selectRow', idDocumentdg.editIndex);
+                }
+            }
+        },
+        append: function () {
+            if (idDocumentdg.endEditing()) {
+                idDocumentdg.thisdg.datagrid('appendRow', { status: 'P' });
+                idDocumentdg.editIndex = idDocumentdg.thisdg.datagrid('getRows').length - 1;
+                idDocumentdg.thisdg.datagrid('selectRow', idDocumentdg.editIndex)
+                    .datagrid('beginEdit', idDocumentdg.editIndex);
+            }
+        },
+        removeit: function () {
+            if (idDocumentdg.editIndex == undefined) {
+                return
+            }
+            idDocumentdg.thisdg.datagrid('cancelEdit', idDocumentdg.editIndex)
+                .datagrid('deleteRow', idDocumentdg.editIndex);
+            idDocumentdg.editIndex = undefined;
+        },
+        deleteRow: function (i) {
+            if (idDocumentdg.endEditing()) {
+                idDocumentdg.thisdg.datagrid('deleteRow', i);
+                idDocumentdg.bindDatagrid(idDocumentdg.thisdg.datagrid("getRows"));
+            }
+        },
+        accept: function () {
+            if (idDocumentdg.endEditing()) {
+                idDocumentdg.thisdg.datagrid('acceptChanges');
+            }
+        },
+        reject: function () {
+            idDocumentdg.thisdg.datagrid('rejectChanges');
+            idDocumentdg.editIndex = undefined;
+        }
+    }
+    socialNetworkdg = {
+        editIndex: undefined,
+        thisdg: $("#dgSocialNetwork"),
+        bindDatagrid: function (data) {
+            socialNetworkdg.thisdg.datagrid({
+                data: data,
+                height: 200,
+                singleSelect: true,
+                columns: [
+                    [
+                        { field: 'SocialNetworkID', hidden: true },
+                        { field: 'Entityid', hidden: true },
+                        { field: 'NetName', title: '网站名称', width: 150, editor: 'textbox' },
+                        { field: 'URL', title: '网址', width: 150, editor: 'textbox' },
+                        { field: 'SocialNumber', title: '社交帐号', width: 150, editor: 'textbox' },
+                        { field: 'SocialDate', title: '社交日期', width: 150, editor: 'datebox' },
+                        { field: 'pic', title: '照片路径', width: 150, editor: 'filebox' },
+                        {
+                            field: 'operation',
+                            title: '操作',
+                            align: 'center',
+                            width: 150,
+                            formatter: function (value, row, index) {
+                                var operationhtml = '<span class="l-btn-left l-btn-icon-left" onclick=socialNetworkdg.deleteRow("' + index + '") ><span class="l-btn-text">删除</span><span class="l-btn-icon icon-remove">&nbsp;</span></span>';
+                                return operationhtml;
+                            }
+                        }
+                    ]
+                ],
+                toolbar: [
+                    {
+                        text: '新增',
+                        iconCls: 'icon-add',
+                        handler: function () { socialNetworkdg.append(); }
+                    }, {
+                        text: '确定',
+                        iconCls: 'icon-save',
+                        handler: function () { socialNetworkdg.accept(); }
+                    }
+                ],
+                onClickRow: function (index) {
+                    socialNetworkdg.onClickRow(index);
+                }
+            });
+        },
+        endEditing: function () {
+            if (socialNetworkdg.editIndex == undefined) {
+                return true;
+            }
+            if (socialNetworkdg.thisdg.datagrid('validateRow', socialNetworkdg.editIndex)) {
+                socialNetworkdg.thisdg.datagrid('endEdit', socialNetworkdg.editIndex);
+                socialNetworkdg.editIndex = undefined;
+                return true;
+            } else {
+                return false;
+            }
+        },
+        onClickRow: function (index) {
+            if (socialNetworkdg.editIndex != index) {
+                if (socialNetworkdg.endEditing()) {
+                    socialNetworkdg.thisdg.datagrid('selectRow', index)
+                        .datagrid('beginEdit', index);
+                    socialNetworkdg.editIndex = index;
+                } else {
+                    socialNetworkdg.thisdg.datagrid('selectRow', socialNetworkdg.editIndex);
+                }
+            }
+        },
+        append: function () {
+            if (socialNetworkdg.endEditing()) {
+                socialNetworkdg.thisdg.datagrid('appendRow', { status: 'P' });
+                socialNetworkdg.editIndex = socialNetworkdg.thisdg.datagrid('getRows').length - 1;
+                socialNetworkdg.thisdg.datagrid('selectRow', socialNetworkdg.editIndex)
+                    .datagrid('beginEdit', socialNetworkdg.editIndex);
+            }
+        },
+        removeit: function () {
+            if (socialNetworkdg.editIndex == undefined) {
+                return
+            }
+            socialNetworkdg.thisdg.datagrid('cancelEdit', socialNetworkdg.editIndex)
+                .datagrid('deleteRow', socialNetworkdg.editIndex);
+            socialNetworkdg.editIndex = undefined;
+        },
+        deleteRow: function (i) {
+            if (socialNetworkdg.endEditing()) {
+                socialNetworkdg.thisdg.datagrid('deleteRow', i);
+                socialNetworkdg.bindDatagrid(socialNetworkdg.thisdg.datagrid("getRows"));
+            }
+        },
+        accept: function () {
+            if (socialNetworkdg.endEditing()) {
+                socialNetworkdg.thisdg.datagrid('acceptChanges');
+            }
+        },
+        reject: function () {
+            socialNetworkdg.thisdg.datagrid('rejectChanges');
+            socialNetworkdg.editIndex = undefined;
+        }
+    }
+    mediaReportdg = {
+        editIndex: undefined,
+        thisdg: $("#dgMediaReport"),
+        bindDatagrid: function (data) {
+            mediaReportdg.thisdg.datagrid({
+                data: data,
+                height: 200,
+                singleSelect: true,
+                columns: [
+                    [
+                        { field: 'MediaReportID', hidden: true },
+                        { field: 'Entityid', hidden: true },
+                        { field: 'Name', title: '媒体名称', width: 150, editor: 'textbox' },
+                        { field: 'Subject', title: '主题', width: 150, editor: 'textbox' },
+                        { field: 'Content', title: '报导内容', width: 150, editor: 'textbox' },
+                        { field: 'ReportDate', title: '报导日期', width: 150, editor: 'datebox' },
+                        {
+                            field: 'operation',
+                            title: '操作',
+                            align: 'center',
+                            width: 150,
+                            formatter: function (value, row, index) {
+                                var operationhtml = '<span class="l-btn-left l-btn-icon-left" onclick=mediaReportdg.deleteRow("' + index + '") ><span class="l-btn-text">删除</span><span class="l-btn-icon icon-remove">&nbsp;</span></span>';
+                                return operationhtml;
+                            }
+                        }
+                    ]
+                ],
+                toolbar: [
+                    {
+                        text: '新增',
+                        iconCls: 'icon-add',
+                        handler: function () { mediaReportdg.append(); }
+                    }, {
+                        text: '确定',
+                        iconCls: 'icon-save',
+                        handler: function () { mediaReportdg.accept(); }
+                    }
+                ],
+                onClickRow: function (index) {
+                    mediaReportdg.onClickRow(index);
+                }
+            });
+        },
+        endEditing: function () {
+            if (mediaReportdg.editIndex == undefined) {
+
+                return true;
+            }
+            if (mediaReportdg.thisdg.datagrid('validateRow', mediaReportdg.editIndex)) {
+
+                mediaReportdg.thisdg.datagrid('endEdit', mediaReportdg.editIndex);
+                mediaReportdg.editIndex = undefined;
+                return true;
+            } else {
+                return false;
+            }
+        },
+        onClickRow: function (index) {
+            if (mediaReportdg.editIndex != index) {
+                if (mediaReportdg.endEditing()) {
+                    mediaReportdg.thisdg.datagrid('selectRow', index)
+                        .datagrid('beginEdit', index);
+                    mediaReportdg.editIndex = index;
+                } else {
+                    mediaReportdg.thisdg.datagrid('selectRow', mediaReportdg.editIndex);
+                }
+            }
+        },
+        append: function () {
+            if (mediaReportdg.endEditing()) {
+                mediaReportdg.thisdg.datagrid('appendRow', { status: 'P' });
+                mediaReportdg.editIndex = mediaReportdg.thisdg.datagrid('getRows').length - 1;
+                mediaReportdg.thisdg.datagrid('selectRow', mediaReportdg.editIndex)
+                    .datagrid('beginEdit', mediaReportdg.editIndex);
+            }
+        },
+        removeit: function () {
+            if (mediaReportdg.editIndex == undefined) {
+                return
+            }
+            mediaReportdg.thisdg.datagrid('cancelEdit', mediaReportdg.editIndex)
+                .datagrid('deleteRow', mediaReportdg.editIndex);
+            mediaReportdg.editIndex = undefined;
+        },
+        deleteRow: function (i) {
+            if (mediaReportdg.endEditing()) {
+                mediaReportdg.thisdg.datagrid('deleteRow', i);
+                mediaReportdg.bindDatagrid(mediaReportdg.thisdg.datagrid("getRows"));
+            }
+        },
+        accept: function () {
+            if (mediaReportdg.endEditing()) {
+                mediaReportdg.thisdg.datagrid('acceptChanges');
+            }
+        },
+        reject: function () {
+            mediaReportdg.thisdg.datagrid('rejectChanges');
+            mediaReportdg.editIndex = undefined;
+        }
+    }
+    employmentHistorydg = {
+        editIndex: undefined,
+        thisdg: $("#dgEmploymentHistory"),
+        bindDatagrid: function (data) {
+            employmentHistorydg.thisdg.datagrid({
+                data: data,
+                height: 200,
+                singleSelect: true,
+                columns: [
+                    [
+                        { field: 'MediaReportID', hidden: true },
+                        { field: 'Entityid_P', hidden: true },
+                        { field: 'Entityid', hidden: true },
+                        { field: 'Employer_En', title: '雇主英文名', width: 150, editor: 'textbox' },
+                        { field: 'Employer_Cn', title: '雇主中文名', width: 150, editor: 'textbox' },
+                        { field: 'Department', title: '部门', width: 150, editor: 'textbox' },
+                        { field: 'Position', title: '职位', width: 150, editor: 'textbox' },
+                        { field: 'JoinedDate', title: '入职时间', width: 150, editor: 'textbox' },
+                        { field: 'LenghtServices', title: '工作时长', width: 150, editor: 'textbox' },
+                        { field: 'OfficeAddress', title: '工作地址', width: 150, editor: 'textbox' },
+                        { field: 'Tel1', title: '电话1', width: 150, editor: 'textbox' },
+                        { field: 'Tel2', title: '电话2', width: 150, editor: 'textbox' },
+                        {
+                            field: 'operation',
+                            title: '操作',
+                            align: 'center',
+                            width: 150,
+                            formatter: function (value, row, index) {
+                                var operationhtml = '<span class="l-btn-left l-btn-icon-left" onclick=employmentHistorydg.deleteRow("' + index + '") ><span class="l-btn-text">删除</span><span class="l-btn-icon icon-remove">&nbsp;</span></span>';
+                                return operationhtml;
+                            }
+                        }
+                    ]
+                ],
+                toolbar: [
+                    {
+                        text: '新增',
+                        iconCls: 'icon-add',
+                        handler: function () { employmentHistorydg.append(); }
+                    }, {
+                        text: '确定',
+                        iconCls: 'icon-save',
+                        handler: function () { employmentHistorydg.accept(); }
+                    }
+                ],
+                onClickRow: function (index) {
+                    employmentHistorydg.onClickRow(index);
+                }
+            });
+        },
+        endEditing: function () {
+            if (employmentHistorydg.editIndex == undefined) {
+
+                return true;
+            }
+            if (employmentHistorydg.thisdg.datagrid('validateRow', employmentHistorydg.editIndex)) {
+
+                employmentHistorydg.thisdg.datagrid('endEdit', employmentHistorydg.editIndex);
+                employmentHistorydg.editIndex = undefined;
+                return true;
+            } else {
+                return false;
+            }
+        },
+        onClickRow: function (index) {
+            if (employmentHistorydg.editIndex != index) {
+                if (employmentHistorydg.endEditing()) {
+                    employmentHistorydg.thisdg.datagrid('selectRow', index)
+                        .datagrid('beginEdit', index);
+                    employmentHistorydg.editIndex = index;
+                } else {
+                    employmentHistorydg.thisdg.datagrid('selectRow', employmentHistorydg.editIndex);
+                }
+            }
+        },
+        append: function () {
+            if (employmentHistorydg.endEditing()) {
+                employmentHistorydg.thisdg.datagrid('appendRow', { status: 'P' });
+                employmentHistorydg.editIndex = employmentHistorydg.thisdg.datagrid('getRows').length - 1;
+                employmentHistorydg.thisdg.datagrid('selectRow', employmentHistorydg.editIndex)
+                    .datagrid('beginEdit', employmentHistorydg.editIndex);
+            }
+        },
+        removeit: function () {
+            if (employmentHistorydg.editIndex == undefined) {
+                return
+            }
+            employmentHistorydg.thisdg.datagrid('cancelEdit', employmentHistorydg.editIndex)
+                .datagrid('deleteRow', employmentHistorydg.editIndex);
+            employmentHistorydg.editIndex = undefined;
+        },
+        deleteRow: function (i) {
+            if (employmentHistorydg.endEditing()) {
+                employmentHistorydg.thisdg.datagrid('deleteRow', i);
+                employmentHistorydg.bindDatagrid(employmentHistorydg.thisdg.datagrid("getRows"));
+            }
+        },
+        accept: function () {
+            if (employmentHistorydg.endEditing()) {
+                employmentHistorydg.thisdg.datagrid('acceptChanges');
+            }
+        },
+        reject: function () {
+            employmentHistorydg.thisdg.datagrid('rejectChanges');
+            employmentHistorydg.editIndex = undefined;
+        }
+    }
+    educationdg = {
+        editIndex: undefined,
+        thisdg: $("#dgEducation"),
+        bindDatagrid: function (data) {
+            educationdg.thisdg.datagrid({
+                data: data,
+                height: 200,
+                singleSelect: true,
+                columns: [
+                    [
+                        { field: 'Educationid', hidden: true },
+                        { field: 'Entityid', hidden: true },
+                        { field: 'Institute', title: '学校', width: 150, editor: 'textbox' },
+                        { field: 'Subject', title: '主题', width: 150, editor: 'textbox' },
+                        { field: 'Content', title: '报导内容', width: 150, editor: 'textbox' },
+                        { field: 'ReportDate', title: '报导日期', width: 150, editor: 'datebox' },
+                        {
+                            field: 'operation',
+                            title: '操作',
+                            align: 'center',
+                            width: 150,
+                            formatter: function (value, row, index) {
+                                var operationhtml = '<span class="l-btn-left l-btn-icon-left" onclick=educationdg.deleteRow("' + index + '") ><span class="l-btn-text">删除</span><span class="l-btn-icon icon-remove">&nbsp;</span></span>';
+                                return operationhtml;
+                            }
+                        }
+                    ]
+                ],
+                toolbar: [
+                    {
+                        text: '新增',
+                        iconCls: 'icon-add',
+                        handler: function () { educationdg.append(); }
+                    }, {
+                        text: '确定',
+                        iconCls: 'icon-save',
+                        handler: function () { educationdg.accept(); }
+                    }
+                ],
+                onClickRow: function (index) {
+                    educationdg.onClickRow(index);
+                }
+            });
+        },
+        endEditing: function () {
+            if (educationdg.editIndex == undefined) {
+
+                return true;
+            }
+            if (educationdg.thisdg.datagrid('validateRow', educationdg.editIndex)) {
+
+                educationdg.thisdg.datagrid('endEdit', educationdg.editIndex);
+                educationdg.editIndex = undefined;
+                return true;
+            } else {
+                return false;
+            }
+        },
+        onClickRow: function (index) {
+            if (educationdg.editIndex != index) {
+                if (educationdg.endEditing()) {
+                    educationdg.thisdg.datagrid('selectRow', index)
+                        .datagrid('beginEdit', index);
+                    educationdg.editIndex = index;
+                } else {
+                    educationdg.thisdg.datagrid('selectRow', educationdg.editIndex);
+                }
+            }
+        },
+        append: function () {
+            if (educationdg.endEditing()) {
+                educationdg.thisdg.datagrid('appendRow', { status: 'P' });
+                educationdg.editIndex = educationdg.thisdg.datagrid('getRows').length - 1;
+                educationdg.thisdg.datagrid('selectRow', educationdg.editIndex)
+                    .datagrid('beginEdit', educationdg.editIndex);
+            }
+        },
+        removeit: function () {
+            if (educationdg.editIndex == undefined) {
+                return
+            }
+            educationdg.thisdg.datagrid('cancelEdit', educationdg.editIndex)
+                .datagrid('deleteRow', educationdg.editIndex);
+            educationdg.editIndex = undefined;
+        },
+        deleteRow: function (i) {
+            if (educationdg.endEditing()) {
+                educationdg.thisdg.datagrid('deleteRow', i);
+                educationdg.bindDatagrid(educationdg.thisdg.datagrid("getRows"));
+            }
+        },
+        accept: function () {
+            if (educationdg.endEditing()) {
+                educationdg.thisdg.datagrid('acceptChanges');
+            }
+        },
+        reject: function () {
+            educationdg.thisdg.datagrid('rejectChanges');
+            educationdg.editIndex = undefined;
+        }
+    }
+    </script>
+    <script>
+        var Type=@ViewBag.Type
+        relationdg.bindDatagrid(relationdg.data);
+        phonedg.bindDatagrid(phonedg.data);
+        addressdg.bindDatagrid(addressdg.data);
+        emailsdg.bindDatagrid(emailsdg.data);
+        bankAccountdg.bindDatagrid(bankAccountdg.data);
+        idDocumentdg.bindDatagrid(idDocumentdg.data);
+        socialNetworkdg.bindDatagrid(socialNetworkdg.data);
+        mediaReportdg.bindDatagrid(mediaReportdg.data);
+        employmentHistorydg.bindDatagrid(employmentHistorydg.data);
+        educationdg.bindDatagrid(educationdg.data);
+
+        function editOnlineCourt() {
+             
+            var submitform = $('#EditOnlineEntityForm');
+            var paraData = submitform.serialize();
+            
+            paraData += "&relationModelString=" + encodeURIComponent(JSON.stringify(relationdg.thisdg.datagrid("getRows")));
+            paraData += "&telephonesModelString=" + encodeURIComponent(JSON.stringify(phonedg.thisdg.datagrid("getRows")));
+            paraData += "&addressModelString=" + encodeURIComponent(JSON.stringify(addressdg.thisdg.datagrid("getRows")));
+            paraData += "&emailsModelString=" + encodeURIComponent(JSON.stringify(emailsdg.thisdg.datagrid("getRows")));
+            paraData += "&bankAccountModelString=" + encodeURIComponent(JSON.stringify(bankAccountdg.thisdg.datagrid("getRows")));
+
+            paraData += "&IDdocumentsModelString=" + encodeURIComponent(JSON.stringify(idDocumentdg.thisdg.datagrid("getRows")));
+            paraData += "&socialNetworkModelString=" + encodeURIComponent(JSON.stringify(socialNetworkdg.thisdg.datagrid("getRows")));
+            paraData += "&mediaReportModelString=" + encodeURIComponent(JSON.stringify(mediaReportdg.thisdg.datagrid("getRows")));
+            if (Type==0)
+            {
+                 paraData += "&employmentHistoryModelString=" + encodeURIComponent(JSON.stringify(employmentHistorydg.thisdg.datagrid("getRows")));
+                 paraData += "&educationModelString=" + encodeURIComponent(JSON.stringify(educationdg.thisdg.datagrid("getRows")));
+             }
+           
+
+            $.ajax({
+                type: 'POST',
+                url: submitform.attr('action'),
+                data: paraData,
+                success: function (data) {
+                    if (data.result) {
+                        submitform[0].reset();
+                        onlineEntityjs.closeDialog();
+                        loadData();
+                    } else {
+
+                    }
+                }
+            });
+        }
+    </script>

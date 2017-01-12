@@ -1,0 +1,202 @@
+﻿@{
+   var memberGradeId= (int)ViewBag.MemberGradeId;
+   var isRadio = (bool)ViewBag.IsRadio;
+   var currency= (string)ViewBag.Currency;
+    Layout = null;
+}
+<script src="~/Scripts/forms/SearchDialog/SearchDialog.js"></script>
+<script type="text/javascript">
+    $(function () {
+        loadDataDg();
+        $("#btnDgSerach").click(function () {
+            var pars = {
+                //bigType: $("#bigTypeSearch").combobox("getValue"),
+                //SmallType: $("#SmallTypeSearch").combobox("getValue"),
+                //ProductNo: $("#ProductNoSearch").combobox("getValue"),
+                //memberGradeId: $("#memberGradeIdSearch").val(),
+                //Currency: $("#CurrencySearch").combobox("getValue")
+                BigType: $("#BigTypeSearch").combo("getValue"),
+                SmallType: $("#SmallTypeSearch").combo("getValue"),
+                ProductNo: $("#ProductNoSearch").val(),
+                @if (memberGradeId == 0)
+                {
+
+                    @:MemberGradeID: $("#MemberGradeIDSearch").combo("getValue"),
+                                                                                }
+                else
+                {
+                    @Html.Raw("MemberGradeID:"+memberGradeId+",")
+                }
+                @if (string.IsNullOrEmpty(currency))
+                {
+                    @:Currency: $("#CurrencySearch").combo("getValue")
+                }
+                else
+                {
+                    @Html.Raw("Currency:'" + currency+"'" )
+                }
+
+            };
+            var url = '/SearchDialog/ProductPage';
+            loadDataDg(pars, url);
+        });
+    });
+    function loadDataDg(pars, url) {
+        $('#productList').datagrid({
+            url: url,
+            data: { "total": 0, "rows": [] },
+            //width: 1000,
+            //height: 400,
+           // width: ($(window).width() * 0.90),
+            height: 330,
+            //fit:true,
+            fitColumns: true, //列自适应
+            nowrap: false,
+            idField: 'Id',//主键列的列名
+            loadMsg: '正在加载信息...',
+            pagination: true,//是否有分页
+            singleSelect: true,//是否单行选择
+            pageSize: 10,//每页多少条数据
+            pageNumber: 1,//默认的页
+            pageList: [10, 20, 30],
+            queryParams: pars,//往后台传递参数
+            columns: [[
+                {
+                    field: 'BigType', title: '产品种类', align: 'center', width: 100,
+                    formatter: function (value, row, index) {
+                        if (value == 0) {
+                            return '在线搜索';
+                        }
+                        if (value == 1) {
+                            return ' 离线搜索';
+                        }
+                        if (value == 2) {
+                            return ' 自动监察';
+                        }
+                        return value;
+                    }
+                },
+                 {
+                     field: 'SmallType', title: '产品类型', align: 'center', width: 100,
+                     formatter: function (value, row, index) {
+                         if (value == 0) {
+                             return '法庭';
+                         }
+                         if (value == 1) {
+                             return ' 公司';
+                         }
+                         if (value == 2) {
+                             return ' 土地';
+                         }
+                         if (value == 3) {
+                             return ' 信贷';
+                         }
+                         if (value == 4) {
+                             return ' 公共';
+                         }
+                         return value;
+                     }
+                 },
+                  { field: 'ProductID', title: '产品编号', align: 'center', width: 100 },
+                  { field: 'ProductName', title: '产品名称', align: 'center', width: 100 },
+                  { field: 'Currency', title: '币种', align: 'center', width: 100 },
+                  { field: 'Price', title: '单价', align: 'center', width: 100 },
+                  { field: 'MemberGradesName', title: '级别', align: 'center', width: 100 },
+                  { field: 'Validity', title: '有效期', align: 'center', width: 100 }
+            ]],
+            onLoadSuccess: function (data) {
+                $('#productList').datagrid('clearSelections');
+            }
+        });
+    }
+
+</script>
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'center'" class="padd10">
+
+        <div class="easyui-panel" title="查询条件" style="width:99%;padding:10px;">
+            <table >
+                <tr>
+
+                    <td class="title95">产品种类:</td>
+                    <td>
+                        <select name="bigTypeSearch" class="easyui-combobox filewidth" id="BigTypeSearch" data-options="editable:false">
+                            <option value="-1" selected="selected">全部</option>
+                            <option value="0">在线搜索</option>
+                            <option value="1">离线搜索</option>
+                            <option value="2">自动监察</option>
+                        </select>
+                    </td>
+                    <td class="title95">产品类型:</td>
+                    <td>
+                        <select name="SmallTypeSearch" class="easyui-combobox filewidth" id="SmallTypeSearch" data-options="editable:false">
+                            <option value="-1" selected="selected">全部</option>
+                            <option value="0">法庭</option>
+                            <option value="1">公司</option>
+                            <option value="2">土地</option>
+                            <option value="3">信贷</option>
+                            <option value="4">公共</option>
+                        </select>
+                    </td>
+                    <td class="title95">产品编号:</td>
+                    <td><input type="text" class="easyui-textbox filewidth_n" id="ProductNoSearch" name="ProductNoSearch" value=""/></td>
+                    <td class="title95">@(memberGradeId == 0 ? "级别:" : "")</td>
+                    <td>
+                        @if (memberGradeId == 0)
+                        {
+                            <select name="memberGradeIdSearch" class="easyui-combobox filewidth" id="MemberGradeIDSearch" data-options="editable:false">
+                                <option selected="selected" value="-1">所有</option>
+                                @{var memberGrades = (List<Valeo.Domain.MemberGrade.MemberGradeModel>) ViewBag.MemberGrades;}
+                                @foreach (var item in memberGrades)
+                                {
+                                    <option value="@item.MemberGradeID">@item.MemberGrade</option>
+                                }
+                            </select>
+                        }
+                    </td>
+                </tr>
+                <tr>@if (string.IsNullOrEmpty(currency))
+                    {
+                        <td class="title95">
+                            币种:
+                        </td>
+                        <td>
+
+                            <select name="CurrencySearch" class="easyui-combobox filewidth" id="CurrencySearch" data-options="editable:false">
+                                <option value="-1" selected="selected">所有</option>
+                                @{ var currencys = (List<Valeo.Domain.Parameter.ParameterModel>) ViewBag.Currencys; }
+                                @foreach (var item in currencys)
+                                {
+                                    <option value="@item.Paramvalue">@item.Paramvalue</option>
+                                }
+                            </select>
+
+
+
+                        </td>
+                    }
+                 
+                </tr>
+
+            </table>
+            <div class="textcenter">
+                <a href="javascript:void(0)" id="btnDgSerach" class="easyui-linkbutton c6 width70">查询</a>
+            </div>
+        </div><br />
+
+        <table id="productList" title="查询结果" style="width: 99%;"></table> 
+    </div>
+    <div data-options="region:'south',border:false" style="text-align:right;padding:5px 0 0;">
+        <a class="easyui-linkbutton width80" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="clickAffirm()">确认</a>
+        <a class="easyui-linkbutton width80" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="closeDialogSearch()">取消</a>
+    </div>
+</div>
+<script>
+
+    function clickAffirm() { 
+        var getSelected = $('#productList').datagrid('@(isRadio ? "getSelected" : "getSelections")');
+        @(ViewBag.FunctionName)(getSelected);
+        closeDialogSearch();
+
+    }
+</script>

@@ -1,0 +1,8 @@
+INSERT m_userauthority(UserGradeID,Mod_id,Opr_code)
+select UserGradeID,'DeliveryChange',Opr_code from m_userauthority where Mod_id='DeliveryList' and UserGradeID=1;
+
+--新增按键权利
+select * from m_sysmodule a where a.Mod_id not in(select b.Mod_id from m_sysmoduledetail b) and a.Mod_id<>'0' and Parentid<>'0';
+
+INSERT m_sysmoduledetail(Mod_id,Opr_code,Sort,`Status`,Remark)
+select 'DeliveryStatus',Opr_code,Sort,`Status`,Remark from m_sysmoduledetail where Mod_id='DeliveryList';

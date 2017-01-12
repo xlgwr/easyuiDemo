@@ -1,0 +1,284 @@
+﻿@using Valeo.Domain.Common
+@using Valeo.Domain.Enum
+@using Valeo.Domain.User;
+@using Valeo.Lang;
+@using Valeo.Domain.Valeo;
+@model v_lableModel
+@{
+    Layout = "~/Views/Shared/_Layout_Index.cshtml";
+}
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>标签模板管理</title>
+</head>
+<body>
+    <div class="mar10" data-options="fit:true,plain:true">
+        <div class="padd10">
+            <div class="easyui-panel" title="查询条件" style="width: 99%; padding: 10px; margin-bottom: 10px;">
+                <form id="SearchFormLableModel">
+                    <table>
+                        <tr>
+                            <td class="title95">模板ID</td>
+                            <td>
+                                <input type="text" class="easyui-numberbox filewidth_n" id="lableID" name="lableID" data-options="min:1" />
+                            </td>
+                            <td class="title95">模板名称</td>
+                            <td>
+                                <input type="text" class="easyui-textbox filewidth_n" id="lableName" name="lableName" data-options="validType:['length[0,128]']" />
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="textcenter">
+                        @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Search))
+                        {
+                            <a href="javascript:void(0)" id="btnSerach" class="easyui-linkbutton c6 width70">@BaseRes.USE_SEA_007</a>
+                        }
+                        <a href="javascript:void(0)" id="btnSerachReset" class="easyui-linkbutton c9 width70">重置</a>
+                    </div>
+                </form>
+            </div>
+            <table id="dtGrid1" title="查询结果" style="width: 99%;"></table>
+        </div>
+    </div>
+    <div id="editdlg" class="easyui-dialog" style="width:600px;height:400px;padding:5px;" data-options="
+				iconCls: 'icon-save',
+				toolbar: '#dlg-toolbar',
+				buttons: '#dlg-buttons',
+				closed:true,maximized:true
+			">
+    </div>
+    <div id="showPicture" class="easyui-window" title="显示图片" style="width:800px;height:600px;padding:5px;" data-options="modal:true,closed:true,iconCls:'icon_webedite'">
+    </div>
+    <script type="text/javascript">
+        $(function () {
+            loadData();
+            $("#btnSerach").click(function () {
+                var dd = $('#SearchFormLableModel').serialize()
+                loadData('/LableModelManage/Page?' + dd);
+            });
+            $("#btnSerachReset").click(function () {
+                $('#SearchFormLableModel').form('clear');
+                //$('#SearchFormLableModel').form('load', {
+                //    LableModelType: "全部"
+                //});
+            });
+            $(window).resize(function () {
+                $('#dtGrid1').datagrid('resize', {
+                    height: ($(window).height()) - 170
+                }).datagrid('resize', {
+                    height: ($(window).height()) - 170
+                });
+            });
+
+            $("#btnSerachReset").click();
+        });
+
+
+        function loadData(url, otherpars) {
+            $('#dtGrid1').datagrid({
+                url: url,
+                data: { "total": 0, "rows": [] },
+                //width: 1000,
+                //height: 400,
+                //width: ($(window).width() * 0.90),
+                height: ($(window).height()) - 170,
+                //fit:true,
+                fitColumns: true, //列自适应
+                checkbox: true,
+                nowrap: false,
+                idField: 'lableID', //主键列的列名
+                loadMsg: '正在加载信息...',
+                pagination: true, //是否有分页
+                singleSelect: true,//是否单行选择
+                pageSize: 50, //每页多少条数据
+                pageNumber: 1, //默认的页
+                striped: true,
+                pageList: [50, 100, 150, 200],
+                queryParams: otherpars, //往后台传递参数
+                columns: [
+                    [
+                        {
+                            field: 'ck', hidden: true, checkbox: true
+                        },
+                        {
+                            field: 'lableID',
+                            title: '模板ID',
+                            align: 'center',
+                            width: 100, sortable: true
+                        }, {
+                            field: 'lableName',
+                            title: '模板名称',
+                            align: 'center',
+                            width: 100, sortable: true
+                        }, {
+                            field: 'path',
+                            title: '操作',
+                            align: 'center',
+                            width: 100, sortable: true,
+                            formatter: function (value, row, index) {
+                                var str = "";
+                                //console.log(row)
+                                if (row.path) {
+                                    str = '<a class="l-btn l-btn-small l-btn-plain"><span class="l-btn-left l-btn-icon-left" onclick=funDownfile("' + row.path + '","' + row.lableID + row.lableName + '标签模板") ><span class="l-btn-text">下载</span><span class="l-btn-icon icon_xz">&nbsp;</span></span></a>';
+
+                                    if (chkImgType(row.path)) {
+                                        str += '<a class="l-btn l-btn-small l-btn-plain"><span class="l-btn-left l-btn-icon-left" onclick=funShowImg("' + row.path + '") ><span class="l-btn-text">浏览</span><span class="l-btn-icon icon_ll">&nbsp;</span></span></a>';
+                                    }
+                                } else {
+                                    str = '无';
+                                }
+                                return str;
+                            }
+                        }, {
+                            field: 'remark',
+                            title: '@(BaseRes.USE_COL_011)',
+                            align: 'center',
+                            width: 100
+                        }]
+                ],
+                onLoadSuccess: function (data) {
+                    $('#dtGrid1').datagrid('clearSelections');
+                },
+                toolbar: [
+                        @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Create))
+                        {
+                        @:{ text: '@(BaseRes.USE_COL_010)', iconCls: 'icon-add', handler: function () { showAdd('新增'); } },
+                            }
+                        @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Edit))
+                        {
+                        @:{ text: '@(BaseRes.USE_COL_009)', iconCls: 'icon-edit', handler: function () { showEdit('修改', 0); } },
+                            }
+                        @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Search))
+                        {
+                        @:{ text: '@(BaseRes.OSP_CTL_161)', iconCls: 'icon_webedite', handler: function () { showEdit('查看', 1); } },
+                            }
+                        @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Delete))
+                        {
+                        @:{ text: '@(BaseRes.TSK_CTL_012)', iconCls: 'icon-remove', handler: function () { deleteLableModel(); } }
+                            }
+                ]
+            });
+        }
+        ///
+        ///isdisable:0 enable,1:disable
+        ///
+        function disablelinkbutton(btnName, isdisable) {
+            try {
+                var btn = $(btnName).linkbutton();
+                if (isdisable) {
+                    btn.linkbutton('disable');
+                } else {
+                    btn.linkbutton('enable');
+                }
+            } catch (e) {
+                console.log(e);
+            }
+        }
+
+        function closeDialog() {
+            $('#editdlg').dialog('close');
+            $('#dtGrid1').datagrid('reload');
+        }
+        function showAdd(title) {
+            $('#editdlg').dialog({
+                method: 'get',
+                queryParams: undefined,
+                title: title,
+                closed: false,
+                cache: false,
+                href: '/LableModelManage/Add',
+                iconCls: "icon-add",
+                modal: true
+            });
+        }
+        function showEdit(title, flag) {
+
+            var selectRows = $('#dtGrid1').datagrid('getSelected');
+            if (!selectRows) {
+                $.messager.alert('提示信息', "请选择要" + title + "的记录。");
+                return;
+            }
+
+            $('#editdlg').dialog({
+                method: 'get',
+                queryParams: { id: selectRows.lableID, id2: flag },
+                title: title,
+                closed: false,
+                cache: false,
+                href: '/LableModelManage/Edit',
+                iconCls: "icon-edit",
+                modal: true
+            });
+        }
+        function deleteLableModel() {
+            var checkedrows = $('#dtGrid1').datagrid('getChecked');
+            if (checkedrows.length == 0) {
+                $.messager.alert('提示信息', "请选中要删除的记录");
+                return;
+            }
+            var para = {}
+            for (var i = 0; i < checkedrows.length; i++) {
+                para["id[" + i + "]"] = checkedrows[i].lableID;
+            }
+            $.messager.confirm('提示信息 ', '确定要删除选中的记录吗', function (r) {
+                if (r) {
+                    $.post('/LableModelManage/Deletes', para, function (res) {
+                        if (res.result) {
+                            $('#dtGrid1').datagrid('reload');    // reload the user data
+                        } else {
+                            $.messager.alert('提示信息', res.Msg);
+                        }
+                    }, "json");
+                }
+            });
+        }
+        function deleteCarton(lableID) {
+            $.messager.confirm('提示信息 ', '确定要删除选中的记录吗', function (r) {
+                if (r) {
+                    $.post('/LableModelManage/Deletes', "id=" + lableID, function (res) {
+                        if (res.result) {
+                            $('#dtGrid1').datagrid('reload');
+                        } else {
+                            $.messager.alert('提示信息', res.Msg);
+                        }
+                    });
+                }
+            });
+        }
+        //下载文件
+        function funDownfile(url, fileName) {
+            $.post("/DownloadFile/Exists", { id: url }, function (e) {
+                console.log(e);
+                if (e.type) {
+                    var tmpurl = '/DownloadFile/Uploads?filePath=' + url + '&flieName=' + fileName
+                    //console.log(tmpurl);
+                    window.open(tmpurl);
+                } else {
+                    $.messager.alert('@BaseRes.COM_CTL_NOTICE', "文件不存在，无法下载。", 'error')
+                    return;
+                }
+            });
+        }
+        ///图片格式检查
+        function chkImgType(value) {
+            try {
+                var reg = /\.jpg$|\.jpeg$|\.png$|\.gif$/i
+                return reg.test(value);
+            } catch (error) {
+                $.messager.alert('@BaseRes.COM_CTL_NOTICE', error, 'error');
+                return false;
+            }
+        }
+        //显示图片
+        function funShowImg(url) {
+            var tmpUrl = "\\DownloadFile\\ShowImage?id=" + url;
+            console.log(tmpUrl);
+            var img = '<img id="showImg" src="' + tmpUrl + '" />';
+            $('#showPicture').html(img);
+            $('#showPicture').window('open')
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,414 @@
+﻿@using Valeo.Domain.Common
+@using Valeo.Domain.Enum
+@using Valeo.Lang;
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>系统参数设定</title>
+    <link href="~/Content/themes/default/easyui.css" rel="stylesheet" />
+    <link href="~/Content/themes/icon.css" rel="stylesheet" />
+    <link href="~/Content/themes/color.css" rel="stylesheet" />
+    <link href="~/Content/demo.css" rel="stylesheet" />
+    <link href="~/Content/style_all.css?v=2" rel="stylesheet" />
+  
+</head>
+<body>
+    <div class="mar10" data-options="fit:true,plain:true">
+        <div class="padd10">
+            <div class="easyui-panel" title="@BaseRes.SPS_TIT_006" style="padding:10px; margin-bottom: 10px;">
+                <table class="">
+                    <tr>
+                        <td class="title95">@BaseRes.SPS_COL_001:</td>
+                        <td>
+                            <input type="text" class="easyui-validatebox easyui-textbox" id="Paramkey" name="Paramkey" />
+
+                        </td>
+                    </tr>
+                </table>
+                <div class="textcenter">
+                    @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Search))
+                    {
+                        <a href="javascript:void(0)" id="btnSerach" class="easyui-linkbutton c6 width70">@BaseRes.SPS_SEA_001</a>
+                    }
+                    
+                    <a href="javascript:void(0)" id="btnSerachReset" class="easyui-linkbutton c9 width70">重置</a>
+                </div>
+            </div>
+            
+            <table id="data" title="@BaseRes.SPS_TIT_007"></table>
+        </div>
+    </div>
+    <!--
+        作者：152645239@qq.com
+        时间：2016-07-06
+        描述：新增弹出框
+    -->
+    <div id="adddlg" class="easyui-dialog" title="@BaseRes.SPS_TIT_005" style="width:500px;height:300px;padding:5px;" data-options="
+
+				toolbar: '#dlg-toolbar',
+				buttons: '#dlg-buttons',
+				closed:true,maximized:true
+			">
+        <div class="easyui-layout" data-options="fit:true">
+            <div data-options="region:'center'" class="padd10">
+                <form id="ffadd" method="post">
+                    <table class="sec">
+                        <tr>
+                            <td class="title95">@BaseRes.SPS_COL_001:</td>
+                            <td>
+                                <input type="text" class="easyui-validatebox easyui-textbox" name="Paramkey" data-options="required:true" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="title95">@BaseRes.SPS_COL_002:</td>
+                            <td>
+                                <input type="text" class="easyui-validatebox easyui-textbox" name="Paramvalue" data-options="required:true" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="title95" valign="top">@BaseRes.SPS_COL_003:</td>
+                            <td>
+                                <textarea rows="2" cols="30" class="easyui-validatebox" name="Remark"></textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="title95" valign="top">@BaseRes.SPS_COL_004:</td>
+                            <td>
+                                <select name="Paramtype" class="easyui-combobox" panelheight="auto" data-options="required:true">
+                                    <option value="1">@BaseRes.SPS_COL_015</option>
+                                    <option value="0">@BaseRes.SPS_COL_014</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="title95">@BaseRes.SPS_COL_005:</td>
+                            <td>
+                                <input type="text" class="easyui-validatebox easyui-numberbox" name="DspNo" data-options="required:true" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="title95" valign="center" align="center">
+                                &nbsp;
+                            </td>
+                            <td>
+                                &nbsp;
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <div data-options="region:'south',border:false" style="text-align:right;padding:5px 0 0;">
+                <a class="easyui-linkbutton width80" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="javascript: submitForm('ffadd')">@BaseRes.SPS_SEA_002</a>
+                <a class="easyui-linkbutton width80" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="javascript: closeDialog('adddlg', 'ffadd')">@BaseRes.SPS_SEA_003</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="editdlg" class="easyui-dialog" title="@BaseRes.SPS_TIT_009" style="width:500px;height:300px;padding:5px;" data-options="
+
+				toolbar: '#dlg-toolbar',
+				buttons: '#dlg-buttons',
+				closed:true,maximized:true
+			">
+        <div class="easyui-layout" data-options="fit:true">
+            <div data-options="region:'center'" class="padd10">
+                <form id="ffedit" method="post">
+                    <table class="sec">
+                        <tr>
+                            <td class="title95">@BaseRes.SPS_COL_001:</td>
+                            <td>
+                                <input type="text" class="easyui-validatebox easyui-textbox" name="Paramkey" data-options="required:true" readonly="readonly" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="title95">@BaseRes.SPS_COL_002:</td>
+                            <td>
+                                <input type="text" class="easyui-validatebox easyui-textbox" name="Paramvalue" data-options="required:true" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="title95" valign="top">@BaseRes.SPS_COL_003:</td>
+                            <td>
+                                <textarea rows="2" cols="30" class="easyui-validatebox" name="Remark"></textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="title95" valign="top">@BaseRes.SPS_COL_004:</td>
+                            <td>
+                                <select name="Paramtype" class="easyui-combobox" data-options="required:true" readonly="readonly">
+                                    <option value="0">@BaseRes.SPS_COL_014</option>
+                                    <option value="1">@BaseRes.SPS_COL_015</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="title95">@BaseRes.SPS_COL_005:</td>
+                            <td>
+                                <input type="text" class="easyui-validatebox easyui-numberbox" name="DspNo" data-options="required:true" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="title95" valign="center" align="center">
+                                &nbsp;
+                            </td>
+                            <td>
+                                &nbsp;
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <div data-options="region:'south',border:false" style="text-align:right;padding:5px 0 0;">
+                <a class="easyui-linkbutton width80" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="javascript: submitForm('ffedit')">@BaseRes.SPS_SEA_002</a>
+                <a class="easyui-linkbutton width80" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="javascript: closeDialog('editdlg','ffedit')">@BaseRes.SPS_SEA_003</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/Scripts/jquery.min.js"></script>
+    <script src="~/Scripts/jquery.easyui.min.js"></script>
+    <script src="~/Scripts/easyui-lang-zh_CN.js"></script>
+    <style>
+        .textbox {
+            width: 130px !important;
+        }
+    </style>
+    <script type="text/javascript">
+    var tmprow = undefined;
+    var tmpdata = undefined;
+
+    $(function () {
+        loadData();
+        $("#btnSerach").click(function () {
+            var pars = {
+                Paramkey: $("#Paramkey").val()
+            };
+            loadData(pars);
+        });
+        $("#btnSerachReset").click(function () {
+            $("#Paramkey").textbox("setValue", "");
+        });
+        $('#ffadd').form('submit', {
+            url: "/SysParameter/Add",
+            onSubmit: function () {
+                var isValid = $(this).form('validate');
+                if (!isValid) {
+                    $.messager.progress('close');	// hide progress bar while the form is invalid
+                }
+                return isValid;	// return false will stop the form submission
+            },
+            success: function (data) {
+                var data = eval('(' + data + ')'); // change the JSON string to javascript object
+                $.messager.progress('close');	// hide progress bar while submit successfully
+
+                if (data.result) {
+                    closeDialog('adddlg', 'ffadd')
+                    $.messager.alert('@BaseRes.COM_CTL_NOTICE', data.Msg, 'info');
+                    $('#data').datagrid('reload');
+                } else {
+                    $.messager.alert('@BaseRes.COM_CTL_NOTICE', data.Msg, 'info');
+                }
+                //console.log(data);
+            }
+        });
+        $('#ffedit').form('submit', {
+            url: "/SysParameter/Edit",
+            onSubmit: function () {
+                var isValid = $(this).form('validate');
+                if (!isValid) {
+                    $.messager.progress('close');	// hide progress bar while the form is invalid
+                }
+                // console.log(isValid);
+
+                return isValid;	// return false will stop the form submission
+            },
+            success: function (data) {
+                var data = eval('(' + data + ')'); // change the JSON string to javascript object
+                $.messager.progress('close');	// hide progress bar while submit successfully
+                if (data.result) {
+                    closeDialog('editdlg', 'ffedit')
+                    $.messager.alert('@BaseRes.COM_CTL_NOTICE', data.Msg, 'info');
+                    $('#data').datagrid('reload');
+                } else {
+                    $.messager.alert('@BaseRes.COM_CTL_NOTICE', data.Msg, 'info');
+                }
+                // console.log(data);
+            }
+        });
+    });
+
+    function loadData(pars) {
+        $('#data').datagrid({
+            url: '/SysParameter/ListPage',
+            //width: 1000,
+            //height: 400,
+            //width: ($(window).width() * 0.90),
+            height: ($(window).height() * 0.93) - 127,
+            //fit:true,
+            fitColumns: true, //列自适应
+            nowrap: false,
+            idField: 'Paramkey', //主键列的列名
+            loadMsg: '正在加载信息...',
+            pagination: true, //是否有分页
+            singleSelect: true,//是否单行选择
+            striped: true, //奇偶行是否区分
+            pageSize: 50, //每页多少条数据
+            pageNumber: 1, //默认的页
+            pageList: [50, 100, 150, 200],
+            queryParams: pars, //往后台传递参数
+            columns: [
+                [
+                     {
+                         field: 'Paramkey',
+                         title: '@BaseRes.SPS_COL_001',
+                         align: 'center',
+                         width: 100, sortable: true
+                     }, {
+                         field: 'Paramvalue',
+                         title: '@BaseRes.SPS_COL_002',
+                         align: 'center',
+                         width: 100, sortable: true
+                     }, {
+                         field: 'Remark',
+                         title: '@BaseRes.SPS_COL_003',
+                         align: 'center',
+                         width: 100, sortable: true
+                     }, {
+                         field: 'ParamtypeVM',
+                         title: '@BaseRes.SPS_COL_004',
+                         align: 'center',
+                         width: 100, sortable: true
+                     }, {
+                         field: 'DspNo',
+                         title: '@BaseRes.SPS_COL_005',
+                         align: 'center',
+                         width: 100, sortable: true
+                     }
+                     @*, {
+                         field: 'operator',
+                         title: '@BaseRes.SPS_COL_006',
+                         align: 'center',
+                         width: 100,
+                         formatter: function (value, row, index) {
+                             var operationhtml = '';
+                             @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Edit))
+                                 {
+                                    @:operationhtml += '<a class="l-btn l-btn-small l-btn-plain"><span class="l-btn-left l-btn-icon-left" onclick=showEdit("' + row.Paramkey + '") ><span class="l-btn-text">@(BaseRes.USE_COL_009)</span><span class="l-btn-icon icon-edit">&nbsp;</span></span></a>';
+
+                                 }
+                                 @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Delete))
+                                 {
+                                     @:operationhtml += '<a class="l-btn l-btn-small l-btn-plain"><span class="l-btn-left l-btn-icon-left" onclick=deleteItem("' + row.Paramkey + '") ><span class="l-btn-text">@(BaseRes.TSK_CTL_012)</span><span class="l-btn-icon icon-remove">&nbsp;</span></span></a>';
+
+                                 }
+                             return operationhtml;
+                         }
+                     }*@
+                ]
+            ],
+            onClickRow: function (rowIndex, rowData) {
+                tmprow = rowData;
+            },
+            onLoadSuccess: function (data) {
+                tmpdata = data;
+                $('#data').datagrid('clearSelections');
+            },
+            toolbar: [
+                @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Edit))
+                {
+                @:{ text: '修改', id: 'btnEdit', iconCls: 'icon-edit', handler: function () { showEdit(); } }, '-',
+                }             
+            ]
+        });
+    }
+
+    /////
+    function findData(data, id) {
+        var row = undefined;
+        //console.log(data, id);
+        if (data.rows) {
+            for (var i = 0; i < data.rows.length; i++) {
+                var tmprow = data.rows[i];
+                if (id == tmprow.Paramkey) {
+                    row = tmprow;
+                    break;
+                }
+            }
+        }
+        return row;
+    }
+    function showEdit(id) {
+        var submitform = $('#ffedit');
+
+        var currrow = $('#data').datagrid('getSelected');
+        if (!currrow) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', "请选择要修改的记录。", 'error');
+            return;
+        }
+
+        //var currrow = findData(tmpdata, id);
+        //console.log(currrow);
+        if (currrow) {
+            if (currrow.Paramtype == 0) {
+                $.messager.alert('@BaseRes.COM_CTL_NOTICE', "@BaseRes.SPS_MSG_015", 'info')
+                return;
+            }
+            submitform.form('load', {
+                Paramkey: currrow.Paramkey,
+                Paramvalue: currrow.Paramvalue,
+                Remark: currrow.Remark,
+                Paramtype: currrow.Paramtype,
+                DspNo: currrow.DspNo
+            });
+            $('#editdlg').dialog('open')
+        } else {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', "@BaseRes.DLL_MSG_001", 'info')
+        }
+
+    }
+    function submitForm(formId) {
+        // console.log(formId);
+        var submitform = $('#' + formId);
+        submitform.form('submit');
+    }
+    function deleteItem(id) {
+
+
+        var currrow = findData(tmpdata, id);
+        if (currrow) {
+            if (currrow.Paramtype == 0) {
+
+                $.messager.alert('@BaseRes.COM_CTL_NOTICE', "@BaseRes.SPS_MSG_016", 'info')
+                return;
+            }
+            $.messager.confirm('@BaseRes.COM_CTL_NOTICE', '@BaseRes.DLL_TIT_004 ID:' + id, function (r) {
+                if (r) {
+                    $.post('/SysParameter/Delete', "id=" + id, function (res) {
+                        if (res.result) {
+                            $('#data').datagrid('reload');
+                        } else {
+                            $.messager.alert('@BaseRes.COM_CTL_NOTICE', res.Msg, 'info');
+                        }
+                    });
+                }
+            });
+        } else {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', "@BaseRes.DLL_MSG_001", 'info')
+        }
+    }
+    function closeDialog(dlgid, formId) {
+        var ddllgid = $('#' + dlgid);
+        var submitform = $('#' + formId);
+        ddllgid.dialog('close');
+        submitform.form('clear');
+    }
+    </script>
+</body>
+</html>

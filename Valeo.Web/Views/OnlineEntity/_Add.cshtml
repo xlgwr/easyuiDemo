@@ -1,0 +1,2356 @@
+﻿@model Valeo.Domain.OnlineEntity.EntityFormVM
+           @using Valeo.Lang
+@{
+    Layout = null;
+
+}
+@{
+    List<SelectListItem> ListCountry = ViewBag.ListCountry;         //国家
+    List<SelectListItem> ListMaritalStatus = ViewBag.ListMaritalStatus;
+}
+
+<script src="~/Scripts/jQuery.Form.js"></script>
+<script src="~/Scripts/forms/EasyuiVerification.js?t=20161123005"></script>
+<style>
+    /*.datagrid-btable .textbox {
+        width: auto !important;
+    }*/
+    /*.panel-header, .panel-body {
+    border-color: #95B8E7;
+    border: none;
+    }*/
+</style>
+<div data-options="region:'center'" >
+    <form id="EditOnlineEntityForm" action="/OnlineEntity/@(Model.entityInfo.Entityid == 0 ? "AddSave" : "EditSave")" class="easyui-form" method="post" >
+        <div class="easyui-tabs" style="width:100%;height:auto">
+            <input type="hidden" id="entityInfo.Entityid" name="entityInfo.Entityid" value="@Model.entityInfo.Entityid" />
+            @if (ViewBag.Type==2)
+        {
+        <div title="@BaseRes.OEC_COL_073">
+            <table id="sec" style="width: 100%;">
+                <tr>
+                    <td>@BaseRes.OEC_COL_001</td>
+                    <td><input type="text" class="easyui-textbox filewidth_n" id="CRNo" name="companyInfo.CRNo" value="@Model.companyInfo.CRNo" data-options="required:true,validType:'length[0,16]'" /></td>
+                    <td>@BaseRes.OEC_COL_006</td>
+                    <td><input type="text" class="easyui-textbox filewidth_n" id="CIBRNO" name="companyInfo.CIBRNO" value="@Model.companyInfo.CIBRNO" data-options="validType:['ENNUM','length[0,64]']" /></td>
+                    <td>@BaseRes.OEC_COL_002</td>
+                    <td>
+                        <input type="text" class="easyui-textbox filewidth_n" id="FullName_En" name="companyInfo.FullName_En" value="@Model.companyInfo.FullName_En" data-options="required:false,validType:['ENs','length[0,128]']" />
+                    </td>
+                    <td>@BaseRes.OEC_COL_003</td>
+                    <td>
+                        <input type="text" class="easyui-textbox filewidth_n" id="FullName_Cn" name="companyInfo.FullName_Cn" value="@Model.companyInfo.FullName_Cn" data-options="validType:'length[0,128]'" />
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>@BaseRes.OEC_COL_074</td>
+                    <td>
+                        @Html.DropDownList("companyInfo.CountryID", ListCountry, new { @class = "easyui-combobox filewidth" })
+
+                    </td>
+
+                    @*<td>
+                    <input type="text" class="easyui-textbox filewidth_n" id="CountryID" name="companyInfo.CountryID" value="@Model.companyInfo.CountryID" data-options="validType:'length[0,64]'" /></td>*@
+                    <td>@BaseRes.OEC_COL_075</td>
+                    <td>
+                        <input type="text" class="easyui-textbox filewidth_n" id="CompanyType" name="companyInfo.CompanyType" value="@Model.companyInfo.CompanyType" data-options="validType:'length[0,256]'" />
+                    </td>
+                    <td>@BaseRes.OEC_COL_076</td>
+                    <td>
+                        <input type="text" class="easyui-datebox filewidth_n" id="IncorporationDate" name="companyInfo.IncorporationDate" value="@Model.companyInfo.IncorporationDate" />
+                    </td>
+                    <td>@BaseRes.OEC_COL_077</td>
+                    <td>
+                        <input type="text" class="easyui-textbox filewidth_n " id="AuthorizedCapital" name="companyInfo.AuthorizedCapital" value="@Model.companyInfo.AuthorizedCapital" data-options="validType:'length[0,16]'" />
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>@BaseRes.OEC_COL_170</td>
+                    <td>
+                        <input type="text" class="easyui-textbox filewidth_n " id="PlaceRegistration" name="companyInfo.PlaceRegistration" value="@Model.companyInfo.PlaceRegistration" data-options="validType:'length[0,128]'" />
+                    </td>
+                    <td>@BaseRes.OEC_COL_007</td>
+                    <td>
+                        <select class="easyui-combobox filewidth" name="companyInfo.Listed" id="Listed">
+                            <option @(Model.companyInfo.Listed == 0 ? "selected=selected" : "") value="0">@BaseRes.OEC_COL_033</option>
+                            <option @(Model.companyInfo.Listed == 1 ? "selected=selected" : "") value="1">@BaseRes.OEC_COL_034</option>
+                        </select>
+                    </td>
+                    <td>@BaseRes.OEC_COL_171</td>
+                    <td>
+                        <select class="easyui-combobox filewidth" id="IssuedShares" name="companyInfo.IssuedShares">
+                            <option @(Model.companyInfo.IssuedShares == 0 ? "selected=selected" : "") value="0">@BaseRes.OEC_COL_082</option>
+                            <option @(Model.companyInfo.IssuedShares == 1 ? "selected=selected" : "") value="1">@BaseRes.OEC_COL_083</option>
+                        </select>
+                    </td>
+                    <td>@BaseRes.OEC_COL_084</td>
+                    <td>
+                        <input type="text" class="easyui-textbox filewidth_n " id="ActiveStatus" name="companyInfo.ActiveStatus" value="@Model.companyInfo.ActiveStatus" data-options="validType:'length[0,256]'" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>@BaseRes.OEC_COL_085</td>
+                    <td>
+                        <input type="text" class="easyui-textbox filewidth_n " id="WindingUpMode" name="companyInfo.WindingUpMode" value="@Model.companyInfo.WindingUpMode"  data-options="validType:'length[0,64]'" />
+                    </td>
+                    <td>@BaseRes.OEC_COL_008</td>
+                    <td>
+                        <input type="text" class="easyui-datebox filewidth_n" id="DissolutionDate" name="companyInfo.DissolutionDate" value="@Model.companyInfo.DissolutionDate" />
+                    </td>
+                    <td>@BaseRes.OEC_COL_086</td>
+                    <td>
+                        <input type="text" class="easyui-textbox filewidth_n "
+                               id="RegisterOfCharges" name="companyInfo.RegisterOfCharges" value="@Model.companyInfo.RegisterOfCharges" data-options="validType:'length[0,64]'" />
+                    </td>
+                    <td>@BaseRes.OEC_COL_087</td>
+                    <td>
+                        <input type="text" class="easyui-textbox filewidth_n" id="ImportantNote"
+                               name="companyInfo.ImportantNote" value="@Model.companyInfo.ImportantNote" data-options="validType:'length[0,256]'" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>@BaseRes.OEC_COL_078</td>
+                    <td>
+                        <select class="easyui-combobox filewidth" id="Areas" name="companyInfo.Areas">
+                            <option @(Model.companyInfo.Areas == 0 ? "selected=selected" : "") value="0">@BaseRes.OEC_COL_079</option>
+                            <option @(Model.companyInfo.Areas == 1 ? "selected=selected" : "") value="1">@BaseRes.OEC_COL_080</option>
+                            <option @(Model.companyInfo.Areas == 2 ? "selected=selected" : "") value="2">@BaseRes.OEC_COL_081</option>
+                        </select>
+                    </td>
+                    <td>
+                        @BaseRes.OEC_COL_195
+                    </td>
+                    <td>
+                        <select class="easyui-combobox filewidth" id="Flag" name="entityInfo.Flag">
+                            <option @(Model.entityInfo.Flag == 1 ? "selected=selected" : "") value="1">@BaseRes.PRO_ADD_008</option>
+                            <option @(Model.entityInfo.Flag == 2 ? "selected=selected" : "") value="2">@BaseRes.PRO_ADD_009</option>
+                            <option @(Model.entityInfo.Flag == 3 ? "selected=selected" : "") value="3">@BaseRes.PRO_ADD_010</option>
+                            <option @(Model.entityInfo.Flag == 4 ? "selected=selected" : "") value="4">@BaseRes.PRO_ADD_011</option>
+                            <option @(Model.entityInfo.Flag == 5 ? "selected=selected" : "") value="5">@BaseRes.PRO_ADD_012</option>
+                        </select>
+                    </td>
+                    <td id="Param1TD1">
+                        @BaseRes.OEC_COL_196
+                    </td>
+                    <td id="Param1TD2">
+                        <select class="easyui-combobox filewidth" id="Param1" name="entityInfo.Param1">
+                            <option @(Model.entityInfo.Param1 == 0 ? "selected=selected" : "") value="0">@BaseRes.OFC_COL_027</option>
+                            <option @(Model.entityInfo.Param1 == 1 ? "selected=selected" : "") value="1">@BaseRes.OFC_COL_028</option>
+                            <option @(Model.entityInfo.Param1 == 2 ? "selected=selected" : "") value="2">@BaseRes.OFC_EDT_023</option>
+                            <option @(Model.entityInfo.Param1 == 3 ? "selected=selected" : "") value="3">@BaseRes.OEC_COL_192</option>
+                            <option @(Model.entityInfo.Param1 == 4 ? "selected=selected" : "") value="4">@BaseRes.OEC_COL_193</option>
+                            <option @(Model.entityInfo.Param1 == 5 ? "selected=selected" : "") value="5">@BaseRes.OEC_COL_194</option>
+                        </select>
+                    </td>
+                    <td class="title95">@(BaseRes.ONC_EDT_008):</td>
+                    <td>
+                        <select name="companyInfo.DataGradeID" class="easyui-combobox filewidth" data-options="editable:false" panelheight="auto">
+                            <option @(Model.companyInfo.DataGradeID == "0" ? "selected=selected" : "") value="0">@(BaseRes.ONC_EDT_009)</option>
+                            <option @(Model.companyInfo.DataGradeID == "1" ? "selected=selected" : "") value="1">@(BaseRes.ONC_EDT_010)</option>
+                            <option @(Model.companyInfo.DataGradeID == "2" ? "selected=selected" : "") value="2">@(BaseRes.ONC_EDT_011)</option>
+                            <option @(Model.companyInfo.DataGradeID == "3" ? "selected=selected" : "") value="3">@(BaseRes.ONC_EDT_012)</option>
+                        </select>
+                        <!--0:公开 1:内部人员可见 2:主管可见 3:超级用户可见-->
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="title95">EntityId:</td>
+                    <td><input type="text" class="easyui-textbox filewidth_n" value="@Model.companyInfo.Entityid" disabled="true" 　 /></td>
+                    <td>@BaseRes.OEC_COL_088</td>
+                    <td colspan="8">
+                        <input type="text" class="easyui-textbox filewidth_n" style="width: 700px!important" id="Remarks"
+                               name="companyInfo.Remarks" value="@Model.companyInfo.Remarks" data-options="validType:'length[0,256]'" />
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+        }
+        else
+        {
+        <div title="@BaseRes.OEC_COL_172" hidden="hidden">
+            <table id="sec" style="width: 100%;">
+                <tr>
+                    <td>@BaseRes.OEC_COL_011</td>
+                    <td><input type="text" class="easyui-textbox filewidth_n" id="FullName_En"
+       name="personInfo.FullName_En" value="@Model.personInfo.FullName_En" data-options="required:false,validType:['EN','length[0,64]']" /></td>
+                    <td>@BaseRes.OEC_COL_012</td>
+                    <td>
+                        <input type="text" class="easyui-textbox filewidth_n" id="FullName_Cn" name="personInfo.FullName_Cn" value="@Model.personInfo.FullName_Cn" data-options="validType:'length[0,64]'" />
+                    </td>
+                    <td>@BaseRes.OEC_COL_013</td>
+                    <td>
+                        <input type="text" class="easyui-textbox filewidth_n " id="Alias_En" name="personInfo.Alias_En" value="@Model.personInfo.Alias_En" data-options="validType:['EN','length[0,16]']" />
+                    </td>
+                    <td>@BaseRes.OEC_COL_014</td>
+                    <td>
+                        <input type="text" class="easyui-textbox filewidth_n " id="Alias_Cn" name="personInfo.Alias_Cn" value="@Model.personInfo.Alias_Cn" data-options="validType:'length[0,16]'" />
+                    </td>
+                </tr>
+                <tr>
+
+                    <td>@BaseRes.OEC_COL_015</td>
+                    <td>
+                        <input type="text" class="easyui-textbox filewidth_n " id="Nickname" name="personInfo.Nickname" value="@Model.personInfo.Nickname" data-options="validType:'length[0,16]'" />
+                    </td>
+                    <td>@BaseRes.OEC_COL_016</td>
+                    <td>
+                        <select class="easyui-combobox filewidth" id="Gender" name="personInfo.Gender">
+                            <option @(Model.personInfo.Gender == 0 ? "selected=selected" : "") value="0">@BaseRes.OEC_COL_055</option>
+                            <option @(Model.personInfo.Gender == 1 ? "selected=selected" : "") value="1">@BaseRes.OEC_COL_056</option>
+                            <option @(Model.personInfo.Gender == 2 ? "selected=selected" : "") value="2">@BaseRes.OEC_COL_057</option>
+                        </select>
+                    </td>
+                    <td>@BaseRes.OEC_COL_017</td>
+                    <td>
+                        <input type="text" class="easyui-datebox filewidth_n" id="Birthdate" name="personInfo.Birthdate" value="@if (Model.personInfo.Birthdate!=null)
+                                                                                                                                {
+                                                                                                                                  @Model.personInfo.Birthdate.Value.ToString("yyyy-MM-dd")  
+                                                                                                                                }" />
+                    </td>
+                    <td>@BaseRes.OEC_COL_089</td>
+                    <td>
+                        @Html.DropDownList("personInfo.MaritalStatus", ListMaritalStatus, new { @class = "easyui-combobox filewidth" })
+
+                    </td>
+                </tr>
+                <tr>
+
+                    <td>@BaseRes.OEC_COL_090</td>
+                    <td>
+                        <input type="text" class="easyui-textbox filewidth_n" id="ChineseCode" name="personInfo.ChineseCode" value="@Model.personInfo.ChineseCode" data-options="validType:'length[0,32]'" />
+                    </td>
+                    <td>@BaseRes.OEC_COL_091</td>
+                    <td>
+                        @Html.DropDownList("personInfo.Nationality", ListCountry, new { @class = "easyui-combobox filewidth" })
+
+                    </td>
+                    <td>@BaseRes.OEC_COL_092</td>
+                    <td>
+                        <input type="text" class="easyui-textbox filewidth_n" id="PlaceBirth" name="personInfo.PlaceBirth" value="@Model.personInfo.PlaceBirth" data-options="validType:'length[0,32]'" />
+                    </td>
+
+                    <td>
+                       @BaseRes.OEC_COL_195
+                    </td>
+                    <td>
+                        <select class="easyui-combobox filewidth" id="Flag" name="entityInfo.Flag">
+                            <option @(Model.entityInfo.Flag == 1 ? "selected=selected" : "") value="1">@BaseRes.PRO_ADD_008</option>
+                            <option @(Model.entityInfo.Flag == 2 ? "selected=selected" : "") value="2">@BaseRes.PRO_ADD_009</option>
+                            <option @(Model.entityInfo.Flag == 3 ? "selected=selected" : "") value="3">@BaseRes.PRO_ADD_010</option>
+                            <option @(Model.entityInfo.Flag == 4 ? "selected=selected" : "") value="4">@BaseRes.PRO_ADD_011</option>
+                            <option @(Model.entityInfo.Flag == 5 ? "selected=selected" : "") value="5">@BaseRes.PRO_ADD_012</option>                          
+                        </select>
+                    </td>
+                    
+                </tr>
+                <tr id="Param1TR">
+                    <td id="Param1TD1">
+                        @BaseRes.OEC_COL_196
+                    </td>
+                    <td id="Param1TD2">
+                        <select class="easyui-combobox filewidth" id="Param1" name="entityInfo.Param1">
+                            <option @(Model.entityInfo.Param1 == 0 ? "selected=selected" : "") value="0">@BaseRes.OFC_COL_027</option>
+                            <option @(Model.entityInfo.Param1 == 1 ? "selected=selected" : "") value="1">@BaseRes.OFC_COL_028</option>
+                            <option @(Model.entityInfo.Param1 == 2 ? "selected=selected" : "") value="2">@BaseRes.OFC_EDT_023</option>
+                            <option @(Model.entityInfo.Param1 == 3 ? "selected=selected" : "") value="3">@BaseRes.OEC_COL_192</option>
+                            <option @(Model.entityInfo.Param1 == 4 ? "selected=selected" : "") value="4">@BaseRes.OEC_COL_193</option>
+                            <option @(Model.entityInfo.Param1 == 5 ? "selected=selected" : "") value="5">@BaseRes.OEC_COL_194</option>
+                        </select>
+                    </td>
+                    <td class="title95">@(BaseRes.ONC_EDT_008):</td>
+                    <td>
+                        <select name="personInfo.DataGradeID" class="easyui-combobox filewidth" data-options="editable:false" panelheight="auto">
+                            <option @(Model.personInfo.DataGradeID == "0" ? "selected=selected" : "") value="0">@(BaseRes.ONC_EDT_009)</option>
+                            <option @(Model.personInfo.DataGradeID == "1" ? "selected=selected" : "") value="1">@(BaseRes.ONC_EDT_010)</option>
+                            <option @(Model.personInfo.DataGradeID == "2" ? "selected=selected" : "") value="2">@(BaseRes.ONC_EDT_011)</option>
+                            <option @(Model.personInfo.DataGradeID == "3" ? "selected=selected" : "") value="3">@(BaseRes.ONC_EDT_012)</option>
+                        </select>
+                        <!--0:公开 1:内部人员可见 2:主管可见 3:超级用户可见-->
+                    </td>
+                    <td class="title95">EntityId:</td>
+                    <td><input type="text" class="easyui-textbox filewidth_n" value="@Model.personInfo.Entityid" disabled="true" 　 /></td>
+                </tr>
+            </table>
+        </div>
+        }
+
+
+
+        </div>
+
+        <div id="AllTab3" style="width: 100%; height: 290px">
+
+            <div title="@(BaseRes.OEC_COL_093)">
+                @*<table cellpadding="0" cellspacing="0" style="width: 100%">
+                    <tr>
+                        <td valign="top" style="width: 100%;">
+                            <table id="dgRelation" class="easyui-datagrid" title="@BaseRes.OEC_COL_093"></table>
+                        </td>
+                    </tr>
+                </table>*@
+                <table id="dgRelation" class="easyui-datagrid" style="width:100%;height:100%;"></table>
+            </div>
+
+            <div title="@(BaseRes.OEC_COL_094)">
+                <table id="dgPhone" class="easyui-datagrid" style="width:100%;height:100%;"></table>
+            </div>
+
+            <div title="@(BaseRes.OEC_COL_095)">
+                <table id="dgAddress" class="easyui-datagrid" style="width:100%;height:100%;"></table>
+            </div>
+
+            <div title="@(BaseRes.OEC_COL_096)">
+                <table id="dgEmails" class="easyui-datagrid" style="width:100%;height:100%;"></table>
+            </div>
+
+            <div title="@(BaseRes.OEC_COL_097)">
+                <table id="dgBankAccount" class="easyui-datagrid" style="width:100%;height:100%;"></table>
+            </div>
+
+            <div title="@(BaseRes.OEC_COL_098)">
+                <table id="dgIDDocument" class="easyui-datagrid" style="width:100%;height:100%;"></table>
+            </div>
+
+            <div title="@(BaseRes.OEC_COL_099)">
+                <table id="dgSocialNetwork" class="easyui-datagrid" style="width:100%;height:100%;"></table>
+            </div>
+            <div title="@(BaseRes.OEC_COL_100)">
+                <table id="dgMediaReport" class="easyui-datagrid" style="width:100%;height:100%;"></table>
+            </div>
+
+            @if (ViewBag.Type == 1)
+            {
+                <div title="@(BaseRes.OEC_COL_101)">
+                    <table id="dgEmploymentHistory" class="easyui-datagrid" style="width:100%;height:100%;"></table>
+                </div>
+
+                <div title="@(BaseRes.OEC_COL_102)">
+                    <table id="dgEducation" class="easyui-datagrid" style="width:100%;height:100%;"></table>
+                </div>
+            }
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+    </form>
+</div>
+<div data-options="region:'south',border:false" style="text-align: right; padding: 5px 0 0;">
+    @if (Model.entityInfo.Entityid == 0 || ViewBag.IsEdit)
+    {
+        <a class="easyui-linkbutton width80" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="javascript:editOnlineCourt(@ViewBag.Type)">@BaseRes.OEC_COL_103</a>
+        <a class="easyui-linkbutton width80" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="javascript: addEntityClosePubDialg()">@BaseRes.OEC_COL_104</a>
+    }
+    else
+    {
+        <a class="easyui-linkbutton width80" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="javascript: addEntityClosePubDialg()">@BaseRes.ONC_COL_049</a>
+    }
+
+</div>
+    <div id="selectEntitydlg" class="easyui-window" title="" data-options="modal:true,closed:true,iconCls:'icon-add'" style="width: 1100px; height: 500px; padding: 5px;">
+    </div>
+
+<div id="dlg-buttonsadd2">
+    <a href="javascript:void(0)" class="easyui-linkbutton width80" data-options="iconCls:'icon-ok'" onclick="javascript: eUploadfile.executeUpLoad();">上传</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton width80" data-options="iconCls:'icon-cancel'" onclick="javascript: $('#export2').dialog('close');">取消</a>
+</div>
+<div id="export2" class="easyui-dialog" title="@(BaseRes.ONC_COL_047)" style="width: 500px; height: 150px; padding: 5px;" data-options="
+            iconCls: 'icon-save',
+            toolbar: '#dlg-toolbaradd',
+            buttons: '#dlg-buttonsadd2',
+            closed:true
+            ">
+    <form id="UpLoadFileForm">
+        <table class="width100p">
+            <tr>
+                <td>
+                    &nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="file" name="addPicPathFile" id="addPicPathFile" accept="image/bmp, image/jpg, image/jpeg, image/png, image/tiff" />
+                </td>
+            </tr>
+        </table>
+    </form>
+
+</div>
+    <script type="text/javascript">
+        var $tabsCompEdit = $("#AllTab3");
+        $tabsCompEdit.tabs({
+            //border: false,
+            onSelect: function (title) {
+                //console.log(title)
+            }
+        });
+
+        $("#Nationality").val(@Model.personInfo.Nationality);
+        $("#MaritalStatus").val(@Model.personInfo.MaritalStatus);
+        $("#CountryID").val(@Model.companyInfo.CountryID);
+        var phoneData = [];
+        var addressData = [];
+        var myDate = new Date();
+        myDate.toLocaleDateString();
+
+        $.get('/Combox/get/Relationship', function (res) {
+            relationdg.arrRelation = res;
+        });
+        
+        $.get('/Combox/get/PhoneType', function (res) {
+            phonedg.arrPhoneType = res;
+        });
+        $.get('/Combox/get/Country', function (res) {
+            idDocumentdg.arrCountry = res;
+        });
+
+        function entityEdit(obj) {
+            var selectRows = obj.thisdg.datagrid('getSelected');
+            if (!selectRows) {
+                $.messager.alert('@BaseRes.COM_CTL_NOTICE', "请选择要编辑的记录。");
+                return;
+            }
+            var index = obj.thisdg.datagrid('getRowIndex', selectRows);
+            obj.EditRow(index); 
+        }
+        function entityDel(obj) {
+            var selectRows = obj.thisdg.datagrid('getSelected');
+            if (!selectRows) {
+                $.messager.alert('@BaseRes.COM_CTL_NOTICE', "请选择要删除的记录。");
+                return;
+            }
+            var index = obj.thisdg.datagrid('getRowIndex', selectRows);
+            obj.deleteRow(index); 
+            obj.editIndex=undefined;
+        }
+        relationdg = {
+            data:@(Html.Raw(Json.Encode(Model.relationVM))),
+            editIndex: undefined,
+            thisdg: $("#dgRelation"),
+            bindDatagrid: function (data) {
+                relationdg.thisdg.datagrid({
+                    data: data,
+                    height: 240,
+                    singleSelect: true,
+                    columns: [
+                        [
+                            { field: 'Relationid', hidden: true },
+                            { field: 'Entityid_M', hidden: true },
+                            { field: 'Entityid_C', title: 'ID', width: 200 },
+                            { field: 'ComboxListName', hidden: true },
+                            {
+                                field: 'Relation',
+                                title: '@BaseRes.OEC_COL_105',
+                                width: 200,
+                                formatter: function(value,row){
+                                    return row.ComboxListName;
+                                },
+                                editor: relationdg.editorRelation()
+                            },
+                            { field: 'FullName_En', title: '英文名', width: 150 },
+                            { field: 'FullName_Cn', title: '中文名', width: 150 },
+
+
+                            { field: 'Verify', title: '@BaseRes.OEC_COL_197', width: 150,
+                                formatter: function(value, row) {
+                                    if (value == 0) {
+                                        return "@BaseRes.OEC_COL_198";
+                                    } else if (value == 1) {
+                                        return "@BaseRes.OEC_COL_199";
+                                    }
+                                },
+                                editor: {
+                                    type: 'combobox',
+                                    options: {
+                                        editable: false,
+                                        data: [{ value: 0, text: '@BaseRes.OEC_COL_198', selected: true }, { value: 1, text: '@BaseRes.OEC_COL_199' }]
+                                    }
+                                }
+                            }@*,
+                            {
+                                field: 'operation',
+                                title: '@BaseRes.OEC_COL_107',
+                                align: 'center',
+                                width: 150,
+                                formatter: function (value, row, index) {
+                                    var operationhtml = '<span class="l-btn-left l-btn-icon-left" onclick=relationdg.deleteRow("' + index + '") ><span class="l-btn-text">@BaseRes.OEC_COL_108</span><span class="l-btn-icon icon-remove">&nbsp;</span></span>';
+                                    return operationhtml;
+                                }
+                            }*@
+                        ]
+                    ],
+                    toolbar: [
+                        {
+                            text: '@BaseRes.OEC_COL_109',
+                            iconCls: 'icon-add',
+                            handler: function () { relationdg.append(); }
+                        }, @*{
+                            text: '@(BaseRes.ONC_EDT_050)',
+                            iconCls: 'icon-edit',
+                            handler: function() { entityEdit(relationdg); }
+                        },*@{
+                            text: '@(BaseRes.ONC_EDT_051)',
+                            iconCls: 'icon-remove',
+                            handler: function() { entityDel(relationdg); }
+                        }@*,{
+                            text: '@BaseRes.OEC_COL_110',
+                            iconCls: 'icon-save',
+                            handler: function () { relationdg.accept(); }
+                        }*@
+                    ],
+                    onClickRow: function (index) {
+                        relationdg.onClickRow(index);
+                    }
+                });
+            },
+            editorRelation: function () {
+                return{
+                    type: 'combobox',
+                    options: {
+                        width: 50,
+                        panelHeight: 'auto',
+                        url: '/Combox/get/Relationship',
+                        method: 'get',
+                        valueField: 'ComboxListKey',
+                        textField: 'ComboxListName',
+                        required: true
+                    }
+                }
+            },
+            arrRelation: undefined,
+            formatterCompanyReport: function (value, row) {
+
+                var _curr = relationdg;
+                for (var i = 0; i < _curr.arrRelation.length; i++) {
+                    var item = _curr.arrRelation[i];
+                    if (row.Type == item.ComboxListKey) {
+                        //console.log(item);
+                        return item.ComboxListName;
+                        break;
+                    }
+                }
+                return row.Type;
+            },
+            endEditing: function () {
+                if (relationdg.editIndex == undefined) {
+
+                    return true;
+                }
+                if (relationdg.thisdg.datagrid('validateRow', relationdg.editIndex)) {
+                    var ed = relationdg.thisdg.datagrid('getEditor', { index: relationdg.editIndex, field: 'Relation' });
+                    var RelationValue = $(ed.target).combobox('getText');
+                   
+                    //relationdg.thisdg.datagrid('getRows')[relationdg.editIndex]['Relation'] = phoneTypeValue;
+                    //relationdg.thisdg.datagrid('endEdit', relationdg.editIndex);
+                    //var ed = elationdg.thisdg.datagrid('getEditor', {index:relationdg.editIndex,field:'productid'});
+                    //var productname = $(ed.target).combobox('getText');
+
+                    relationdg.thisdg.datagrid('getRows')[relationdg.editIndex]['ComboxListName'] = RelationValue;
+                    relationdg.thisdg.datagrid('endEdit', relationdg.editIndex);
+                    relationdg.editIndex = undefined;
+                    return true;
+                } else {
+                    return false;
+                }
+            },
+            onClickRow: function (index) {
+                if (relationdg.editIndex != index) {
+                    if (relationdg.endEditing()) {
+                        relationdg.thisdg.datagrid('selectRow', index)
+                            .datagrid('beginEdit', index);
+                        relationdg.editIndex = index;
+                    } else {
+                        relationdg.thisdg.datagrid('selectRow', relationdg.editIndex);
+                    }
+                }
+            },
+            append: function () {
+
+                var para = {
+                    functionName: 'relationdg.addallback',
+                    Entityid: 0,
+                    Type: @ViewBag.Type,
+                    Flag:0,
+                    Param1:3
+                };
+                $('#selectEntitydlg').dialog({
+                    title: "@BaseRes.OEC_COL_111",
+                    closed: false,
+                    cache: false,
+                    method:'post',
+                    maximized: true,
+                    queryParams:para,
+                    href: '/SearchDialog/EntityIndex?isGx=true',
+                    modal: true
+                }); 
+            },
+
+            addallback:function(jsondata) {
+                relationdg.data.push({ Relation:0,Entityid_C: jsondata.Entityid,Verify:0,FullName_En:jsondata.FullName_En});
+                relationdg.bindDatagrid(relationdg.data);
+                relationdg.thisdg.datagrid('beginEdit',relationdg.data.length-1);
+            },
+
+            removeit: function () {
+                if (relationdg.editIndex == undefined) {
+                    return
+                }
+                relationdg.thisdg.datagrid('cancelEdit', relationdg.editIndex)
+                    .datagrid('deleteRow', relationdg.editIndex);
+                relationdg.editIndex = undefined;
+            },
+            deleteRow: function (i) {
+                //if (relationdg.endEditing()) {
+                    relationdg.thisdg.datagrid('deleteRow', i);
+                    relationdg.bindDatagrid(relationdg.thisdg.datagrid("getRows"));
+                //}
+            },
+            accept: function () {
+                if (relationdg.endEditing()) {
+                    relationdg.thisdg.datagrid('acceptChanges');
+                }
+            },
+            reject: function () {
+                relationdg.thisdg.datagrid('rejectChanges');
+                relationdg.editIndex = undefined;
+            }
+        }
+
+        phonedg = {
+            data:@(Html.Raw(Json.Encode(Model.telephonesVM))),
+            editIndex: undefined,
+            thisdg: $("#dgPhone"),
+            bindDatagrid: function(data) {
+                phonedg.thisdg.datagrid({
+                    data: data,
+                    height: 240,
+                    singleSelect: true,
+                    columns: [
+                        [
+                            { field: 'PhoneID', hidden: true },
+                            { field: 'Entityid', hidden: true },
+                            { field: 'ComboxListName', hidden: true },
+                            {
+                                field: 'PhoneType',
+                                title: '@BaseRes.OEC_COL_112',
+                                width: 200,
+                                formatter: function(value,row){
+                                    return row.PhoneType;
+                                },
+                                editor: phonedg.editorPhoneType()
+                            },
+                            { field: 'PhoneNumber', title: '@BaseRes.OEC_COL_113', width: 150, editor:{
+                                type:'validatebox',
+                                options:{
+                                    required:true,
+                                    validType: ['Mobile','length[0,32]']
+                                }
+                            } }@*,
+                            {
+                                field: 'operation',
+                                title: '@BaseRes.OEC_COL_107',
+                                align: 'center',
+                                width: 150,
+                                formatter: function(value, row, index) {
+                                    var operationhtml = '<span class="l-btn-left l-btn-icon-left" onclick=phonedg.deleteRow("' + index + '") ><span class="l-btn-text">@BaseRes.OEC_COL_108</span><span class="l-btn-icon icon-remove">&nbsp;</span></span>';
+                                    return operationhtml;
+                                }
+                            }*@
+                        ]
+                    ],
+                    toolbar: [
+                        {
+                            text: '@BaseRes.OEC_COL_109',
+                            iconCls: 'icon-add',
+                            handler: function() { phonedg.append(); }
+                        },@*{
+                            text: '@(BaseRes.ONC_EDT_050)',
+                            iconCls: 'icon-edit',
+                            handler: function() { entityEdit(phonedg); }
+                        },*@{
+                            text: '@(BaseRes.ONC_EDT_051)',
+                            iconCls: 'icon-remove',
+                            handler: function() { entityDel(phonedg); }
+                        } @*{
+                            text: '@BaseRes.OEC_COL_110',
+                            iconCls: 'icon-save',
+                            handler: function() { phonedg.accept(); }
+                        }*@
+                    ],
+                    onClickRow: function(index) {
+                        phonedg.onClickRow(index);
+                    }
+                });
+            },
+            editorPhoneType: function () {
+             
+                return{
+                    type: 'combobox',
+                    options: {
+                        width: 50,
+                        panelHeight: 'auto',
+                        url: '/Combox/get/PhoneType',
+                        method: 'get',
+                        valueField: 'ComboxListName',
+                        textField: 'ComboxListName',
+                        required: false
+                    }
+                }
+            },
+            arrPhoneType: undefined,
+            formatterCompanyReport: function (value, row) {
+                
+                var _curr = phonedg;
+                for (var i = 0; i < _curr.arrPhoneType.length; i++) {
+                    var item = _curr.arrPhoneType[i];
+                    return item.ComboxListName;
+                    if (row.Type == item.ComboxListKey) {
+                        //console.log(item);
+                        return item.ComboxListName;
+                        break;
+                    }
+                }
+                return row.Type;
+            },
+            endEditing: function() {
+                if (phonedg.editIndex == undefined) {
+
+                    return true;
+                }
+
+
+
+                if (phonedg.thisdg.datagrid('validateRow', phonedg.editIndex)) {
+
+                    var ed = phonedg.thisdg.datagrid('getEditor', { index: phonedg.editIndex, field: 'PhoneType' });
+                    var RelationValue = $(ed.target).combobox('getText');
+
+                    phonedg.thisdg.datagrid('getRows')[phonedg.editIndex]['PhoneType'] = RelationValue;
+                    phonedg.thisdg.datagrid('endEdit', phonedg.editIndex);
+                    phonedg.editIndex = undefined;
+                    return true;
+                } else {
+                    return false;
+                }
+            },
+            onClickRow: function(index) {
+                if (phonedg.editIndex != index) {
+                    if (phonedg.endEditing()) {
+                        phonedg.thisdg.datagrid('selectRow', index)
+                            .datagrid('beginEdit', index);
+                        phonedg.editIndex = index;
+                    } else {
+                        phonedg.thisdg.datagrid('selectRow', phonedg.editIndex);
+                    }
+                }
+            },
+            append: function() {
+                if (phonedg.endEditing()) {
+                    phonedg.thisdg.datagrid('appendRow', { PhoneNumber:0 });
+                    phonedg.editIndex = phonedg.thisdg.datagrid('getRows').length - 1;
+                    phonedg.thisdg.datagrid('selectRow', phonedg.editIndex)
+                        .datagrid('beginEdit', phonedg.editIndex);
+                }
+            },
+            removeit: function() {
+                if (phonedg.editIndex == undefined) {
+                    return
+                }
+                phonedg.thisdg.datagrid('cancelEdit', phonedg.editIndex)
+                    .datagrid('deleteRow', phonedg.editIndex);
+                phonedg.editIndex = undefined;
+            },
+            deleteRow: function(i) {
+                //if (phonedg.endEditing()) {
+                    phonedg.thisdg.datagrid('deleteRow', i);
+                    phonedg.bindDatagrid(phonedg.thisdg.datagrid("getRows"));
+                //}
+            },
+            accept: function() {
+                if (phonedg.endEditing()) {
+                    phonedg.thisdg.datagrid('acceptChanges');
+                }
+            },
+            reject: function() {
+                phonedg.thisdg.datagrid('rejectChanges');
+                phonedg.editIndex = undefined;
+            }
+        }
+
+        addressdg = {
+            data:@(Html.Raw(Json.Encode(Model.addressModel))),
+            editIndex: undefined,
+            thisdg: $("#dgAddress"),
+            bindDatagrid: function(data) {
+                addressdg.thisdg.datagrid({
+                    data: data,
+                    height: 240,
+                    singleSelect: true,
+                    columns: [
+                        [
+                            { field: 'AddressID', hidden: true },
+                            { field: 'Entityid', hidden: true },
+                            { field: 'Address', title: '@BaseRes.OEC_COL_114', width: 150, editor: {
+                                type:'validatebox',
+                                options:{
+                                    required:true,
+                                    validType: ['length[0,128]']
+                                }
+                            } },
+                            { field: 'BuildName', title: '@BaseRes.OEC_COL_115', width: 150, editor: {
+                                type:'validatebox',
+                                options:{
+                                    
+                                    validType: ['length[0,64]']
+                                }
+                            } },
+                            { field: 'Street', title: '@BaseRes.OEC_COL_116', width: 100, editor: {
+                                type:'validatebox',
+                                options:{
+                                    
+                                    validType: ['length[0,64]']
+                                }
+                            } },
+                            { field: 'StreetNumber', title: '@BaseRes.OEC_COL_117', width: 50, editor: {
+                                type:'validatebox',
+                                options:{
+                                    
+                                    validType: ['length[0,8]']
+                                }
+                            } },
+                            { field: 'SeatNO', title: '@BaseRes.OEC_COL_118', width: 50, editor: {
+                                type:'validatebox',
+                                options:{
+                                    
+                                    validType: ['length[0,8]']
+                                }
+                            }  },
+                            { field: 'Floor', title: '@BaseRes.OEC_COL_119', width: 50, editor: {
+                                type:'validatebox',
+                                options:{
+                                    
+                                    validType: ['length[0,8]']
+                                }
+                            }  },
+                            { field: 'RoomNO', title: '@BaseRes.OEC_COL_120', width: 150, editor: {
+                                type:'validatebox',
+                                options:{
+                                    
+                                    validType: ['length[0,8]']
+                                }
+                            }  },
+                            { field: 'HouseNO', title: '@BaseRes.OEC_COL_121', width: 50, editor: {
+                                type:'validatebox',
+                                options:{
+                                    
+                                    validType: ['length[0,8]']
+                                }
+                            }  },
+                            { field: 'Area', title: '@BaseRes.OEC_COL_122', width: 100, editor: {
+                                type:'validatebox',
+                                options:{
+                                    
+                                    validType: ['length[0,16]']
+                                }
+                            }  },
+                            { field: 'City', title: '@BaseRes.OEC_COL_123', width: 100, editor: {
+                                type:'validatebox',
+                                options:{
+                                    
+                                    validType: ['length[0,16]']
+                                }
+                            }  },
+                            { field: 'Province', title: '@BaseRes.OEC_COL_124', width: 100, editor: {
+                                type:'validatebox',
+                                options:{
+                                    
+                                    validType: ['length[0,16]']
+                                }
+                            }  },
+                            {
+                                field: 'Country',
+                                title: '@BaseRes.OEC_COL_125',
+                                width: 100,
+                                editor: {
+                                    type:'validatebox',
+                                    options:{
+                                    
+                                        validType: ['length[0,16]']
+                                    }
+                                } 
+                            },
+                            { field: 'LotType', title: '@BaseRes.OEC_COL_126', width: 100, editor: {
+                                type:'validatebox',
+                                options:{
+                                    
+                                    validType: ['length[0,32]']
+                                }
+                            }  },
+                            { field: 'LotNo', title: '@BaseRes.OEC_COL_127', width: 100, editor: {
+                                type:'validatebox',
+                                options:{
+                                    
+                                    validType: ['length[0,32]']
+                                }
+                            }  },
+                            { field: 'Section', title: '@BaseRes.OEC_COL_128', width: 50, editor: {
+                                type:'validatebox',
+                                options:{
+                                    
+                                    validType: ['length[0,16]']
+                                }
+                            }  },
+                            { field: 'Subsection', title: '@BaseRes.OEC_COL_129', width: 50, editor: {
+                                type:'validatebox',
+                                options:{
+                                    
+                                    validType: ['length[0,16]']
+                                }
+                            }  },
+                            { field: 'POBox', title: '@BaseRes.OEC_COL_130', width: 100, editor: {
+                                type:'validatebox',
+                                options:{
+                                    
+                                    validType: ['length[0,16]']
+                                }
+                            }  },
+                            { field: 'PostalCode', title: '@BaseRes.OEC_COL_131', width: 100, editor: {
+                                type:'validatebox',
+                                options:{
+                                    
+                                    validType: ['length[0,16]']
+                                }
+                            }  },
+                            { field: 'AddressType', title: '@BaseRes.OEC_COL_132', width: 150, editor: 'textbox' },
+                            { field: 'LenghtTime', title: '生活时长', width: 50, editor: 'textbox' },
+                            {
+                                field: 'OwnerShip',
+                                title: '@BaseRes.OEC_COL_133',
+                                width: 100,
+                                formatter: function(value, row) {
+                                    if (value == 1) {
+                                        return "@BaseRes.OEC_COL_134";
+                                    } else if (value == 2) {
+                                        return "@BaseRes.OEC_COL_135";
+                                    } else {
+                                        return value;
+                                    }
+                                },
+                                editor: {
+                                    type: 'combobox',
+                                    options: {
+                                        editable: false,
+                                        data: [{ value: 1, text: '@BaseRes.OEC_COL_134', selected: true }, { value: 2, text: '@BaseRes.OEC_COL_135' }]
+                                    }
+                                }
+                            }@*,
+                            {
+                                field: 'operation',
+                                title: '@BaseRes.OEC_COL_107',
+                                align: 'center',
+                                width: 150,
+                                formatter: function(value, row, index) {
+                                    var operationhtml = '<span class="l-btn-left l-btn-icon-left" onclick=addressdg.deleteRow("' + index + '") ><span class="l-btn-text">@BaseRes.OEC_COL_108</span><span class="l-btn-icon icon-remove">&nbsp;</span></span>';
+                                    return operationhtml;
+                                }
+                            }*@
+                        ]
+                    ],
+                    toolbar: [
+                        {
+                            text: '@BaseRes.OEC_COL_109',
+                            iconCls: 'icon-add',
+                            handler: function() { addressdg.append(); }
+                        },@*{
+                            text: '@(BaseRes.ONC_EDT_050)',
+                            iconCls: 'icon-edit',
+                            handler: function() { entityEdit(addressdg); }
+                        },*@{
+                            text: '@(BaseRes.ONC_EDT_051)',
+                            iconCls: 'icon-remove',
+                            handler: function() { entityDel(addressdg); }
+                        } @*{
+                            text: '@BaseRes.OEC_COL_110',
+                            iconCls: 'icon-save',
+                            handler: function() { addressdg.accept(); }
+                        }*@
+                    ],
+                    onClickRow: function(index) {
+                        addressdg.onClickRow(index);
+                    }
+                });
+            },
+            endEditing: function() {
+                if (addressdg.editIndex == undefined) {
+
+                    return true;
+                }
+                if (addressdg.thisdg.datagrid('validateRow', addressdg.editIndex)) {
+
+                    var ed = addressdg.thisdg.datagrid('getEditor', { index: addressdg.editIndex, field: 'OwnerShip' });
+                    var phoneTypeValue = $(ed.target).combobox('getValue');
+                    addressdg.thisdg.datagrid('getRows')[addressdg.editIndex]['OwnerShip'] = phoneTypeValue;
+                    addressdg.thisdg.datagrid('endEdit', addressdg.editIndex);
+                    addressdg.editIndex = undefined;
+                    return true;
+                } else {
+                    return false;
+                }
+            },
+            onClickRow: function(index) {
+                if (addressdg.editIndex != index) {
+                    if (addressdg.endEditing()) {
+                        addressdg.thisdg.datagrid('selectRow', index)
+                            .datagrid('beginEdit', index);
+                        addressdg.editIndex = index;
+                    } else {
+                        addressdg.thisdg.datagrid('selectRow', addressdg.editIndex);
+                    }
+                }
+            },
+            append: function() {
+                if (addressdg.endEditing()) {
+                    addressdg.thisdg.datagrid('appendRow', { OwnerShip: 1 });
+                    addressdg.editIndex = addressdg.thisdg.datagrid('getRows').length - 1;
+                    addressdg.thisdg.datagrid('selectRow', addressdg.editIndex)
+                        .datagrid('beginEdit', addressdg.editIndex);
+                }
+            },
+            removeit: function() {
+                if (addressdg.editIndex == undefined) {
+                    return
+                }
+                addressdg.thisdg.datagrid('cancelEdit', addressdg.editIndex)
+                    .datagrid('deleteRow', addressdg.editIndex);
+                addressdg.editIndex = undefined;
+            },
+            deleteRow: function(i) {
+                //if (addressdg.endEditing()) {
+                    addressdg.thisdg.datagrid('deleteRow', i);
+                    addressdg.bindDatagrid(addressdg.thisdg.datagrid("getRows"));
+                //}
+            },
+            accept: function() {
+                if (addressdg.endEditing()) {
+                    addressdg.thisdg.datagrid('acceptChanges');
+                }
+            },
+            reject: function() {
+                addressdg.thisdg.datagrid('rejectChanges');
+                addressdg.editIndex = undefined;
+            }
+        }
+        emailsdg = {
+            data:@(Html.Raw(Json.Encode(Model.emailsModel))),
+            editIndex: undefined,
+            thisdg: $("#dgEmails"),
+            bindDatagrid: function (data) {
+                emailsdg.thisdg.datagrid({
+                    data: data,
+                    height: 240,
+                    singleSelect: true,
+                    columns: [
+                        [
+                            { field: 'Emailid', hidden: true },
+                            { field: 'Entityid', hidden: true },
+                            { field: 'Email', title: '@BaseRes.OEC_COL_136', width: 150, editor: {
+                                type:'validatebox',
+                                options:{
+                                    required:true,
+                                    validType: ['Emile','length[0,64]']
+                                }
+                            } }@*,
+                            {
+                                field: 'operation',
+                                title: '@BaseRes.OEC_COL_107',
+                                align: 'center',
+                                width: 150,
+                                formatter: function (value, row, index) {
+                                    var operationhtml = '<span class="l-btn-left l-btn-icon-left" onclick=emailsdg.deleteRow("' + index + '") ><span class="l-btn-text">@BaseRes.OEC_COL_108</span><span class="l-btn-icon icon-remove">&nbsp;</span></span>';
+                                    return operationhtml;
+                                }
+                            }*@
+                        ]
+                    ],
+                    toolbar: [
+                        {
+                            text: '@BaseRes.OEC_COL_109',
+                            iconCls: 'icon-add',
+                            handler: function () { emailsdg.append(); }
+                        },@*{
+                            text: '@(BaseRes.ONC_EDT_050)',
+                            iconCls: 'icon-edit',
+                            handler: function() { entityEdit(emailsdg); }
+                        },*@{
+                            text: '@(BaseRes.ONC_EDT_051)',
+                            iconCls: 'icon-remove',
+                            handler: function() { entityDel(emailsdg); }
+                        } @*{
+                            text: '@BaseRes.OEC_COL_110',
+                            iconCls: 'icon-save',
+                            handler: function () { emailsdg.accept(); }
+                        }*@
+                    ],
+                    onClickRow: function (index) {
+                        emailsdg.onClickRow(index);
+                    }
+                });
+            },
+            endEditing: function () {
+                if (emailsdg.editIndex == undefined) {
+
+                    return true;
+                }
+                if (emailsdg.thisdg.datagrid('validateRow', emailsdg.editIndex)) {
+                    emailsdg.thisdg.datagrid('endEdit', emailsdg.editIndex);
+                    emailsdg.editIndex = undefined;
+                    return true;
+                } else {
+                    return false;
+                }
+            },
+            onClickRow: function (index) {
+                if (emailsdg.editIndex != index) {
+                    if (emailsdg.endEditing()) {
+                        emailsdg.thisdg.datagrid('selectRow', index)
+                            .datagrid('beginEdit', index);
+                        emailsdg.editIndex = index;
+                    } else {
+                        emailsdg.thisdg.datagrid('selectRow', emailsdg.editIndex);
+                    }
+                }
+            },
+            append: function () {
+                if (emailsdg.endEditing()) {
+                    emailsdg.thisdg.datagrid('appendRow', { status: 'P' });
+                    emailsdg.editIndex = emailsdg.thisdg.datagrid('getRows').length - 1;
+                    emailsdg.thisdg.datagrid('selectRow', emailsdg.editIndex)
+                        .datagrid('beginEdit', emailsdg.editIndex);
+                }
+            },
+            removeit: function () {
+                if (emailsdg.editIndex == undefined) {
+                    return
+                }
+                emailsdg.thisdg.datagrid('cancelEdit', emailsdg.editIndex)
+                    .datagrid('deleteRow', emailsdg.editIndex);
+                emailsdg.editIndex = undefined;
+            },
+            deleteRow: function (i) {
+                //if (emailsdg.endEditing()) {
+                    emailsdg.thisdg.datagrid('deleteRow', i);
+                    emailsdg.bindDatagrid(emailsdg.thisdg.datagrid("getRows"));
+                //}
+            },
+            accept: function () {
+                if (emailsdg.endEditing()) {
+                    emailsdg.thisdg.datagrid('acceptChanges');
+                }
+            },
+            reject: function () {
+                emailsdg.thisdg.datagrid('rejectChanges');
+                emailsdg.editIndex = undefined;
+            }
+        }
+        bankAccountdg = {
+            data:@(Html.Raw(Json.Encode(Model.bankAccountModel))),
+            editIndex: undefined,
+            thisdg: $("#dgBankAccount"),
+            bindDatagrid: function (data) {
+                bankAccountdg.thisdg.datagrid({
+                    data: data,
+                    height: 240,
+                    singleSelect: true,
+                    columns: [
+                        [
+                            { field: 'BankAccountID', hidden: true },
+                            { field: 'Entityid', hidden: true },
+                            { field: 'Bank', title: '@BaseRes.OEC_COL_137', width: 150, editor: {
+                                type:'validatebox',
+                                options:{
+                                    required:true,
+                                    validType: ['length[0,64]']
+                                }
+                            }  },
+                            { field: 'AccountType', title: '@BaseRes.OEC_COL_138', width: 150, editor: {
+                                type:'validatebox',
+                                options:{
+                                    
+                                    validType: ['length[0,16]']
+                                }
+                            }  },
+                            { field: 'AccountName', title: '@BaseRes.OEC_COL_139', width: 150, editor: {
+                                type:'validatebox',
+                                options:{
+                                    required:true,
+                                    validType: ['length[0,32]']
+                                }
+                            }  },
+                            { field: 'AccountNumber', title: '@BaseRes.OEC_COL_140', width: 150, editor: {
+                                type:'validatebox',
+                                options:{
+                                    required:true,
+                                    validType: ['length[0,32]']
+                                }
+                            }   },
+                            { field: 'DateOpenedString', title: '@BaseRes.OEC_COL_141', width: 200,editor: {
+                                type:'datebox',
+                                options:{
+                                    required:true
+                                }
+                            }    }@*,
+                            {
+                                field: 'operation',
+                                title: '@BaseRes.OEC_COL_107',
+                                align: 'center',
+                                width: 150,
+                                formatter: function (value, row, index) {
+                                    var operationhtml = '<span class="l-btn-left l-btn-icon-left" onclick=bankAccountdg.deleteRow("' + index + '") ><span class="l-btn-text">@BaseRes.OEC_COL_108</span><span class="l-btn-icon icon-remove">&nbsp;</span></span>';
+                                    return operationhtml;
+                                }
+                            }*@
+                        ]
+                    ],
+                    toolbar: [
+                        {
+                            text: '@BaseRes.OEC_COL_109',
+                            iconCls: 'icon-add',
+                            handler: function () { bankAccountdg.append(); }
+                        },@*{
+                            text: '@(BaseRes.ONC_EDT_050)',
+                            iconCls: 'icon-edit',
+                            handler: function() { entityEdit(bankAccountdg); }
+                        },*@{
+                            text: '@(BaseRes.ONC_EDT_051)',
+                            iconCls: 'icon-remove',
+                            handler: function() { entityDel(bankAccountdg); }
+                        } @*{
+                            text: '@BaseRes.OEC_COL_110',
+                            iconCls: 'icon-save',
+                            handler: function () { bankAccountdg.accept(); }
+                        }*@
+                    ],
+                    onClickRow: function (index) {
+                        bankAccountdg.onClickRow(index);
+                    }
+                });
+            },
+            endEditing: function () {
+                if (bankAccountdg.editIndex == undefined) {
+
+                    return true;
+                }
+                if (bankAccountdg.thisdg.datagrid('validateRow', bankAccountdg.editIndex)) {
+
+                    bankAccountdg.thisdg.datagrid('endEdit', bankAccountdg.editIndex);
+                    bankAccountdg.editIndex = undefined;
+                    return true;
+                } else {
+                    return false;
+                }
+            },
+            onClickRow: function (index) {
+                if (bankAccountdg.editIndex != index) {
+                    if (bankAccountdg.endEditing()) {
+                        bankAccountdg.thisdg.datagrid('selectRow', index)
+                            .datagrid('beginEdit', index);
+                        bankAccountdg.editIndex = index;
+                    } else {
+                        bankAccountdg.thisdg.datagrid('selectRow', bankAccountdg.editIndex);
+                    }
+                }
+            },
+            append: function () {
+                if (bankAccountdg.endEditing()) {
+                    bankAccountdg.thisdg.datagrid('appendRow', { BankAccountID:0,Entityid:0,Bank:"",AccountType:"",AccountName:"",AccountNumber:"",DateOpenedString: "",DateOpened:"" });
+                    bankAccountdg.editIndex = bankAccountdg.thisdg.datagrid('getRows').length - 1;
+                    bankAccountdg.thisdg.datagrid('selectRow', bankAccountdg.editIndex)
+                        .datagrid('beginEdit', bankAccountdg.editIndex);
+                }
+            },
+            removeit: function () {
+                if (bankAccountdg.editIndex == undefined) {
+                    return
+                }
+                bankAccountdg.thisdg.datagrid('cancelEdit', bankAccountdg.editIndex)
+                    .datagrid('deleteRow', bankAccountdg.editIndex);
+                bankAccountdg.editIndex = undefined;
+            },
+            deleteRow: function (i) {
+                //if (bankAccountdg.endEditing()) {
+                    bankAccountdg.thisdg.datagrid('deleteRow', i);
+                    bankAccountdg.bindDatagrid(bankAccountdg.thisdg.datagrid("getRows"));
+                //}
+            },
+            accept: function () {
+                if (bankAccountdg.endEditing()) {
+                    bankAccountdg.thisdg.datagrid('acceptChanges');
+                }
+            },
+            reject: function () {
+                bankAccountdg.thisdg.datagrid('rejectChanges');
+                bankAccountdg.editIndex = undefined;
+            }
+        }
+        idDocumentdg = {
+            data:@(Html.Raw(Json.Encode(Model.IDdocumentsVM))),
+            editIndex: undefined,
+            thisdg: $("#dgIDDocument"),
+            bindDatagrid: function (data) {
+                idDocumentdg.thisdg.datagrid({
+                    data: data,
+                    height: 240,
+                    singleSelect: true,
+                    columns: [
+                        [
+                            { field: 'IDDocumentID', hidden: true },
+                            { field: 'Entityid', hidden: true },
+                            { field: 'ComboxListName', hidden: true },
+                            { field: 'Type', title: '@BaseRes.OEC_COL_142', width: 150, formatter: function(value, row) {
+                                if (value == 0) {
+                                    return "@BaseRes.OEC_COL_173";
+                                } else  {
+                                    return "@BaseRes.OEC_COL_174";
+                                }
+                            },
+                                editor: {
+                                    type: 'combobox',
+                                    options: {
+                                        editable: false,
+                                        data: [{ value: 0, text: '@BaseRes.OEC_COL_173', selected: true }, { value: 1, text: '@BaseRes.OEC_COL_174' }]
+                                    }
+                                } },
+                            { 
+                                field: 'Countryid', 
+                                title: '@BaseRes.OEC_COL_143', 
+                                width: 200, 
+                                formatter: function(value,row){
+                                    return row.ComboxListName;
+                                },
+                                editor:idDocumentdg.editorIdDocument()
+                            },
+                            { field: 'Number', title: '@BaseRes.OEC_COL_144', width: 150, editor: {
+                                type:'validatebox',
+                                options:{
+                                    required:true,
+                                    validType: ['length[0,32]']
+                                }
+                            }  },
+                            { field: 'CertificateDateString', title: '@BaseRes.OEC_COL_145', width: 200, editor: {
+                                type:'datebox',
+                                options:{
+                                    required:true
+                                   
+                                }
+                            } }@*,
+                            {
+                                field: 'operation',
+                                title: '@BaseRes.OEC_COL_107',
+                                align: 'center',
+                                width: 150,
+                                formatter: function (value, row, index) {
+                                    var operationhtml = '<span class="l-btn-left l-btn-icon-left" onclick=idDocumentdg.deleteRow("' + index + '") ><span class="l-btn-text">@BaseRes.OEC_COL_108</span><span class="l-btn-icon icon-remove">&nbsp;</span></span>';
+                                    return operationhtml;
+                                }
+                            }*@
+                        ]
+                    ],
+                    toolbar: [
+                        {
+                            text: '@BaseRes.OEC_COL_109',
+                            iconCls: 'icon-add',
+                            handler: function () { idDocumentdg.append(); }
+                        },@*{
+                            text: '@(BaseRes.ONC_EDT_050)',
+                            iconCls: 'icon-edit',
+                            handler: function() { entityEdit(idDocumentdg); }
+                        },*@{
+                            text: '@(BaseRes.ONC_EDT_051)',
+                            iconCls: 'icon-remove',
+                            handler: function() { entityDel(idDocumentdg); }
+                        } @*{
+                            text: '@BaseRes.OEC_COL_110',
+                            iconCls: 'icon-save',
+                            handler: function () { idDocumentdg.accept(); }
+                        }*@
+                    ],
+                    onClickRow: function (index) {
+                        idDocumentdg.onClickRow(index);
+                    }
+                });
+            },
+            endEditing: function () {
+                if (idDocumentdg.editIndex == undefined) {
+
+                    return true;
+                }
+                if (idDocumentdg.thisdg.datagrid('validateRow', idDocumentdg.editIndex)) {
+
+                    idDocumentdg.thisdg.datagrid('endEdit', idDocumentdg.editIndex);
+                    idDocumentdg.editIndex = undefined;
+                    return true;
+                } else {
+                    return false;
+                }
+            },
+            editorIdDocument: function () {
+          
+                return{
+                    type: 'combobox',
+                    options: {
+                        width: 50,
+                        panelHeight: 'auto',
+                        url: '/Combox/get/Country',
+                        method: 'get',
+                        valueField: 'ComboxListKey',
+                        textField: 'ComboxListName',
+                        required: true
+                    }
+                }
+            },
+            arrCountry: undefined,
+            formatterCompanyReport: function (value, row) {
+                var _curr = idDocumentdg;
+                for (var i = 0; i < _curr.arrCountry.length; i++) {
+                    var item = _curr.arrCountry[i];
+                    if (row.Type == item.ComboxListKey) {
+                        //console.log(item);
+                        return item.ComboxListName;
+                        break;
+                    }
+                }
+                return row.Type;
+            },
+            endEditing: function() {
+                if (idDocumentdg.editIndex == undefined) {
+
+                    return true;
+                }
+
+
+
+                if (idDocumentdg.thisdg.datagrid('validateRow', idDocumentdg.editIndex)) {
+
+                    var ed = idDocumentdg.thisdg.datagrid('getEditor', { index: idDocumentdg.editIndex, field: 'Countryid' });
+                    var RelationValue = $(ed.target).combobox('getText');
+
+                    idDocumentdg.thisdg.datagrid('getRows')[idDocumentdg.editIndex]['ComboxListName'] = RelationValue;
+                    idDocumentdg.thisdg.datagrid('endEdit', idDocumentdg.editIndex);
+                    idDocumentdg.editIndex = undefined;
+                    return true;
+                } else {
+                    return false;
+                }
+            },
+            onClickRow: function (index) {
+                if (idDocumentdg.editIndex != index) {
+                    if (idDocumentdg.endEditing()) {
+                        idDocumentdg.thisdg.datagrid('selectRow', index)
+                            .datagrid('beginEdit', index);
+                        idDocumentdg.editIndex = index;
+                    } else {
+                        idDocumentdg.thisdg.datagrid('selectRow', idDocumentdg.editIndex);
+                    }
+                }
+            },
+            append: function () {
+                if (idDocumentdg.endEditing()) {
+                    idDocumentdg.thisdg.datagrid('appendRow', { Type:0, CertificateDate: "",CertificateDateString: "" });
+                    idDocumentdg.editIndex = idDocumentdg.thisdg.datagrid('getRows').length - 1;
+                    idDocumentdg.thisdg.datagrid('selectRow', idDocumentdg.editIndex)
+                        .datagrid('beginEdit', idDocumentdg.editIndex);
+                }
+            },
+            //removeit: function () {
+            //    if (idDocumentdg.editIndex == undefined) {
+            //        return
+            //    }
+            //    idDocumentdg.thisdg.datagrid('cancelEdit', idDocumentdg.editIndex)
+            //        .datagrid('deleteRow', idDocumentdg.editIndex);
+            //    idDocumentdg.editIndex = undefined;
+            //},
+            deleteRow: function (i) {
+                //if (idDocumentdg.endEditing()) {
+                    idDocumentdg.thisdg.datagrid('deleteRow', i);
+                    idDocumentdg.bindDatagrid(idDocumentdg.thisdg.datagrid("getRows"));
+                //}
+            },
+            accept: function () {
+                if (idDocumentdg.endEditing()) {
+                    idDocumentdg.thisdg.datagrid('acceptChanges');
+                }
+            },
+            reject: function () {
+                idDocumentdg.thisdg.datagrid('rejectChanges');
+                idDocumentdg.editIndex = undefined;
+            }
+        }
+        socialNetworkdg = {
+            data:@(Html.Raw(Json.Encode(Model.socialNetworkModel))),
+            editIndex: undefined,
+            thisdg: $("#dgSocialNetwork"),
+            bindDatagrid: function (data) {
+                socialNetworkdg.thisdg.datagrid({
+                    data: data,
+                    height: 240,
+                    singleSelect: true,
+                    columns: [
+                        [
+                            { field: 'SocialNetworkID', hidden: true },
+                            { field: 'Entityid', hidden: true },
+                            { field: 'NetName', title: '@BaseRes.OEC_COL_146', width: 150, editor: {
+                                type:'validatebox',
+                                options:{
+                                    required:true,
+                                    validType: ['length[0,32]']
+                                }
+                            }  },
+                            { field: 'URL', title: '@BaseRes.OEC_COL_147', width: 150, editor: {
+                                type:'validatebox',
+                                options:{
+                                    //required:true,
+                                    validType: ['length[0,64]']
+                                }
+                            }  },
+                            { field: 'SocialNumber', title: '@BaseRes.OEC_COL_148', width: 150, editor: {
+                                type:'validatebox',
+                                options:{
+                                    //required:true,
+                                    validType: ['length[0,32]']
+                                }
+                            }  },
+                            { field: 'SocialDate', title: '@BaseRes.OEC_COL_149', width: 200, editor: {
+                                type:'datebox',
+                                options:{
+                                    //required:true,
+                                    //validType: ['DateDay']
+                                }
+                            }  },
+                            { field: 'Pic', title: '@BaseRes.OEC_COL_150', width: 150, editor: {
+                                type:'textbox',
+                                options: {
+                                    readonly:true
+                                }
+                            }  },
+                            {
+                                 field: 'operation1',
+                                 title: '上传照片',
+                                 align: 'center',
+                                 width: 150,
+                                 formatter: function(value, row, index) {
+                                     var operationhtml = '<span class="l-btn-left l-btn-icon-left" onclick=eUploadfile.ShowUpFLoad(' + index + ')><span class="l-btn-text">@(BaseRes.ONC_EDT_080)</span><span class="l-btn-icon icon_up">&nbsp;</span></span>';
+                                     return operationhtml;
+                                 }
+                            }@*,
+                            {
+                                field: 'operation',
+                                title: '@BaseRes.OEC_COL_107',
+                                align: 'center',
+                                width: 150,
+                                formatter: function (value, row, index) {
+                                    var operationhtml = '<span class="l-btn-left l-btn-icon-left" onclick=socialNetworkdg.deleteRow("' + index + '") ><span class="l-btn-text">@BaseRes.OEC_COL_108</span><span class="l-btn-icon icon-remove">&nbsp;</span></span>';
+                                    return operationhtml;
+                                }
+                            }*@
+                        ]
+                    ],
+                    toolbar: [
+                        {
+                            text: '@BaseRes.OEC_COL_109',
+                            iconCls: 'icon-add',
+                            handler: function () { socialNetworkdg.append(); }
+                        },@*{
+                            text: '@(BaseRes.ONC_EDT_050)',
+                            iconCls: 'icon-edit',
+                            handler: function() { entityEdit(socialNetworkdg); }
+                        },*@{
+                            text: '@(BaseRes.ONC_EDT_051)',
+                            iconCls: 'icon-remove',
+                            handler: function() { entityDel(socialNetworkdg); }
+                        } @*{
+                            text: '@BaseRes.OEC_COL_110',
+                            iconCls: 'icon-save',
+                            handler: function () { socialNetworkdg.accept(); }
+                        }*@
+                    ],
+                    onClickRow: function (index) {
+                        socialNetworkdg.onClickRow(index);
+                    }
+                });
+            },
+            endEditing: function () {
+                if (socialNetworkdg.editIndex == undefined) {
+                    return true;
+                }
+                if (socialNetworkdg.thisdg.datagrid('validateRow', socialNetworkdg.editIndex)) {
+                    socialNetworkdg.thisdg.datagrid('endEdit', socialNetworkdg.editIndex);
+                    socialNetworkdg.editIndex = undefined;
+                    return true;
+                } else {
+                    return false;
+                }
+            },
+            onClickRow: function (index) {
+                if (socialNetworkdg.editIndex != index) {
+                    if (socialNetworkdg.endEditing()) {
+                        socialNetworkdg.thisdg.datagrid('selectRow', index)
+                            .datagrid('beginEdit', index);
+                        socialNetworkdg.editIndex = index;
+                    } else {
+                        socialNetworkdg.thisdg.datagrid('selectRow', socialNetworkdg.editIndex);
+                    }
+                }
+            },
+            append: function () {
+                if (socialNetworkdg.endEditing()) {
+                    socialNetworkdg.thisdg.datagrid('appendRow', { SocialDate: myDate.toLocaleDateString() });
+                    socialNetworkdg.editIndex = socialNetworkdg.thisdg.datagrid('getRows').length - 1;
+                    socialNetworkdg.thisdg.datagrid('selectRow', socialNetworkdg.editIndex)
+                        .datagrid('beginEdit', socialNetworkdg.editIndex);
+                }
+            },
+            removeit: function () {
+                if (socialNetworkdg.editIndex == undefined) {
+                    return
+                }
+                socialNetworkdg.thisdg.datagrid('cancelEdit', socialNetworkdg.editIndex)
+                    .datagrid('deleteRow', socialNetworkdg.editIndex);
+                socialNetworkdg.editIndex = undefined;
+            },
+            deleteRow: function (i) {
+               // if (socialNetworkdg.endEditing()) {
+                    socialNetworkdg.thisdg.datagrid('deleteRow', i);
+                    socialNetworkdg.bindDatagrid(socialNetworkdg.thisdg.datagrid("getRows"));
+                //}
+            },
+            accept: function () {
+                if (socialNetworkdg.endEditing()) {
+                    socialNetworkdg.thisdg.datagrid('acceptChanges');
+                }
+            },
+            reject: function () {
+                socialNetworkdg.thisdg.datagrid('rejectChanges');
+                socialNetworkdg.editIndex = undefined;
+            }
+        }
+        mediaReportdg = {
+            data:@(Html.Raw(Json.Encode(Model.mediaReportModel))),
+            editIndex: undefined,
+            thisdg: $("#dgMediaReport"),
+            bindDatagrid: function (data) {
+                mediaReportdg.thisdg.datagrid({
+                    data: data,
+                    height: 240,
+                    singleSelect: true,
+                    columns: [
+                        [
+                            { field: 'MediaReportID', hidden: true },
+                            { field: 'Entityid', hidden: true },
+                            { field: 'Name', title: '@BaseRes.OEC_COL_151', width: 150, editor: {
+                                type:'validatebox',
+                                options:{
+                                    required:true,
+                                    validType: ['length[0,32]']
+                                }
+                            }  },
+                            { field: 'Subject', title: '@BaseRes.OEC_COL_152', width: 150, editor: {
+                                type:'validatebox',
+                                options:{
+                                    //required:true,
+                                    validType: ['length[0,64]']
+                                }
+                            } },
+                            { field: 'Content', title: '@BaseRes.OEC_COL_153', width: 150, editor: {
+                                type:'validatebox',
+                                options:{
+                                    //required:true,
+                                    validType: ['length[0,512]']
+                                }
+                            } },
+                            { field: 'ReportDateString', title: '@BaseRes.OEC_COL_154', width: 200, editor: {
+                                type:'datebox',
+                                options:{
+                                    //required:true,
+                                    //validType: ['DateDay']
+                                }
+                            }  }@*,
+                            {
+                                field: 'operation',
+                                title: '@BaseRes.OEC_COL_107',
+                                align: 'center',
+                                width: 150,
+                                formatter: function (value, row, index) {
+                                    var operationhtml = '<span class="l-btn-left l-btn-icon-left" onclick=mediaReportdg.deleteRow("' + index + '") ><span class="l-btn-text">@BaseRes.OEC_COL_108</span><span class="l-btn-icon icon-remove">&nbsp;</span></span>';
+                                    return operationhtml;
+                                }
+                            }*@
+                        ]
+                    ],
+                    toolbar: [
+                        {
+                            text: '@BaseRes.OEC_COL_109',
+                            iconCls: 'icon-add',
+                            handler: function () { mediaReportdg.append(); }
+                        },@*{
+                            text: '@(BaseRes.ONC_EDT_050)',
+                            iconCls: 'icon-edit',
+                            handler: function() { entityEdit(mediaReportdg); }
+                        },*@{
+                            text: '@(BaseRes.ONC_EDT_051)',
+                            iconCls: 'icon-remove',
+                            handler: function() { entityDel(mediaReportdg); }
+                        } @*{
+                            text: '@BaseRes.OEC_COL_110',
+                            iconCls: 'icon-save',
+                            handler: function () { mediaReportdg.accept(); }
+                        }*@
+                    ],
+                    onClickRow: function (index) {
+                        mediaReportdg.onClickRow(index);
+                    }
+                });
+            },
+            endEditing: function () {
+                if (mediaReportdg.editIndex == undefined) {
+
+                    return true;
+                }
+                if (mediaReportdg.thisdg.datagrid('validateRow', mediaReportdg.editIndex)) {
+
+                    mediaReportdg.thisdg.datagrid('endEdit', mediaReportdg.editIndex);
+                    mediaReportdg.editIndex = undefined;
+                    return true;
+                } else {
+                    return false;
+                }
+            },
+            onClickRow: function (index) {
+                if (mediaReportdg.editIndex != index) {
+                    if (mediaReportdg.endEditing()) {
+                        mediaReportdg.thisdg.datagrid('selectRow', index)
+                            .datagrid('beginEdit', index);
+                        mediaReportdg.editIndex = index;
+                    } else {
+                        mediaReportdg.thisdg.datagrid('selectRow', mediaReportdg.editIndex);
+                    }
+                }
+            },
+            append: function () {
+                if (mediaReportdg.endEditing()) {
+                    mediaReportdg.thisdg.datagrid('appendRow', { ReportDate: "",ReportDateString: "" });
+                    mediaReportdg.editIndex = mediaReportdg.thisdg.datagrid('getRows').length - 1;
+                    mediaReportdg.thisdg.datagrid('selectRow', mediaReportdg.editIndex)
+                        .datagrid('beginEdit', mediaReportdg.editIndex);
+                }
+            },
+            removeit: function () {
+                if (mediaReportdg.editIndex == undefined) {
+                    return
+                }
+                mediaReportdg.thisdg.datagrid('cancelEdit', mediaReportdg.editIndex)
+                    .datagrid('deleteRow', mediaReportdg.editIndex);
+                mediaReportdg.editIndex = undefined;
+            },
+            deleteRow: function (i) {
+                //if (mediaReportdg.endEditing()) {
+                    mediaReportdg.thisdg.datagrid('deleteRow', i);
+                    mediaReportdg.bindDatagrid(mediaReportdg.thisdg.datagrid("getRows"));
+               // }
+            },
+            accept: function () {
+                if (mediaReportdg.endEditing()) {
+                    mediaReportdg.thisdg.datagrid('acceptChanges');
+                }
+            },
+            reject: function () {
+                mediaReportdg.thisdg.datagrid('rejectChanges');
+                mediaReportdg.editIndex = undefined;
+            }
+        }
+      var  employmentHistorydg = {
+            data:@(Html.Raw(Json.Encode(Model.employmentHistoryModel))),
+            editIndex: undefined,
+            thisdg: $("#dgEmploymentHistory"),
+            title:"@(BaseRes.OEC_COL_101)",
+            tab:$tabsCompEdit,
+            tabIndex:8,
+            bindDatagrid: function (data) {
+                employmentHistorydg.thisdg.datagrid({
+                    data: data,
+                    height: 240,
+                    singleSelect: true,
+                    columns: [
+                        [
+                            { field: 'MediaReportID', hidden: true },
+                            { field: 'Entityid_P', hidden: true },
+                            { field: 'Entityid', hidden: true },
+                            { field: 'Employer_En', title: '@BaseRes.OEC_COL_155', width: 100, editor: {
+                                type:'validatebox',
+                                options:{
+                                    //required:true,
+                                    validType: ['length[0,64]']
+                                }
+                            }   },
+                            { field: 'Employer_Cn', title: '@BaseRes.OEC_COL_156', width: 100, editor: {
+                                type:'validatebox',
+                                options:{
+                                    //required:true,
+                                    validType: ['length[0,64]']
+                                }
+                            }   },
+                            { field: 'Department', title: '@BaseRes.OEC_COL_157', width: 100, editor: {
+                                type:'validatebox',
+                                options:{
+                                    //required:true,
+                                    validType: ['length[0,32]']
+                                }
+                            }   },
+                            { field: 'Position', title: '@BaseRes.OEC_COL_158', width: 100, editor: {
+                                type:'validatebox',
+                                options:{
+                                    //required:true,
+                                    validType: ['length[0,32]']
+                                }
+                            }   },
+                            { field: 'JoinedDate', title: '@BaseRes.OEC_COL_159', width: 100, editor: {
+                                type:'datebox',
+                                options:{
+                                    //required:true,
+                                    //validType: ['DateDay']
+                                }
+                            }  },
+                            { field: 'LenghtServices', title: '@BaseRes.OEC_COL_160', width: 100, editor: {
+                                type:'validatebox',
+                                options:{
+                                    //required:true,
+                                    validType: ['length[0,32]']
+                                }
+                            }   },
+                            { field: 'OfficeAddress', title: '@BaseRes.OEC_COL_161', width: 150, editor: {
+                                type:'validatebox',
+                                options:{
+                                    //required:true,
+                                    validType: ['length[0,128]']
+                                }
+                            }   },
+                            { field: 'Tel1', title: '@BaseRes.OEC_COL_162', width: 100, editor: {
+                                type:'validatebox',
+                                options:{
+                                    //required:true,
+                                    validType: ['Mobile','length[0,32]']
+                                }
+                            }   },
+                            { field: 'Tel2', title: '@BaseRes.OEC_COL_163', width: 100, editor: {
+                                type:'validatebox',
+                                options:{
+                                   
+                                    validType: ['Mobile','length[0,32]']
+                                }
+                            }  }@*,
+                            {
+                                field: 'operation',
+                                title: '@BaseRes.OEC_COL_107',
+                                align: 'center',
+                                width: 150,
+                                formatter: function (value, row, index) {
+                                    var operationhtml = '<span class="l-btn-left l-btn-icon-left" onclick=employmentHistorydg.deleteRow("' + index + '") ><span class="l-btn-text">@BaseRes.OEC_COL_108</span><span class="l-btn-icon icon-remove">&nbsp;</span></span>';
+                                    return operationhtml;
+                                }
+                            }*@
+                        ]
+                    ],
+                    toolbar: [
+                        {
+                            text: '@BaseRes.OEC_COL_109',
+                            iconCls: 'icon-add',
+                            handler: function () { employmentHistorydg.append(); }
+                        },@*{
+                            text: '@(BaseRes.ONC_EDT_050)',
+                            iconCls: 'icon-edit',
+                            handler: function() { entityEdit(employmentHistorydg); }
+                        },*@{
+                            text: '@(BaseRes.ONC_EDT_051)',
+                            iconCls: 'icon-remove',
+                            handler: function() { entityDel(employmentHistorydg); }
+                        }  @*{
+                            text: '@BaseRes.OEC_COL_110',
+                            iconCls: 'icon-save',
+                            handler: function () { employmentHistorydg.accept(); }
+                        }*@
+                    ],
+                    onClickRow: function (index) {
+                        employmentHistorydg.onClickRow(index);
+                    }
+                });
+            },
+          endEditing: function () {
+              try {
+                  var _curr = employmentHistorydg;
+                if (employmentHistorydg.editIndex == undefined) {
+
+                    return true;
+                }
+                
+                if (employmentHistorydg.thisdg.datagrid('validateRow', employmentHistorydg.editIndex)) {
+
+                    employmentHistorydg.thisdg.datagrid('endEdit', employmentHistorydg.editIndex);                    
+                    employmentHistorydg.editIndex = undefined;
+
+                    if (!_curr.checkOneTwo(1)) {
+                        return false;
+                    }
+                    return true;
+                } else {
+                    return false;
+                }
+              } catch (e) {
+                  employmentHistorydg.editIndex = undefined;
+                  return true;
+              }
+            },
+            onClickRow: function (index) {
+                if (employmentHistorydg.editIndex != index) {
+                    if (employmentHistorydg.endEditing()) {
+                        employmentHistorydg.thisdg.datagrid('selectRow', index)
+                            .datagrid('beginEdit', index);
+                        employmentHistorydg.editIndex = index;
+                    } else {
+                        employmentHistorydg.thisdg.datagrid('selectRow', employmentHistorydg.editIndex);
+                    }
+                }
+            },
+            checkOneTwo: function (m) {
+                try {
+                    var _curr = employmentHistorydg;
+                    var ddRows = _curr.thisdg.datagrid('getRows');
+                    //console.log('名称（英） 和名称（中）至少填一项。');
+                    for (var i = 0; i < ddRows.length; i++) {
+                        var curritem = ddRows[i]
+                        console.log(curritem);
+                        if (!curritem.Employer_En && !curritem.Employer_Cn) {
+                            if (m) {
+                                $.messager.alert(_curr.title, "雇主英文名 和 雇主中文名 至少填一项。", 'error', function () {
+                                    _curr.tab.tabs('select', _curr.tabIndex);
+                                    _curr.onClickRow(i);
+                                });
+                            }
+                           
+                            return false;
+                        }
+                    }
+                    return true;
+                } catch (e) {
+                    console.log(e);
+                }
+            },
+            append: function() {
+               
+                var _curr=employmentHistorydg;
+                if (_curr.endEditing()) {
+                    _curr.thisdg.datagrid('appendRow',  {Entityid:-1, Employer_En: undefined, Employer_Cn: undefined });
+                    _curr.editIndex = _curr.thisdg.datagrid('getRows').length - 1;
+                    _curr.thisdg.datagrid('selectRow', _curr.editIndex)
+                        .datagrid('beginEdit', _curr.editIndex);
+                }
+
+           
+
+                @*var para = {
+                    functionName: 'employmentHistorydg.addallback',
+                    Entityid: 0,
+                    Type:@ViewBag.Type,
+                    Flag: 0,
+                    Param1: 0
+                };
+                $('#selectEntitydlg').dialog({
+                    title: "@BaseRes.OEC_COL_164",
+                    closed: false,
+                    cache: false,
+                    method: 'post',
+                    queryParams: para,
+                    maximized: true,
+                    href: '/SearchDialog/EntityIndex?isGx=true',
+                    modal: true
+                });*@
+
+            },
+            addallback: function(jsondata) {
+                employmentHistorydg.data.push({Entityid: jsondata.Entityid, Employer_En: jsondata.FullName_En, Employer_Cn: jsondata.FullName_Cn });
+                employmentHistorydg.bindDatagrid(employmentHistorydg.data);
+                try {
+    
+                    employmentHistorydg.onClickRow(employmentHistorydg.data.length-1);
+                } catch (e) {
+                    console.log(e);
+                }
+            },
+            removeit: function () {
+                if (employmentHistorydg.editIndex == undefined) {
+                    return
+                }
+                employmentHistorydg.thisdg.datagrid('cancelEdit', employmentHistorydg.editIndex)
+                    .datagrid('deleteRow', employmentHistorydg.editIndex);
+                employmentHistorydg.editIndex = undefined;
+            },
+            deleteRow: function (i) {
+                //if (employmentHistorydg.endEditing()) {
+                    employmentHistorydg.thisdg.datagrid('deleteRow', i);
+                    employmentHistorydg.bindDatagrid(employmentHistorydg.thisdg.datagrid("getRows"));
+                //}
+            },
+            accept: function () {
+                if (employmentHistorydg.endEditing()) {
+                    employmentHistorydg.thisdg.datagrid('acceptChanges');
+                }
+            },
+            reject: function () {
+                employmentHistorydg.thisdg.datagrid('rejectChanges');
+                employmentHistorydg.editIndex = undefined;
+            }
+        }
+        educationdg = {
+            data:@(Html.Raw(Json.Encode(Model.educationModel))),
+            editIndex: undefined,
+            thisdg: $("#dgEducation"),
+            bindDatagrid: function (data) {
+                educationdg.thisdg.datagrid({
+                    data: data,
+                    height: 240,
+                    singleSelect: true,
+                    columns: [
+                        [
+                            { field: 'Educationid', hidden: true },
+                            { field: 'Entityid', hidden: true },
+                            { field: 'Institute', title: '@BaseRes.OEC_COL_165', width: 150, editor: {
+                                type:'validatebox',
+                                options:{
+                                    required:true,
+                                    validType: ['length[0,64]']
+                                }
+                            }  },
+                            { field: 'InstituteType', title: '@BaseRes.OEC_COL_166', width: 150, editor: {
+                                type:'validatebox',
+                                options:{
+                                    //required:true,
+                                    validType: ['length[0,32]']
+                                }
+                            }   },
+                            { field: 'Degree', title: '@BaseRes.OEC_COL_167', width: 150, editor: {
+                                type:'validatebox',
+                                options:{
+                                    //required:true,
+                                    validType: ['length[0,16]']
+                                }
+                            }   },
+                            { field: 'FromDateString', title: '@BaseRes.OEC_COL_168', width: 200, editor: {
+                                type:'datebox',
+                                options:{
+                                    //required:true,
+                                    //validType: ['DateDay']
+                                }
+                            }  },
+                            { field: 'ToDateString', title: '@BaseRes.OEC_COL_169', width: 200, editor: {
+                                type:'datebox',
+                                options:{
+                                    //required:true,
+                                    //validType: ['DateDay']
+                                }
+                            }  }@*,
+                            {
+                                field: 'operation',
+                                title: '@BaseRes.OEC_COL_107',
+                                align: 'center',
+                                width: 150,
+                                formatter: function (value, row, index) {
+                                    var operationhtml = '<span class="l-btn-left l-btn-icon-left" onclick=educationdg.deleteRow("' + index + '") ><span class="l-btn-text">@BaseRes.OEC_COL_108</span><span class="l-btn-icon icon-remove">&nbsp;</span></span>';
+                                    return operationhtml;
+                                }
+                            }*@
+                        ]
+                    ],
+                    toolbar: [
+                        {
+                            text: '@BaseRes.OEC_COL_109',
+                            iconCls: 'icon-add',
+                            handler: function () { educationdg.append(); }
+                        }, @*{
+                            text: '@(BaseRes.ONC_EDT_050)',
+                            iconCls: 'icon-edit',
+                            handler: function() { entityEdit(educationdg); }
+                        },*@{
+                            text: '@(BaseRes.ONC_EDT_051)',
+                            iconCls: 'icon-remove',
+                            handler: function() { entityDel(educationdg); }
+                        }@*{
+                            text: '@BaseRes.OEC_COL_110',
+                            iconCls: 'icon-save',
+                            handler: function () { educationdg.accept(); }
+                        }*@
+                    ],
+                    onClickRow: function (index) {
+                        educationdg.onClickRow(index);
+                    }
+                });
+            },
+            endEditing: function () {
+                if (educationdg.editIndex == undefined) {
+
+                    return true;
+                }
+                if (educationdg.thisdg.datagrid('validateRow', educationdg.editIndex)) {
+
+                    educationdg.thisdg.datagrid('endEdit', educationdg.editIndex);
+                    educationdg.editIndex = undefined;
+                    return true;
+                } else {
+                    return false;
+                }
+            },
+            onClickRow: function (index) {
+                if (educationdg.editIndex != index) {
+                    if (educationdg.endEditing()) {
+                        educationdg.thisdg.datagrid('selectRow', index)
+                            .datagrid('beginEdit', index);
+                        educationdg.editIndex = index;
+                    } else {
+                        educationdg.thisdg.datagrid('selectRow', educationdg.editIndex);
+                    }
+                }
+            },
+            append: function () {
+                if (educationdg.endEditing()) {
+                    educationdg.thisdg.datagrid('appendRow', { FromDate: "",FromDateString: "",ToDateString:"",ToDate:""});
+                    educationdg.editIndex = educationdg.thisdg.datagrid('getRows').length - 1;
+                    educationdg.thisdg.datagrid('selectRow', educationdg.editIndex)
+                        .datagrid('beginEdit', educationdg.editIndex);
+                }
+            },
+            removeit: function () {
+                if (educationdg.editIndex == undefined) {
+                    return
+                }
+                educationdg.thisdg.datagrid('cancelEdit', educationdg.editIndex)
+                    .datagrid('deleteRow', educationdg.editIndex);
+                educationdg.editIndex = undefined;
+            },
+            deleteRow: function (i) {
+                //if (educationdg.endEditing()) {
+                    educationdg.thisdg.datagrid('deleteRow', i);
+                    educationdg.bindDatagrid(educationdg.thisdg.datagrid("getRows"));
+                //}
+            },
+            accept: function () {
+                if (educationdg.endEditing()) {
+                    educationdg.thisdg.datagrid('acceptChanges');
+                }
+            },
+            reject: function () {
+                educationdg.thisdg.datagrid('rejectChanges');
+                educationdg.editIndex = undefined;
+            }
+        }
+    </script>
+    <script>
+    function closeDialogSearch() {
+        $('#selectEntitydlg').dialog('close');
+    }
+    var Type=@ViewBag.Type
+    relationdg.bindDatagrid(relationdg.data);
+    phonedg.bindDatagrid(phonedg.data);
+    addressdg.bindDatagrid(addressdg.data);
+    emailsdg.bindDatagrid(emailsdg.data);
+    bankAccountdg.bindDatagrid(bankAccountdg.data);
+    idDocumentdg.bindDatagrid(idDocumentdg.data);
+    socialNetworkdg.bindDatagrid(socialNetworkdg.data);
+    mediaReportdg.bindDatagrid(mediaReportdg.data);
+    employmentHistorydg.bindDatagrid(employmentHistorydg.data);
+    educationdg.bindDatagrid(educationdg.data);
+
+    function addimg(obj, file_size) {
+        console.log(obj.length);
+        var filepath = obj.val();
+        if (obj.val().length > 0) {
+            var extStart = filepath.lastIndexOf(".");
+            var ext = filepath.substring(extStart, filepath.length).toUpperCase();
+            if (ext != ".BMP" && ext != ".JPG" && ext != ".JPEG" && ext != ".PNG" && ext != ".TIFF") {
+                $.messager.alert('@BaseRes.COM_CTL_NOTICE', "图片限于bmp、jpg、jpeg、png、tiff格式", "info");
+                obj.after(obj.clone().val("")).remove();
+                return false;
+            }
+          
+            var size = file_size / 1024;
+            if (size > 10240) {
+                $.messager.alert('@BaseRes.COM_CTL_NOTICE',"上传的图片大小不能超过10M！", "info");
+                obj.after(obj.clone().val("")).remove();
+                return false;
+            }
+        }
+        return true;
+    }
+
+    eUploadfile= {
+        row:-1,
+        ShowUpFLoad:function(i) {
+            eUploadfile.row = i;
+            $('#UpLoadFileForm').form('clear');
+            $('#export2').dialog('open');
+        },
+        executeUpLoad:function(){
+            $("#UpLoadFileForm").ajaxSubmit({
+                url: "/OnlineEntity/UpLoadFile",
+                type: 'post',
+                success: function (res) { 
+                    if (res.result) {
+                     
+                        var dg01ed = socialNetworkdg.thisdg.datagrid('getEditor', {index:socialNetworkdg.editIndex,field:'Pic'});
+                        $(dg01ed.target).textbox('setValue',res.path);
+                        socialNetworkdg.thisdg.datagrid('getRows')[eUploadfile.row]['Pic'] = res.path;
+                        eUploadfile.row = -1;  
+                        $.messager.alert('@BaseRes.COM_CTL_NOTICE',res.msg);    
+                        $('#export2').dialog('close');
+                      
+                    } else {
+                        $.messager.alert('@BaseRes.COM_CTL_NOTICE','@(BaseRes.ONC_EDT_085)！');  
+                    }
+                },
+                error: function (er) {
+                    $.messager.alert('@BaseRes.COM_CTL_NOTICE','@(BaseRes.ONC_EDT_085)！');  
+             
+                },
+                dataType: 'json'
+            });
+        }
+    }
+
+    function editOnlineCourt(start) {
+      
+        
+        relationdg.accept();
+        if (relationdg.editIndex != undefined) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', '@BaseRes.OEC_COL_200');
+            return false;
+        }
+        phonedg.accept();
+        if (phonedg.editIndex != undefined) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', '@BaseRes.OEC_COL_201');
+            return false;
+        }
+        addressdg.accept();
+        if (addressdg.editIndex != undefined) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', '@BaseRes.OEC_COL_202');
+            return false;
+        }
+        emailsdg.accept();
+        if (emailsdg.editIndex != undefined) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', '@BaseRes.OEC_COL_203');
+            return false;
+        }
+        bankAccountdg.accept();
+        if (bankAccountdg.editIndex != undefined) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', '@BaseRes.OEC_COL_204');
+            return false;
+        }
+        idDocumentdg.accept();
+        if (idDocumentdg.editIndex != undefined) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', '@BaseRes.OEC_COL_205');
+            return false;
+        }
+        socialNetworkdg.accept();
+        if (socialNetworkdg.editIndex != undefined) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', '@BaseRes.OEC_COL_206');
+            return false;
+        }
+
+        mediaReportdg.accept();
+        if (mediaReportdg.editIndex != undefined) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', '@BaseRes.OEC_COL_207');
+            return false;
+        }
+
+        if (start==1) {
+            employmentHistorydg.accept();
+            if (employmentHistorydg.editIndex != undefined) {
+                $.messager.alert('@BaseRes.COM_CTL_NOTICE', '@BaseRes.OEC_COL_208');
+                return false;
+            }
+            if (!employmentHistorydg.checkOneTwo()) {
+                return false;
+            }
+            educationdg.accept();
+            if (educationdg.editIndex != undefined) {
+                $.messager.alert('@BaseRes.COM_CTL_NOTICE', '@BaseRes.OEC_COL_209');
+                return false;
+            }
+        }
+        
+        if (!$("#EditOnlineEntityForm").form('validate')) {
+            return false;
+        }
+        var submitform = $('#EditOnlineEntityForm');
+        var paraData = submitform.serialize();
+        paraData += "&Types=" + Type;
+        paraData += "&relationModelString=" + encodeURIComponent(JSON.stringify(relationdg.thisdg.datagrid("getRows")));
+        paraData += "&telephonesModelString=" + encodeURIComponent(JSON.stringify(phonedg.thisdg.datagrid("getRows")));
+        paraData += "&addressModelString=" + encodeURIComponent(JSON.stringify(addressdg.thisdg.datagrid("getRows")));
+        paraData += "&emailsModelString=" + encodeURIComponent(JSON.stringify(emailsdg.thisdg.datagrid("getRows")));
+        paraData += "&bankAccountModelString=" + encodeURIComponent(JSON.stringify(bankAccountdg.thisdg.datagrid("getRows")));
+
+        paraData += "&IDdocumentsModelString=" + encodeURIComponent(JSON.stringify(idDocumentdg.thisdg.datagrid("getRows")));
+        paraData += "&socialNetworkModelString=" + encodeURIComponent(JSON.stringify(socialNetworkdg.thisdg.datagrid("getRows")));
+        paraData += "&mediaReportModelString=" + encodeURIComponent(JSON.stringify(mediaReportdg.thisdg.datagrid("getRows")));
+        if (Type == 1) {
+            paraData += "&employmentHistoryModelString=" + encodeURIComponent(JSON.stringify(employmentHistorydg.thisdg.datagrid("getRows")));
+            paraData += "&educationModelString=" + encodeURIComponent(JSON.stringify(educationdg.thisdg.datagrid("getRows")));
+        }
+
+
+        $.ajax({
+            type: 'POST',
+            url: submitform.attr('action'),
+            data: paraData,
+            success: function(data) {
+                if (data.result) {
+                    debugger;
+                    @{ var functionName = (string) ViewBag.FunctionName;}
+
+                    @if (functionName!="")
+                        {
+                            @(functionName)@:(data.data,@(ViewBag.EditRow)); 
+                        }
+                        else
+                        {
+                            @:submitform[0].reset();
+                            @:addEntityClosePubDialg();
+                            @*@:var pars={};
+                            @:var url="/OnlineEntity/EntityPersonListPage";
+                            @:var url1="/OnlineEntity/EntityCompanyListPage";*@
+                            @:if (Type == 1)
+                                @:{
+                                @:    loadData1();
+                                @:}
+                                @:else
+                                @:{
+                                @:    loadData();
+                                @:}
+                            @:$.messager.alert('@BaseRes.COM_CTL_NOTICE',data.Msg);
+                       }
+
+                } else {
+                    $.messager.alert('@BaseRes.COM_CTL_NOTICE',data.Msg);
+                }
+            }
+        });
+    }
+    </script>

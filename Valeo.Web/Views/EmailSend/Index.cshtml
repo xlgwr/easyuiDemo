@@ -1,0 +1,488 @@
+﻿@using Valeo.Domain;
+@model EmailAppModel
+@using Valeo.Lang;
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>@BaseRes.ESD_CTL_001</title>
+    <link href="~/Content/themes/default/easyui.css" rel="stylesheet" />
+    <link href="~/Content/themes/icon.css" rel="stylesheet" />
+    <link href="~/Content/themes/color.css" rel="stylesheet" />
+    <link href="~/Content/demo.css" rel="stylesheet" />
+    <link href="~/Content/style_all.css?v=2" rel="stylesheet" />
+    <script src="~/Scripts/jquery.min.js"></script>
+    <script src="~/Scripts/jquery.easyui.min.js"></script>
+    <script src="~/Scripts/easyui-lang-zh_CN.js"></script>
+   
+    <script>
+        var UEDITOR_HOME_URL = "/ueditor/";　　//从项目的根目录开始
+    </script>
+    <!--
+        作者：152645239@qq.com
+        时间：2016-07-05
+        描述：引入编辑器插件
+    -->
+    @*<link href="~/Content/umeditor/themes/default/css/umeditor.css" type="text/css" rel="stylesheet">
+    <script type="text/javascript" charset="utf-8" src="~/Scripts/umeditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="~/Scripts/umeditor.min.js"></script>*@
+    @*<script type="text/javascript" charset="utf-8" src="~/Content/umeditor/umeditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="~/Content/umeditor/umeditor.min.js"></script>
+    <script type="text/javascript" src="~/Content/umeditor/lang/zh-cn/zh-cn.js"></script>
+    <script type="text/javascript" src="~/Scripts/zh-cn.js"></script>
+    <script type="text/javascript" src="~/Scripts/ajaxfileupload.js"></script>
+    <link href="~/Content/umeditor/themes/default/css/umeditor.css" type="text/css" rel="stylesheet">*@
+
+    <script src="~/Scripts/umeditor.config.js"></script>
+    <script src="~/Scripts/umeditor.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/zh-cn.js"></script>
+    <script type="text/javascript" src="~/Scripts/ajaxfileupload.js"></script>
+    <link href="~/Content/umeditor/themes/default/css/umeditor.css" type="text/css" rel="stylesheet">
+
+    <script type="text/javascript">
+    var subject=@Model.Subject
+    $(function () {
+
+        $("#btnSerach").click(function () {
+            var pars = {
+                txt: $("#txt").val(),
+                datetime: $("#datetime").val()
+            };
+        });
+    });
+    </script>
+
+</head>
+
+<body>
+
+
+  <form id="allform">
+      <div class="mar10" data-options="fit:true,plain:true">
+          <div class="padd10">
+           
+              <div id="p" class="easyui-panel" title="" style="width:100%;height:540px;padding:10px;">
+                  <table class="sec">
+                      <tr>
+                          <td class="title95">@BaseRes.ESD_CTL_002</td>
+                          <td>
+                              <input class="easyui-textbox" style="width:897px" id="txtFromEmail" data-options="required:true" name="txtFromEmail" disabled='disabled' value=@Model.FromMail />
+                          </td>
+                      </tr>
+                      <tr>
+                          <td class="title95">@BaseRes.ESD_CTL_003</td>
+                          <td>
+                              <input type="text" class="easyui-textbox " style="width:897px;" id="txtToEmail" name="txtToEmail" value=@Model.ToMail data-options="
+                            iconWidth: 22,
+                            required:true,
+			                icons: [ {
+				                iconCls:'icon-search',
+				                handler: function(e){
+					                ShowMemberSearchDlg();
+				                }
+			                }]
+			                " />
+
+                              <label onclick="SendMail()" id="btnSerach" class="easyui-linkbutton c6 width70">@BaseRes.ESD_CTL_007</label>
+                              @*<a id="" onclick="$('#dlg').dialog('open'),doSearch();" style="width: 47px;" class="easyui-linkbutton c6 width70" data-options="
+                            iconWidth: 22,
+                            validType:'length[0,32]',
+			                icons: [ {
+				                iconCls:'icon-search',
+				                handler: function(e){
+					                ShowMemberSearchDlg();
+				                }
+			                }]
+			                ">@BaseRes.ESD_CTL_004</a>*@
+                          </td>
+                      </tr>
+                      <tr>
+                          <td class="title95">@BaseRes.ESD_CTL_005</td>
+                          <td>
+                              <input type="text" class="easyui-textbox" style="width: 897px" id="txtSubject" name="txtSubject" data-options=" validType:'length[0,64]'" value="@Model.Subject" />
+                          </td>
+                      </tr>
+                      <tr>
+
+                          <td class="title95">@BaseRes.ESD_CTL_006</td>
+                          <td>
+                              <label>
+                                  <input type='text' class="easyui-textbox" name='textfield' id='textfield' style="width:897px"  value=@Model.AttachPath />
+                                  <input name="fileToUpload" type="file" id="fileToUpload" size="28" style="width: 65px;display: none" onchange="fileClick(this)"/>
+                                  <a id="btn" onclick="document.getElementById('fileToUpload').click();" class="easyui-linkbutton" data-options="iconCls:'icon-add'">选择文件</a>  
+                                  @*<input type="file" name="fileField" class="file" id="txtAttachPath" size="28" />*@
+                              </label>
+                          </td>
+
+                          @*<td class="title95">附件:</td>
+                            <td>
+                                <input type="file" class="easyui-textbox" id="" name="Surname" value=" " />
+                            </td>*@
+                      </tr>
+                      <tr>
+                          <td class="title95" valign="top"></td>
+                          <td>
+                              <!--style给定宽度可以影响编辑器的最终宽度-->
+                              <script type="text/plain" id="myEditor" style="width:90%;height:240px;">@Html.Raw(Model.EmailBody)</script>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td class="title95" valign="center" align="center">
+                          &nbsp;
+                      </td>
+                      <td>
+                          &nbsp;
+                      </td>
+                  </tr>
+                  <tr>
+                      <td class="title95" valign="center" align="center">
+                          &nbsp;
+                      </td>
+                      <td align="left">
+                          @* <a href="javascript:void(0)" onclick="getContent()" id="btnSerach" class="easyui-linkbutton c6 width70">保存</a>*@
+                      </td>
+                  </tr>
+              </table>
+          </div>
+          <br />
+      </div>
+  </div>
+  </form>
+
+   
+
+    <!--对话框模块-->
+    <div id="dlg" class="easyui-dialog" title="@BaseRes.ESD_CTL_008" style="width:500px;height:300px;padding:5px;" data-options="
+				iconCls: 'icon-save',
+				toolbar: '#dlg-toolbaradd',
+				buttons: '#dlg-buttonsadd',
+				closed:true
+			">
+
+        <div>
+            <table id="tt" style="width: 100%; height: 300px"></table>
+        </div>
+
+    </div>
+    <div id="dlg-toolbaradd" style="padding:2px 0">
+        <table cellpadding="0" cellspacing="0" style="width:100%">
+            <tr>
+                <td style="padding-left:2px">
+                    &nbsp;
+                </td>
+                <td style="text-align:right;padding-right:2px">
+                    <input class="easyui-searchbox" data-options="prompt:'@BaseRes.ESD_CTL_009'" id="serch" searcher="doSearch" style="width:150px">
+                    @*<input id="ss" class="easyui-searchbox"
+                           searcher="doSearch" prompt="请输入用户名"
+                           style="width: 130px; vertical-align: middle;"></input>*@   
+                 </td>
+            </tr>
+        </table>
+    </div>
+    <div id="dlg-buttonsadd">
+        <a  class="easyui-linkbutton" onclick="confirm()">@BaseRes.ESD_CTL_010</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript:$('#dlg').dialog('close')">@BaseRes.ESD_CTL_011</a>
+    </div>
+
+    <script>
+        $('#tt').datagrid({
+            
+            iconCls: 'icon-ok',
+            //pageSize: 10,
+            //pageList: [5, 10, 15, 20],
+            //nowrap: true,
+            //striped: true,
+            //collapsible: true,
+            //toolbar: "#easyui_toolbar",
+            url: '/EmailSend/UserListPage',
+            //url: 'getAllUserAction.action', //搜索前,触发此action请求所有用户信息
+            loadMsg: '@BaseRes.ESD_CTL_012',
+            fitColumns: true,//允许表格自动缩放,以适应父容器
+            sortName: 'MemberID',
+            sortOrder: 'asc',
+            striped:true,
+            remoteSort: false,
+            columns: [[{
+                field: 'ck', checkbox: true
+            }, {
+                field: 'MemberID',
+                width: 150,
+                title: '@BaseRes.ESD_CTL_013'
+            }, {
+                field: 'MemberName',
+                width: 150,
+                title: '@BaseRes.ESD_CTL_014'
+            }, {
+                field: 'Email',
+                width: 230,
+                align: 'right',
+                title: '@BaseRes.ESD_CTL_015'
+            }]],
+            //pagination: true,
+            //rownumbers: true
+        });
+    </script>
+
+    
+
+    <script>
+    /*初始化编辑器*/
+    var um = UM.getEditor('myEditor');
+
+    /*获取内容*/
+    function getContent() {
+        var arr = [];
+        arr.push("使用editor.getContent()方法可以获得编辑器的内容");
+        arr.push("内容为：");
+        arr.push(UM.getEditor('myEditor').getContent());
+        $.messager.alert('@BaseRes.COM_CTL_NOTICE',arr.join("\n"));
+    }
+
+
+    function searchUser() {
+
+        //window.location.href = "/UserSel/Index";
+
+        $('#editdlg').dialog({
+            title: "123",
+            closed: false,
+            cache: false,
+            href: '/UserSel/Index',
+            modal: true
+        });
+    }
+
+
+    function doSearch() {
+
+        var serch = document.getElementById("serch").value;
+        $('#tt').datagrid({
+
+            url: '/EmailSend/UserListPage?'
+                + 'serch=' + encodeURIComponent(serch)
+        });
+
+    }
+
+    function SendMail()
+    {
+        debugger;
+        if (!$("#allform").form('validate')) {
+            return false;
+        }
+        var Subject = $("#txtSubject").val();
+        var FromMail = $("#txtFromEmail").val();
+        var ToMail = $("#txtToEmail").val();
+        //var AttachPath = $("#txtAttachPath").val();
+        var EmailBody = encodeURI(UM.getEditor('myEditor').getContent());
+        var AttachPath = document.getElementById('textfield').tag;
+
+        //$.messager.progress({ 'text': '发送中', showType: 'fade' });//调用前打开
+
+        $.ajax({
+            url: "/EmailSend/SendMail",
+            type: "post",
+            cache: false,
+            async: false,
+            data: { Subject: Subject, FromMail: FromMail, ToMail: ToMail, EmailBody: EmailBody, AttachPath: AttachPath },
+            dataType: "json",
+
+            success: function (data) {
+                debugger;
+                //$.messager.progress('close');//回调后关闭
+
+                if (data.type == 1) {
+                    @{
+                            var functionName = (string) ViewBag.FunctionName;
+                            var retId = (string) ViewBag.RetId;
+                        }
+                    @if (string.IsNullOrEmpty(functionName))
+                        {
+                            @:$.messager.alert('@BaseRes.COM_CTL_NOTICE',"@BaseRes.ESD_CTL_016",'info',function(){clerFormSet();});
+
+                        }
+                        else
+                        {
+                            @:var retEmail = { Id: @(retId), EmailID: data.data.EmailId };
+                                                                                        @:@(functionName)(retEmail);
+                                                                                    }
+
+
+                }
+                else {
+                    //$.messager.alert(' ',"@BaseRes.ESD_CTL_017",'info');
+                    $.messager.alert('@BaseRes.COM_CTL_NOTICE',"@BaseRes.ESD_CTL_017");
+                }
+            }
+        });
+
+
+
+    }
+    function clerFormSet(){
+        $('#allform').form('clear');
+
+        $('#allform').form('load', {
+
+            //控件name：值
+            txtFromEmail:'@Model.FromMail'
+        });
+        (UM.getEditor('myEditor').setContent(''));
+    }
+    function confirm() {
+
+
+        //获取datagrid的所有数据（包含条数和记录集合）
+        //var arr = $('#tt').datagrid('getData');
+        //所有条数
+        //var total = arr.total;
+        //所有记录的集合
+        //var rows = arr.rows;
+        //var str = '1';
+
+        //所有选中记录的集合
+        var rows = $('#tt').datagrid('getSelections');
+
+        //所有选中用户的电邮
+        var str = '';
+        $.each(rows, function (n, obj) {
+
+            str += obj.Email+';';
+        });
+
+
+
+
+        var oldValue = $("#txtToEmail").val();
+        oldValue += str;
+        //赋值
+        $("#txtToEmail").val(oldValue);
+
+        $('#tt').datagrid('loadData', { total: 0, rows: [] });
+        $('#dlg').dialog('close');
+    }
+
+    function fileClick(obj) {
+
+
+        var fileName = document.getElementById('fileToUpload').value;
+
+        url: '/EmailSend/UploadFile';
+        $.messager.progress({ 'text': '@BaseRes.ESD_CTL_018', showType: 'fade' });//调用前打开
+        //ajaxfileupload
+        $.ajaxFileUpload({
+            url: '/EmailSend/UploadFile',
+            //data:{
+            //    path:fileName
+            //},
+            type: "Post",
+            secureuri: false,
+            async: true,
+            fileElementId: 'fileToUpload',
+            contentType: "text/html;charset=UTF-8",
+            dataType: 'text/html',
+
+
+            success: function (response) {
+
+                obj = JSON.parse(response); //把html转换成json类
+                if (obj.status == 1) {
+
+
+                    //document.getElementById('textfield').value = obj.value;
+
+                    var value = document.getElementById('textfield').value
+                    var tag = document.getElementById('textfield').tag;
+                    if (tag==undefined) {
+
+                        tag = '';
+                    }
+                    if (value==undefined) {
+
+                        value = '';
+                    }
+
+                    $('#allform').form('load', {
+
+                        //控件name：值
+
+                        textfield: value + obj.message+';'
+                    });
+
+                    //document.getElementById('textfield').value = value + obj.value+';'
+
+                    document.getElementById('textfield').tag = tag + obj.message + ';'
+
+                }
+                else {
+
+                    $.messager.alert('@BaseRes.COM_CTL_NOTICE','@BaseRes.ESD_CTL_019');
+
+                }
+
+            },
+
+
+        });
+        $.messager.progress('close');//回调后关闭
+    }
+    </script>
+
+    <div id="searchdlg" class="easyui-window" title="" data-options="modal:true,closed:true,iconCls:'icon-add'" style="width: 1150px; height: 550px;padding:5px;"></div>
+    <script>
+        function closeDialogSearch() {
+            $('#searchdlg').dialog('close');
+        }
+        function ShowMemberSearchDlg() {
+            $('#searchdlg').dialog({
+                title: "选择会员",
+                closed: false,
+                cache: false,
+                //maximized: true,
+                href: '/SearchDialog/MemberSearch?functionName=GetMemberNameSearch',
+                modal: true
+            });
+        }
+        function GetMemberNameSearch(memberRow) {
+             
+            //console.log(memberRow)
+            if (memberRow.Email==''||memberRow.Email==null||memberRow.Email==undefined) {
+
+               
+            }
+            else
+            {
+                var sss=$("#txtToEmail").val();
+                var newss=sss+memberRow.Email+";";
+                $('#allform').form('load', {
+
+                    //控件name：值
+
+                    txtToEmail: newss
+                });
+            }
+    
+        }
+    </script>
+
+
+
+
+    <div id="editdlg" class="easyui-dialog" style="width:500px;height:400px;padding:5px;" data-options="
+				iconCls: 'icon-save',
+				toolbar: '#dlg-toolbar',
+				buttons: '#dlg-buttons',
+				closed:true
+			">
+    </div>
+
+
+
+</body>
+
+</html>

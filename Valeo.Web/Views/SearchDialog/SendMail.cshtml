@@ -1,0 +1,344 @@
+﻿@using Valeo.Domain;
+@using Valeo.Lang
+@model EmailAppModel
+
+@{
+    Layout = null;
+}
+<script src="~/Scripts/umeditor.config.js"></script>
+ 
+<script src="~/Scripts/umeditor.min.js"></script>
+
+<script type="text/javascript" src="~/Scripts/zh-cn.js"></script>
+<script type="text/javascript" src="~/Scripts/ajaxfileupload.js"></script>
+<link href="~/Content/umeditor/themes/default/css/umeditor.css" type="text/css" rel="stylesheet">
+
+
+<div class="mar10" data-options="fit:true,plain:true">
+    <div class="padd10">
+        <div id="p" class="easyui-panel" title="" style="width:100%;height:500px;padding:10px;">
+            <table class="sec">
+                <tr>
+                    <td class="title95">发送人:</td>
+                    <td>
+                        <input class="easyui-validatebox" style="width:90%" id="txtFromEmail" name="Surname" disabled='disabled' value=@Model.FromMail />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="title95">收件人:</td>
+                    <td>
+                        <input type="text" class="easyui-validatebox" style="width:85%" id="txtToEmail" value=@Model.ToMail />
+
+                        <a id="" onclick="$('#dlg').dialog('open')" style="width: 5%" class="easyui-linkbutton c6 width70">选择</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="title95">主题:</td>
+                    <td>
+                        <input type="text" class="easyui-validatebox" style="width: 90%" id="txtSubject" name="Surname" value="@Model.Subject" />
+                    </td>
+                </tr>
+                <tr>
+
+                    <td class="title95">附件:</td>
+                    <td>
+                        <label>
+                            <input type='text' name='textfield' id='textfield' class='txt' style="width:90%" value=@Model.AttachPath />
+                            <input name="fileToUpload" type="file" id="fileToUpload" size="28" style="width: 50%" onchange="fileClick(this)" accept="image/gif,
+
+image/x-ms-bmp, image/bmp,application/msexcel" />
+                            @*<input type="file" name="fileField" class="file" id="txtAttachPath" size="28" />*@
+                        </label>
+                    </td>
+
+                    @*<td class="title95">附件:</td>
+                        <td>
+                            <input type="file" class="easyui-textbox" id="" name="Surname" value=" " />
+                        </td>*@
+                </tr>
+                <tr>
+                    <td class="title95" valign="top"></td>
+                    <td>
+                        <!--style给定宽度可以影响编辑器的最终宽度-->
+                        <script type="text/plain" id="myEditor" style="width:90%;height:240px;">
+
+                            @Model.EmailBody
+                        </script>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="title95" valign="center" align="center">
+                        &nbsp;
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td class="title95" valign="center" align="center">
+                        &nbsp;
+                    </td>
+                    <td align="left">
+                        <a href="javascript:void(0)" onclick="SendMail()" id="btnSerach" class="easyui-linkbutton c6 width70">发送</a> 
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <br />
+    </div>
+</div>
+
+<!--对话框模块-->
+<div id="dlg" class="easyui-dialog" title="选择接收人" style="width:500px;height:300px;padding:5px;" data-options="
+				iconCls: 'icon-save',
+				toolbar: '#dlg-toolbaradd',
+				buttons: '#dlg-buttonsadd',
+				closed:true
+			">
+
+    <div>
+        <table id="tt" style="width: 100%; height: 300px"></table>
+    </div>
+
+</div>
+<div id="dlg-toolbaradd" style="padding:2px 0">
+    <table cellpadding="0" cellspacing="0" style="width:100%">
+        <tr>
+            <td style="padding-left:2px">
+                &nbsp;
+            </td>
+            <td style="text-align:right;padding-right:2px">
+                <input class="easyui-searchbox" data-options="prompt:'输入要搜索的内容'" id="serch" searcher="doSearch" style="width:150px">
+                @*<input id="ss" class="easyui-searchbox"
+                    searcher="doSearch" prompt="请输入用户名"
+                    style="width: 130px; vertical-align: middle;"></input>*@
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="dlg-buttonsadd">
+    <a class="easyui-linkbutton" onclick="confirm()">确定</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript:$('#dlg').dialog('close')">关闭</a>
+</div>
+
+<script>
+    $('#tt').datagrid({
+        iconCls: 'icon-ok',
+        //pageSize: 10,
+        //pageList: [5, 10, 15, 20],
+        //nowrap: true,
+        //striped: true,
+        //collapsible: true,
+        //toolbar: "#easyui_toolbar",
+        url: '/EmailSend/UserListPage',
+        //url: 'getAllUserAction.action', //搜索前,触发此action请求所有用户信息
+        loadMsg: '数据加载中......',
+        fitColumns: true,//允许表格自动缩放,以适应父容器
+        sortName: 'MemberID',
+        sortOrder: 'asc',
+        remoteSort: false,
+        columns: [[{
+            field: 'ck', checkbox: true
+        }, {
+            field: 'MemberID',
+            width: 150,
+            title: '用户ID'
+        }, {
+            field: 'MemberName',
+            width: 150,
+            title: '用户名'
+        }, {
+            field: 'Email',
+            width: 230,
+            align: 'right',
+            title: '电邮'
+        }]],
+        //pagination: true,
+        //rownumbers: true
+    });
+</script>
+
+
+
+<script>
+    /*初始化编辑器*/
+    var um = UM.getEditor('myEditor');
+    /*获取内容*/
+    function getContent() {
+        var arr = [];
+        arr.push("使用editor.getContent()方法可以获得编辑器的内容");
+        arr.push("内容为：");
+        arr.push(UM.getEditor('myEditor').getContent());
+        alert(arr.join("\n"));
+    }
+
+
+    function searchUser() {
+
+        //window.location.href = "/UserSel/Index";
+
+        $('#editdlg').dialog({
+            title: "123",
+            closed: false,
+            cache: false,
+            href: '/UserSel/Index',
+            modal: true
+        });
+    }
+
+
+    function doSearch() {
+
+        var serch = document.getElementById("serch").value;
+        $('#tt').datagrid({
+
+            url: '/EmailSend/UserListPage?'
+                + 'serch=' + encodeURIComponent(serch)
+        });
+
+    }
+
+    function SendMail()
+    {
+        var Subject = $("#txtSubject").val();
+        var FromMail = $("#txtFromEmail").val();
+        var ToMail = $("#txtToEmail").val();
+        //var AttachPath = $("#txtAttachPath").val();
+        var EmailBody = encodeURI(UM.getEditor('myEditor').getContent());
+        var AttachPath = document.getElementById('textfield').tag;
+
+        $.messager.progress({ 'text': '发送中', showType: 'fade' });//调用前打开
+
+        $.ajax({
+            url: "/EmailSend/SendMail",
+            type: "post",
+            cache: false,
+            async: false,
+            data: { Subject: Subject, FromMail: FromMail, ToMail: ToMail, EmailBody: EmailBody, AttachPath: AttachPath },
+            dataType: "json",
+
+            success: function (data) {
+                if (data.type == 1) {
+                        @{
+                        var functionName = (string) ViewBag.FunctionName;
+                        var retId = (string) ViewBag.RetId; 
+                        }
+                        @if (string.IsNullOrEmpty(functionName))
+                        {
+                                @:$.messager.alert('@BaseRes.COM_CTL_NOTICE',"发送成功");
+                                                    @:window.location.href = "/EmailSend/Index";
+                                                                                    }
+                        else
+                        {
+                            @:var retEmail = { Id: @(retId), EmailID: data.data.EmailId };
+                             @:$.messager.alert('@BaseRes.COM_CTL_NOTICE',"发送成功",'info',function() {@(functionName)(retEmail);});
+                        }
+
+
+                }
+                else {
+                    $.messager.alert('@BaseRes.COM_CTL_NOTICE',"发送失败");
+                }
+            }
+        });
+
+        $.messager.progress('close');//回调后关闭
+
+    }
+
+    function confirm() {
+
+
+        //获取datagrid的所有数据（包含条数和记录集合）
+        //var arr = $('#tt').datagrid('getData');
+        //所有条数
+        //var total = arr.total;
+        //所有记录的集合
+        //var rows = arr.rows;
+        //var str = '1';
+
+        //所有选中记录的集合
+        var rows = $('#tt').datagrid('getSelections');
+
+        //所有选中用户的电邮
+        var str = '';
+        $.each(rows, function (n, obj) {
+
+            str += obj.Email+';';
+        });
+
+
+
+
+        var oldValue = $("#txtToEmail").val();
+        oldValue += str;
+        //赋值
+        $("#txtToEmail").val(oldValue);
+
+        $('#tt').datagrid('loadData', { total: 0, rows: [] });
+        $('#dlg').dialog('close');
+    }
+
+    function fileClick(obj) {
+
+
+        var fileName = document.getElementById('fileToUpload').value;
+
+        url: '/EmailSend/UploadFile';
+        $.messager.progress({ 'text': '处理中', showType: 'fade' });//调用前打开
+
+        $.ajaxFileUpload({
+            url: '/EmailSend/UploadFile',
+            type: "Post",
+            secureuri: false,
+            async: true,
+            fileElementId: 'fileToUpload',
+            //contentType: "text/html;charset=UTF-8",
+            dataType: 'text',
+
+
+            success: function (data) {
+
+                if (data.status == 1) {
+
+
+                    //document.getElementById('textfield').value = obj.value;
+
+                    var value = document.getElementById('textfield').value
+                    var tag = document.getElementById('textfield').tag;
+                    if (tag==undefined) {
+
+                        tag = '';
+                    }
+
+                    document.getElementById('textfield').value = value + obj.value+';'
+
+                    document.getElementById('textfield').tag = tag + data.message + ';'
+
+                }
+                else {
+                    $.messager.alert('@BaseRes.COM_CTL_NOTICE',"上传失败");
+                   
+
+                }
+
+            },
+
+
+        });
+        $.messager.progress('close');//回调后关闭
+    }
+</script>
+
+
+<div id="editdlg" class="easyui-dialog" style="width:500px;height:400px;padding:5px;" data-options="
+				iconCls: 'icon-save',
+				toolbar: '#dlg-toolbar',
+				buttons: '#dlg-buttons',
+				closed:true
+			">
+</div>
+
+
+
+

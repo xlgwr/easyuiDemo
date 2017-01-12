@@ -1,0 +1,159 @@
+﻿@using Valeo.Domain.Common
+@using Valeo.Domain.Enum
+@using Valeo.Domain.User;
+@using Valeo.Lang;
+@model UserModel
+@{
+
+    Layout = null;
+}
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>用户密码修改</title>
+    <link href="@Url.Content("~/Content/index.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/themes/default/easyui.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/themes/icon.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/demo.css")" rel="stylesheet" type="text/css" />
+
+    <link href="@Url.Content("~/Content/index.css")" rel="stylesheet" type="text/css" />
+
+</head>
+<body>
+    <div class="mar10n" data-options="fit:true,plain:true">
+        <div class="padd10">
+            <div class="easyui-panel" title="密码修改" style="width:99%;padding:10px;">
+                <form id="userEditForm" action="/PwdReset/Index" class="easyui-form" method="post">
+                    <table>
+                        <tr>
+                            <td class="title95">@BaseRes.USE_ADD_001</td>
+                            <td>
+                                @if (Model.UserID.Equals("admin"))
+                                {
+                                <input type="text" class="easyui-textbox filewidth" id="UserId" name="UserId" value="@Model.UserID" />
+                                }
+                                else
+                                {
+                                <input type="text" class="easyui-textbox filewidth" id="UserId" name="UserId" value="@Model.UserID" readonly="readonly" />
+                                }
+                            </td>
+                            <td class="title95"></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="title95">@BaseRes.USE_ADD_004</td>
+                            <td>
+                                <input type="password" class="easyui-textbox filewidth" id="Password" name="Password" value="@Model.Password" data-options="validType:'PassWord[0]'" />
+                            </td>
+                            <td class="title95"></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="title95">@BaseRes.USE_ADD_005</td>
+                            <td>
+                                <input type="password" class="easyui-textbox filewidth" id="Password1" name="Password1" value="@Model.Password" data-options="validType:'PassWord[0]'" />
+                            <td class="title95"></td>
+                            <td></td>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">
+                                <div data-options="region:'south',border:false" style="text-align: right; padding: 5px 0 0;">
+                                    @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Edit))
+                                    {
+                                    <a class="easyui-linkbutton width80" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="editUser()">保存</a>
+                                    }
+                                    @*<a class="easyui-linkbutton width80" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="closeDialog()">取消</a>*@
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="@Url.Content("~/Scripts/jquery.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.easyui.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/easyui-lang-zh_CN.js")" type="text/javascript"></script>
+    <script>
+        $.extend($.fn.validatebox.defaults.rules, {
+            PassWord: {
+                validator: function (value, param) {
+                    if (value.length < 8 || value.length > 64) {
+                        return false;
+                    }
+                    var isTwo = 0;
+                    if (/[0-9]+/.test(value)) {
+                        isTwo++;
+                    }
+                    if (/[a-zA-Z]+/.test(value)) {
+                        isTwo++;
+                    }
+                    if (/[^0-9a-zA-Z]+/.test(value)) {
+                        isTwo++;
+                    }
+                    if (isTwo > 1) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                },
+                message: '密码由英文字母、数字及符号组成，长度为8到64位'
+            }
+        });
+        function editUser() {
+            var isValid = $('#userEditForm').form('validate');
+            console.log(isValid);
+            if (!isValid) {
+                return;
+            }
+            if ($('#UserId').val().replace(/(^s*)|(s*$)/g, "").length == 0) {
+                $.messager.alert('@BaseRes.COM_CTL_NOTICE', '用户ID不能为空！', 'error');
+                $("input", $("#UserId").next("span")).focus();
+                return false;
+            }
+
+            if ($('#Password').val().replace(/(^s*)|(s*$)/g, "").length == 0) {
+                $.messager.alert('@BaseRes.COM_CTL_NOTICE', '密码不能为空！', 'error');
+                $("input", $("#Password").next("span")).focus();
+                return false;
+            }
+            if ($('#Password').val() != $('#Password1').val()) {
+                $.messager.alert('@BaseRes.COM_CTL_NOTICE', '两次密码不一致！', 'error');
+                $("input", $("#Password").next("span")).focus();
+                return false;
+            }
+            submitForm("userEditForm");
+        }
+        function closeDialog() {
+            $('#userEditForm').form('load', {
+                Password: '',
+                Password1: '',
+            });
+        }
+        function submitForm(formId) {
+            var submitform = $('#' + formId);
+            $.ajax({
+                type: 'POST',
+                url: submitform.attr('action'),
+                data: submitform.serialize(),
+                success: function (data) {
+                    if (data.Msg) {
+                        //submitform[0].reset();
+                        $('#userEditForm').form('load', {
+                            Password: '',
+                            Password1: '',
+                        });
+                        $.messager.alert('@BaseRes.COM_CTL_NOTICE', data.Msg, 'info')
+                    } else {
+
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1071 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout_Index.cshtml";
+}
+@using Valeo.Domain.Common
+@using Valeo.Domain.Enum
+@using Valeo.Lang
+@{
+    List<SelectListItem> ListCountry = ViewBag.ListCountry;         //国家
+    List<SelectListItem> ListGender = ViewBag.ListGender;
+    List<SelectListItem> ListMaritalStatus = ViewBag.ListMaritalStatus;
+    List<SelectListItem> ListListed = ViewBag.ListListed;  
+}
+<script src="~/Scripts/jQuery.Form.js"></script>
+<style>
+/*#sec td, #sec1 td {
+    width: auto;
+    height: 20px;
+    text-align: left;
+}*/
+</style>
+<script type="text/javascript">
+   
+    $(function(){
+        $('#CIncorporationDateStart').datebox().datebox('calendar').calendar({
+            validator: function (date) {
+                debugger;
+                var edate = $("#CIncorporationDateEnd").datebox('getValue');
+                if (edate == "") {
+                    return date;
+                } else {
+                    var now = stringToDate(edate);
+                    return date <= now;
+                }
+            }
+        });
+        $('#CIncorporationDateEnd').datebox().datebox('calendar').calendar({
+            validator: function (date) {
+                debugger;
+                var sdate = $("#CIncorporationDateStart").datebox('getValue');
+                if (sdate == "") {
+                    return date;
+                } else {
+                    var now = stringToDate(sdate);
+                    return now <= date;
+                }
+            }
+        });
+        $('#CDissolutionDateStart').datebox().datebox('calendar').calendar({
+            validator: function (date) {
+                debugger;
+                var edate = $("#CDissolutionDateEnd").datebox('getValue');
+                if (edate == "") {
+                    return date;
+                } else {
+                    var now = stringToDate(edate);
+                    return date <= now;
+                }
+            }
+        });
+        $('#CDissolutionDateEnd').datebox().datebox('calendar').calendar({
+            validator: function (date) {
+                debugger;
+                var sdate = $("#CDissolutionDateStart").datebox('getValue');
+                if (sdate == "") {
+                    return date;
+                } else {
+                    var now = stringToDate(sdate);
+                    return now <= date;
+                }
+            }
+        });
+        $('#PBirthdateStart').datebox().datebox('calendar').calendar({
+            validator: function (date) {
+                debugger;
+                var edate = $("#PBirthdateEnd").datebox('getValue');
+                if (edate == "") {
+                    return date;
+                } else {
+                    var now = stringToDate(edate);
+                    return date <= now;
+                }
+            }
+        });
+        $('#PBirthdateEnd').datebox().datebox('calendar').calendar({
+            validator: function (date) {
+                debugger;
+                var sdate = $("#PBirthdateStart").datebox('getValue');
+                if (sdate == "") {
+                    return date;
+                } else {
+                    var now = stringToDate(sdate);
+                    return now <= date;
+                }
+            }
+        });
+        @*$("#CIncorporationDateEnd").datebox({
+            onSelect: function () {
+                var CourtDaySearch = $("#CIncorporationDateStart").datebox('getValue');
+                var CourtDaySearchE = $("#CIncorporationDateEnd").datebox('getValue')
+                if (CourtDaySearchE < CourtDaySearch) {
+                    $("#CIncorporationDateEnd").datebox('setValue', '');
+                    $.messager.alert('@BaseRes.COM_CTL_NOTICE', "结束时间不能大于开始时间！");
+                }
+            }
+
+        });*@
+
+
+        $("#btnSerachReset").click(function () {
+
+          
+
+            var now = new Date();
+            var date = new Date(now.getTime() - 7 * 24 * 3600 * 1000);
+            var fdate = (date.getFullYear()) + "-" + (date.getMonth() + 1) + "-" + (date.getDate());
+            var tdate = (new Date().getFullYear()) + "-" + (new Date().getMonth() + 1) + "-" + (new Date().getDate());
+            //$("#CIncorporationDateStart").datebox('setValue', fdate);
+            //$("#CIncorporationDateEnd").datebox('setValue', tdate);
+            //$("#CDissolutionDateStart").datebox('setValue', fdate);
+            //$("#CDissolutionDateEnd").datebox('setValue', tdate);
+
+        });
+
+        @*$("#CDissolutionDateEnd").datebox({
+            onSelect: function () {
+                var CDissolutionDateStart = $("#CDissolutionDateStart").datebox('getValue');
+                var CDissolutionDateEnd = $("#CDissolutionDateEnd").datebox('getValue')
+                if (CDissolutionDateEnd < CDissolutionDateStart) {
+                    $("#CDissolutionDateEnd").datebox('setValue', '');
+                    $.messager.alert('@BaseRes.COM_CTL_NOTICE', "结束时间不能大于开始时间！");
+                }
+            }
+
+        });*@
+
+        debugger;
+        var now = new Date();
+        var date = new Date(now.getTime() - 7 * 24 * 3600 * 1000);
+        var fdate = (date.getFullYear()) + "-" + (date.getMonth() + 1) + "-" + (date.getDate());
+        var tdate = (new Date().getFullYear()) + "-" + (new Date().getMonth() + 1) + "-" + (new Date().getDate());
+        //$("#CIncorporationDateStart").datebox('setValue', fdate);
+        //$("#CIncorporationDateEnd").datebox('setValue', tdate);
+        //$("#CDissolutionDateStart").datebox('setValue', fdate);
+        //$("#CDissolutionDateEnd").datebox('setValue', tdate);
+    });
+</script>
+    <div class="easyui-tabs mar10" data-options="fit:true,plain:true" style="height:800px">
+    <!--公司查询条件-->
+    <div title="@BaseRes.TSK_CTL_020" class="padd10" >
+        <div class="easyui-panel" title="@BaseRes.OEC_COL_072" style="width:99%;padding:20px;">
+
+            <form id="CompanyForm">
+                <table style="padding:10px;">
+                    <tr>
+                        <td class="title95">@BaseRes.OEC_COL_001</td>
+                        <td><input type="text" class="easyui-textbox  filewidth_n" id="CCRNo" name="CCRNo" value=" " data-options="validType:'length[0,16]'" /></td>
+                        <td class="title95">@BaseRes.OEC_COL_002</td>
+                        <td><input type="text" class="easyui-textbox  filewidth_n" id="CFullName_En" name="CFullName_En" value=" " data-options="validType:['EN','length[0,128]']" /></td>
+                        <td class="title95">@BaseRes.OEC_COL_003</td>
+                        <td><input type="text" class="easyui-textbox  filewidth_n" id="CFullName_Cn" name="CFullName_Cn" value=" " data-options="validType:'length[0,128]'" /></td>
+                        <td class="title95">@BaseRes.OEC_COL_006</td>
+                        <td><input type="text" class="easyui-textbox  filewidth_n" id="CCIBRNO" name="CCIBRNO" value=" " data-options="validType:'length[0,64]'" /></td>
+                    </tr>
+                    <tr>
+                        <td class="title95">@BaseRes.OEC_COL_004</td>
+                        <td>
+                            <input id="CIncorporationDateStart" class="easyui-validatebox easyui-datebox  filewidth_n" type="datetime" data-options="required:false,validType:['DateDay'],onSelect:function(){fullnum('CIncorporationDateStart','CIncorporationDateEnd')}">
+                        </td>
+                        <td class="tdcenter">@BaseRes.OEC_COL_005</td>
+                        <td>
+                            <input id="CIncorporationDateEnd" class="easyui-validatebox easyui-datebox  filewidth_n" type="datetime" data-options="required:false,validType:['DateDay'],onSelect:function(){fullnum('CIncorporationDateStart','CIncorporationDateEnd')}">
+                        </td>
+
+                        <td class="title95">@BaseRes.OEC_COL_008</td>
+                        <td>
+                            <input id="CDissolutionDateStart" class="easyui-validatebox easyui-datebox  filewidth_n" type="datetime" data-options="required:false,validType:['DateDay'],onSelect:function(){fullnum('CDissolutionDateStart','CDissolutionDateEnd')}">
+
+                        </td>
+                        <td class="tdcenter">@BaseRes.OEC_COL_005</td>
+                        <td><input id="CDissolutionDateEnd" class="easyui-validatebox easyui-datebox  filewidth_n" type="datetime" data-options="required:false,validType:['DateDay'],onSelect:function(){fullnum('CDissolutionDateStart','CDissolutionDateEnd')}"></td>
+
+
+                    </tr>
+                    <tr>
+
+                        <td class="title95">@BaseRes.OEC_COL_007</td>
+                        <td>
+                            @Html.DropDownList("CListed", ListListed, new { @class = "easyui-combobox filewidth", @editable="false" })
+                        </td>
+
+                    </tr>
+
+                </table>
+            </form>
+                <div class="textcenter">
+                    <a href="javascript:void(0)" id="btnCompanySerach" class="easyui-linkbutton c6 width70">@BaseRes.OEC_COL_009</a>
+                    <a href="javascript:void(0)" id="btnSerachReset" class="easyui-linkbutton c9 width70"   onclick="$('#CompanyForm').form('clear'); $.parser.parse('#CompanyForm');">@BaseRes.LOA_COL_039</a>
+                </div>
+
+</div><br />
+        <table id="data" title="@BaseRes.OEC_COL_010" style="width: 99%;"></table>
+    </div>
+
+    <!--个人查询条件-->
+    <div title="@BaseRes.LOA_EDT_052" class="padd10">
+        <div class="easyui-panel" title="@BaseRes.OEC_COL_072" style="width:99%;padding:10px;">
+            <form id="PersonForm">
+                <table>
+                    <tr>
+                        
+                        <td class="title95">@BaseRes.OEC_COL_011</td>
+                        <td><input type="text" class="easyui-textbox  filewidth_n" id="PFullName_En" name="PFullName_En" data-options="validType:['EN','length[0,64]']" /></td>
+                        <td class="title95">@BaseRes.OEC_COL_012</td>
+                        <td><input type="text" class="easyui-textbox  filewidth_n" id="PFullName_Cn" name="PFullName_Cn" data-options="validType:'length[0,64]'" /></td>
+                        <td class="title95">@BaseRes.OEC_COL_013</td>
+                        <td><input type="text" class="easyui-textbox  filewidth_n" id="PAlias_En" name="PAlias_En" data-options="validType:['EN','length[0,16]']" /></td>
+                        <td class="title95">@BaseRes.OEC_COL_014</td>
+                        <td><input type="text" class="easyui-textbox  filewidth_n" id="PAlias_Cn" name="PAlias_En" data-options="validType:'length[0,16]'" /></td>
+
+                    </tr>
+                    <tr>
+                        <td class="title95">@BaseRes.OEC_COL_015</td>
+                        <td><input type="text" class="easyui-textbox  filewidth_n" id="PNickname" name="PNickname" data-options="validType:'length[0,16]'" /></td>
+                        <td class="title95">@BaseRes.OEC_COL_016</td>
+                        <td>
+                            @Html.DropDownList("PGender", ListGender, new { @class = "easyui-combobox filewidth", @editable = "false" })
+                        </td>
+                        <td class="title95">@BaseRes.OEC_COL_017</td>
+                        <td>
+                            <input id="PBirthdateStart" class="easyui-validatebox easyui-datebox  filewidth_n" type="datetime" data-options="required:false,validType:['DateDay'],onSelect:function(){fullnum('PBirthdateStart','PBirthdateEnd')}">
+                        </td>
+                        <td class="tdcenter">@BaseRes.OEC_COL_005</td>
+                        <td><input id="PBirthdateEnd" class="easyui-validatebox easyui-datebox  filewidth_n" type="datetime" data-options="required:false,validType:['DateDay'],onSelect:function(){fullnum('PBirthdateStart','PBirthdateEnd')}"></td>
+
+
+                    </tr>
+                    <tr>
+                        <td class="title95">@BaseRes.OEC_COL_018</td>
+                        <td>
+                            @Html.DropDownList("PNationality", ListCountry, new { @class = "easyui-combobox filewidth", @editable = "false" })
+                        </td>
+                        <td class="title95">@BaseRes.OEC_COL_019</td>
+                        <td><input type="text" class="easyui-textbox  filewidth_n" id="PPlaceBirth" name="PPlaceBirth" value="" data-options="validType:'length[0,32]'" /></td>
+                        <td class="title95">@BaseRes.OEC_COL_020</td>
+                        <td>
+                            @Html.DropDownList("PMaritalStatus", ListMaritalStatus, new { @class = "easyui-combobox filewidth", @editable = "false" })
+                        </td>
+                        <td class="title95">@BaseRes.OEC_COL_021</td>
+                        <td><input type="text" class="easyui-textbox  filewidth_n" id="PChineseCode" name="PChineseCode" value="" data-options="validType:'length[0,32]'" /></td>
+
+                    </tr>
+                </table>
+            </form>
+        <div class="textcenter">
+            <a href="javascript:void(0)" id="btnSPSerach" class="easyui-linkbutton c6 width70">@BaseRes.OEC_COL_009</a>
+            <a href="javascript:void(0)" id="btnSerachReset" class="easyui-linkbutton c9 width70" onclick="$('#PersonForm').form('clear'); $.parser.parse('#PersonForm');">@BaseRes.LOA_COL_039</a>
+        </div>
+        </div><br />
+        <table id="date1" title="@BaseRes.OEC_COL_010" style="width: 99%"></table>
+    </div>
+</div>
+
+@*<div id="export" class="easyui-dialog" title="@(BaseRes.ONC_COL_047)" style="width: 500px; height: 150px; padding: 5px;" data-options="
+            iconCls: 'icon-save',
+                toolbar: '#dlg-toolbaradd',
+            buttons: '#dlg-buttonsadd',
+            closed:true
+            ">
+        <form id="UpLoadFileForm">
+            <table class="width100p">
+                <tr>
+                    <td>
+                        &nbsp;
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type="file" name="addPicPathFile" id="addPicPathFile" accept="image/bmp, image/jpg, image/jpeg, image/png, image/tiff" />
+            </td>
+        </tr>
+        </table>
+        </form>
+
+    <div id="dlg-buttonsadd">
+        <a href="javascript:void(0)" class="easyui-linkbutton width80" data-options="iconCls:'icon-ok'" onclick="javascript: eUploadfile.executeUpLoad();">上传</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton width80" data-options="iconCls:'icon-cancel'" onclick="javascript: $('#export').dialog('close');">取消</a>
+    </div>
+    </div>*@
+
+<div id="adddlg" class="easyui-window" title="@BaseRes.OEC_COL_022" data-options="modal:true,closed:true,iconCls:'icon-add'" style="width: 1190px; height: 555px; padding: 5px;">
+</div>
+<script type="text/javascript">
+    var tmprow = undefined;
+    $(function () {
+        loadData();
+
+
+        
+
+        $("#btnCompanySerach").click(function () {
+            if ($("#CompanyForm").form('validate')&&fullnum('CDissolutionDateStart','CDissolutionDateEnd')&&fullnum('CIncorporationDateStart','CIncorporationDateEnd')) {
+                var CRNo=$.trim($("#CCRNo").val());
+                var FullName_En=$.trim($("#CFullName_En").val());
+                var FullName_Cn=$.trim($("#CFullName_Cn").val());
+                var IncorporationDateStart=$.trim($("#CIncorporationDateStart").datetimebox('getValue'));
+                var IncorporationDateEnd=$.trim($("#CIncorporationDateEnd").datetimebox('getValue'));
+                var DissolutionDateStart=$("#CDissolutionDateStart").datetimebox('getValue');
+                var DissolutionDateEnd=$("#CDissolutionDateEnd").datetimebox('getValue');
+                var CIBRNO=$.trim($("#CCIBRNO").val());
+                var Listed=$.trim($("#CListed").combobox('getValue'));
+
+                if (CRNo==""&&FullName_En==""&&FullName_Cn==""&&IncorporationDateStart==""
+                    &&IncorporationDateEnd==""&&DissolutionDateStart==""&&DissolutionDateEnd==""&&CIBRNO==""&&Listed==-1) {
+                    return $.messager.alert('@BaseRes.COM_CTL_NOTICE ', "@BaseRes.OLA_CTL_122", "info");
+                }
+                var pars1 = {
+                    CRNo: $.trim($("#CCRNo").val()),
+                    FullName_En: $.trim($("#CFullName_En").val()),
+                    FullName_Cn: $.trim($("#CFullName_Cn").val()),
+                    IncorporationDateStart: $.trim($("#CIncorporationDateStart").datetimebox('getValue')),
+                    IncorporationDateEnd: $.trim($("#CIncorporationDateEnd").datetimebox('getValue')),
+                    DissolutionDateStart: $("#CDissolutionDateStart").datetimebox('getValue'),
+                    DissolutionDateEnd: $("#CDissolutionDateEnd").datetimebox('getValue'),
+                    CIBRNO: $.trim($("#CCIBRNO").val()),
+                    Listed: $.trim($("#CListed").combobox('getValue'))
+                };
+                var url = "/OnlineEntity/EntityCompanyListPage";
+                loadData(pars1, url);
+            }
+        });
+        @if ((bool)ViewBag.IsEdit)
+        {
+            if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Search))
+            {
+                @:Edit(@(ViewBag.Id), "@BaseRes.OEC_COL_185", 2, false);//loanjs.showEditLoan(, "查看信贷", false);
+                     }
+            else
+            {
+                @:$.messager.alert('@BaseRes.COM_CTL_NOTICE ', "@BaseRes.OEC_COL_176");
+                     }
+
+        }
+    });
+
+    function closeDialogSearch() {
+        $('#searchdlg').dialog('close');
+    }
+
+    function loadData(pars, url) {
+        $('#data').datagrid({
+            url: url,
+            data: { "total": 0, "rows": [] },
+            //width: 1000,
+            //height: 400,
+            height: ($(window).height() * 0.99) - 250,
+            //fit:true,
+            fitColumns: true, //列自适应
+            nowrap: false,
+            idField: 'Entityid', //主键列的列名
+            loadMsg: '@BaseRes.OEC_COL_048',
+            pagination: true, //是否有分页
+            singleSelect: true,//是否单行选择
+            checkOnSelect: true,
+            selectOnCheck: true,
+            pageSize: 50, //每页多少条数据
+            pageNumber: 1, //默认的页
+            pageList: [50, 100, 150, 200],
+            queryParams: pars, //往后台传递参数
+            columns: [
+                [
+                    {
+                        field: 'Entityid',
+                        title: 'ID',
+                        align: 'center',
+                        width: 150,
+                        sortable: true
+                    },
+                {
+                    field: 'CRNo',
+                    title: '@BaseRes.OEC_COL_023',
+                    align: 'center',
+                    width: 150, sortable: true
+                }, {
+                    field: 'FullName_En',
+                    title: '@BaseRes.OEC_COL_024',
+                    align: 'center',
+                    width: 200, sortable: true
+                }, {
+                    field: 'FullName_Cn',
+                    title: '@BaseRes.OEC_COL_025',
+                    align: 'center',
+                    width: 150, sortable: true
+                }, {
+                    field: 'CompanyType',
+                    title: '@BaseRes.OEC_COL_026',
+                    align: 'center',
+                    width: 150, sortable: true
+                }, {
+                    field: 'IncorporationDate',
+                    title: '@BaseRes.OEC_COL_027',
+                    align: 'center',
+                    width: 150, sortable: true
+                }, {
+                    field: 'AuthorizedCapital',
+                    title: '@BaseRes.OEC_COL_028',
+                    align: 'center',
+                    width: 150, sortable: true
+                }, {
+                    field: 'CIBRNO',
+                    title: '@BaseRes.OEC_COL_029',
+                    align: 'center',
+                    width: 100, sortable: true
+                }, {
+                    field: 'Areas',
+                    title: '@BaseRes.OEC_COL_030',
+                    align: 'center',
+                    width: 100, formatter: function (value, row, index) {
+                        if (value == 0) {
+                            return '@BaseRes.OEC_COL_177';
+                        }
+                        if (value == 1) {
+                            return '@BaseRes.OEC_COL_178';
+                        }
+                        if (value == 2) {
+                            return '@BaseRes.OEC_COL_057';
+                        }
+                    }
+                }, {
+                    field: 'PlaceRegistration',
+                    title: '@BaseRes.OEC_COL_031',
+                    align: 'center',
+                    width: 100, sortable: true
+                }, {
+                    field: 'Listed',
+                    title: '@BaseRes.OEC_COL_032',
+                    align: 'center',
+                    width: 100, sortable: true,
+                    formatter: function (value, row, index) {
+                        if (value == 0) {
+                            return '@BaseRes.OEC_COL_033';
+                        }else
+                            if (value == 1) {
+                                return '@BaseRes.OEC_COL_034';
+                            } else {
+                                return value;
+                            }
+                    }
+                }, {
+                    field: 'IssuedShares',
+                    title: '@BaseRes.OEC_COL_179',
+                    align: 'center',
+                    width: 100, sortable: true,
+                    formatter: function (value, row, index) {
+                        if (value == 0) {
+                            return '@BaseRes.OEC_COL_180';
+                        }
+                        if (value == 1) {
+                            return '@BaseRes.OEC_COL_181';
+                        }
+                    }
+                }, {
+                    field: 'ActiveStatus',
+                    title: '@BaseRes.OEC_COL_035',
+                    align: 'center',
+                    width: 100, sortable: true
+                }, {
+                    field: 'WindingUpMode',
+                    title: '@BaseRes.OEC_COL_036',
+                    align: 'center',
+                    width: 100, sortable: true
+                }, {
+                    field: 'DissolutionDate',
+                    title: '@BaseRes.OEC_COL_037',
+                    align: 'center',
+                    width: 150, sortable: true
+                }, {
+                    field: 'RegisterOfCharges',
+                    title: '@BaseRes.OEC_COL_038',
+                    align: 'center',
+                    width: 100, sortable: true
+                }, {
+                    field: 'ImportantNote',
+                    title: '@BaseRes.OEC_COL_039',
+                    align: 'center',
+                    width: 100, sortable: true
+                }, {
+                    field: 'Remarks',
+                    title: '@BaseRes.OEC_COL_040',
+                    align: 'center',
+                    width: 100, sortable: true
+                }@*, {
+                    field: 'operation',
+                    title: '@BaseRes.OEC_COL_041',
+                    align: 'center',
+                    width: 150, sortable: true,
+                    formatter: function (value, row, index) {
+                        var operationhtml = '';
+                        @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Edit))
+                        {
+                            @:operationhtml += '<a class="l-btn l-btn-small l-btn-plain"><span class="l-btn-left l-btn-icon-left" onclick=Edit("' + row.Entityid + '","@BaseRes.OEC_COL_042",2,true) ><span class="l-btn-text">@BaseRes.OEC_COL_043</span><span class="l-btn-icon icon-edit">&nbsp;</span></span></a>';
+                                                                        }
+                        operationhtml += '<a class="l-btn l-btn-small l-btn-plain"><span class="l-btn-left l-btn-icon-left" onclick=Edit("' + row.Entityid + '","查看公司",2,false) ><span class="l-btn-text">查看</span><span class="l-btn-icon icon_webedite">&nbsp;</span></span></a>';
+                        @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Delete))
+                        {
+                            @:operationhtml += '<a class="l-btn l-btn-small l-btn-plain"><span class="l-btn-left l-btn-icon-left" onclick=deletePerson(2,"' + row.Entityid + '") ><span class="l-btn-text">@BaseRes.OEC_COL_044</span><span class="l-btn-icon icon-remove">&nbsp;</span></span></a>';
+                                                                        }
+                        return operationhtml;
+                    }
+                }*@]
+            ],onLoadSuccess: function (data) {
+                $('#data').datagrid('clearSelections');
+            },
+            onDblClickRow: function (rowIndex, rowData) {
+                @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Edit))
+                {
+                    @:Edit(rowData.Entityid, "@(BaseRes.OEC_COL_042)", 2,true);
+                                }
+
+            },
+            onSelect: function (rowIndex, rowData) {
+                tmprow = rowData;
+            }, onCheck: function (rowIndex, rowData) {
+                tmprow = rowData;
+            },
+            onClickRow: function (rowIndex, rowData) {
+                tmprow = rowData;
+            },
+            toolbar: [
+                @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Create))
+                {
+                    @:{ text: '@BaseRes.OEC_COL_045', iconCls: 'icon-add btn_menu', handler: function () { showAdd('@BaseRes.OEC_COL_046', 2); } }, '-',
+                }
+
+                @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Edit))
+                {
+                    @: {text: '@BaseRes.MGC_CTL_008', iconCls: 'icon-edit', handler: function () {
+                                        @:      var selectRows = $('#data').datagrid('getSelected');
+                                        @:      if (!selectRows) {
+                                            @:          $.messager.alert('@BaseRes.COM_CTL_NOTICE', "@BaseRes.MGC_CTL_031");
+                                            @:          return;
+                                            @:      }
+                                        @:  Edit(selectRows.Entityid, "@BaseRes.OEC_COL_042", 2,true);
+                                        @: }
+                                        @:}, '-',
+                }
+                {
+                    text: '@BaseRes.OSP_CTL_161',
+                    iconCls: 'icon_webedite',
+                    handler: function () {
+                        var selectRows = $('#data').datagrid('getSelected');
+                        if (!selectRows) {
+                            $.messager.alert('@BaseRes.COM_CTL_NOTICE', "@BaseRes.OEC_COL_182");
+                            return;
+                        }
+                        Edit(selectRows.Entityid, "@BaseRes.OEC_COL_175",1,false);
+                    }
+                }, '-',
+                @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Delete))
+                {
+                    @: { text: '@(BaseRes.PAC_COL_019)', iconCls: 'icon-remove', handler: function () { deletePerson(2); } },'-',
+                }
+                @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Export))
+                {
+                    @:{ text: '@BaseRes.OEC_COL_047', iconCls: 'icon_export', handler: function () { getCountExportC() } }
+                }
+
+
+            ]
+        });
+    }
+
+    function getCountExportC() {
+        var selectRows = $('#data').datagrid('getData'); console.log(selectRows.total);
+        if (selectRows.total < 1) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', "导出数据不能为空。", "info"); return;
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/OnlineEntity/GetCountExport',
+            data: {
+                CRNo: $.trim($("#CCRNo").val()),
+                FullName_En: $.trim($("#CFullName_En").val()),
+                FullName_Cn: $.trim($("#CFullName_Cn").val()),
+                IncorporationDateStart: $.trim($("#CIncorporationDateStart").datetimebox('getValue')),
+                IncorporationDateEnd: $.trim($("#CIncorporationDateEnd").datetimebox('getValue')),
+                DissolutionDateStart: $("#CDissolutionDateStart").datetimebox('getValue'),
+                DissolutionDateEnd: $("#CDissolutionDateEnd").datetimebox('getValue'),
+                CIBRNO: $.trim($("#CCIBRNO").val()),
+                Listed: $.trim($("#CListed").combobox('getValue'))
+            },
+            success: function (data) {
+                debugger;
+                if (data.result) {
+                    newExportEntityC();
+                }else{
+                    $.messager.alert('@BaseRes.COM_CTL_NOTICE', data.Msg,"info");
+                }
+            }
+        });
+    }
+
+    //公司导出
+    function newExportEntityC(){
+        var selectRows = $('#data').datagrid('getData'); console.log(selectRows.total);
+        if (selectRows.total < 1) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', "导出数据不能为空。","info"); return;
+        }
+        debugger;
+        var rpt_quanxian = new Array();
+        var column = new Object();
+        column.CRNo= $.trim($("#CCRNo").val()),
+        column.FullName_En=$.trim($("#CFullName_En").val()),
+        column.FullName_Cn= $.trim($("#CFullName_Cn").val()),
+        column.IncorporationDateStart= $.trim($("#CIncorporationDateStart").datetimebox('getValue')),
+        column.IncorporationDateEnd= $.trim($("#CIncorporationDateEnd").datetimebox('getValue')),
+        column.DissolutionDateStart=$("#CDissolutionDateStart").datetimebox('getValue'),
+        column.DissolutionDateEnd= $("#CDissolutionDateEnd").datetimebox('getValue'),
+        column.CIBRNO=$.trim($("#CCIBRNO").val()),
+        column.Listed= $.trim($("#CListed").combobox('getValue'))
+        rpt_quanxian.push(column);
+        window.location.href = "/OnlineEntity/NewExportC?condition=" + JSON.stringify(rpt_quanxian);
+
+    }
+
+
+
+    //导出entity
+    function exportEntity(formName,flag) {
+
+        var selectRows = $(formName).datagrid('getSelections');
+        if (!selectRows.length) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', "@BaseRes.IRC_COL_031");
+            return;
+        }
+
+        var postForm = document.createElement("form");
+        postForm.method = "post";
+        if (flag==1) {
+            postForm.action = "/OnlineEntity/ExportPerson";
+        } else {
+            postForm.action = "/OnlineEntity/ExportCompany";
+        }
+
+        postForm.target = "LookInvoice";
+
+        var input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "strEntityIds";
+        var strA = "";
+        for (var i = 0; i < selectRows.length; i++) {
+            strA += selectRows[i].Entityid + ',';
+            //para["caseIds[" + i + "]"] = checkedrows[i].Id;
+        }
+        input.value = strA;
+        postForm.appendChild(input);
+        document.body.appendChild(postForm);
+        postForm.submit();
+        //用完之后，不要忘记删掉
+        postForm.removeChild(input);
+        document.body.removeChild(postForm);
+    }
+    $(function () {
+        loadData1();
+
+        $("#btnSPSerach").click(function () {
+            if ($("#PersonForm").form('validate')&&fullnum('PBirthdateStart','PBirthdateEnd')) {
+                var tFullName_Cn=$("#PFullName_Cn").val();
+                var tFullName_En=$("#PFullName_En").val();
+                var tAlias_En=$("#PAlias_En").val();
+                var tAlias_Cn=$("#PAlias_Cn").val();
+                var tNickname=$("#PNickname").val();
+                var tBirthdateStart=$("#PBirthdateStart").datetimebox('getValue');
+                var tBirthdateEnd=$("#PBirthdateEnd").datetimebox('getValue');
+                var tGender=$("#PGender").combobox('getValue');
+                var tNationality=$("#PNationality").combobox('getValue');
+                var tMaritalStatus=$("#PMaritalStatus").combobox('getValue');
+                var tPlaceBirth=$("#PPlaceBirth").val();
+                var tChineseCode=$("#PChineseCode").val();
+               
+                if (tFullName_Cn==""&&tFullName_En==""&&tAlias_En==""&&tAlias_Cn==""&&tNickname==""&&tBirthdateStart==""
+                    &&tBirthdateEnd==""&&tGender==-1&&tNationality==-1&&tMaritalStatus==-1&&tPlaceBirth==""&&tChineseCode=="") {
+                    return  $.messager.alert('@BaseRes.COM_CTL_NOTICE', "@BaseRes.OLA_CTL_122", "info");
+                }
+                var pars1 = {                 
+                    FullName_Cn: tFullName_Cn,
+                    FullName_En: tFullName_En,
+                    Alias_En: tAlias_En,
+                    Alias_Cn: tAlias_Cn,
+                    Nickname: tNickname,
+                    BirthdateStart: tBirthdateStart,
+                    BirthdateEnd: tBirthdateEnd,
+                    Gender: tGender,
+                    Nationality: tNationality,
+                    MaritalStatus: tMaritalStatus,
+                    PlaceBirth: tPlaceBirth,
+                    ChineseCode: tChineseCode
+                };
+                var url = "/OnlineEntity/EntityPersonListPage";
+                loadData1(pars1, url);
+            }
+        });
+    });
+
+    function loadData1(pars1, url) {
+        $('#date1').datagrid({
+            url: url,
+            data: { "total": 0, "rows": [] },
+            height: ($(window).height() * 0.99) - 250,
+            fitColumns: true, //列自适应
+            nowrap: false,
+            idField: 'Entityid', //主键列的列名
+            loadMsg: '@BaseRes.OEC_COL_048',
+            pagination: true, //是否有分页
+            singleSelect: true,//是否单行选择
+            checkOnSelect: true,
+            selectOnCheck: true,
+            pageSize: 50, //每页多少条数据
+            pageNumber: 1, //默认的页
+            pageList: [50, 100, 150, 200],
+            queryParams: pars1, //往后台传递参数
+            columns: [
+                [
+                    {
+                        field: 'Entityid',
+                        title: 'ID',
+                        align: 'center',
+                        width: 150,
+                        sortable: true
+                    },
+                {
+                    field: 'FullName_En',
+                    title: '@BaseRes.OEC_COL_049',
+                    align: 'center',
+                    width: 100, sortable: true
+                }, {
+                    field: 'FullName_Cn',
+                    title: '@BaseRes.OEC_COL_050',
+                    align: 'center',
+                    width: 100, sortable: true
+                }, {
+                    field: 'Alias_En',
+                    title: '@BaseRes.OEC_COL_051',
+                    align: 'center',
+                    width: 100, sortable: true
+                }, {
+                    field: 'Alias_Cn',
+                    title: '@BaseRes.OEC_COL_052',
+                    align: 'center',
+                    width: 100, sortable: true
+                }, {
+                    field: 'Nickname',
+                    title: '@BaseRes.OEC_COL_053',
+                    align: 'center',
+                    width: 100, sortable: true
+                }, {
+                    field: 'Gender',
+                    title: '@BaseRes.OEC_COL_054',
+                    align: 'center',
+                    width: 100, sortable: true,
+                    formatter: function (value, row, index) {
+                        if (value == 0) {
+                            return '@BaseRes.OEC_COL_055';
+                        }
+                        if (value == 1) {
+                            return '@BaseRes.OEC_COL_056';
+                        }
+                        if (value == 2) {
+                            return '@BaseRes.OEC_COL_057';
+                        }
+                    }
+                }, {
+                    field: 'BirthdateString',
+                    title: '@BaseRes.OEC_COL_058',
+                    align: 'center',
+                    width: 100, sortable: true
+                }, {
+                    field: 'MaritalStatus',
+                    title: '@BaseRes.OEC_COL_059',
+                    align: 'center',
+                    width: 100, sortable: true,
+                    formatter: function (value, row, index) {
+                        if (value == 0) {
+                            return '@BaseRes.OEC_COL_060';
+                        }
+                        if (value == 1) {
+                            return '@BaseRes.OEC_COL_061';
+                        }
+                        if (value == 2) {
+                            return '@BaseRes.OEC_COL_062';
+                        }
+                        if (value == 3) {
+                            return '@BaseRes.OEC_COL_063';
+                        }
+                        if (value == 4) {
+                            return '@BaseRes.OEC_COL_057';
+                        }
+                    }
+                }, {
+                    field: 'CountryName',
+                    title: '@BaseRes.OEC_COL_064',
+                    align: 'center',
+                    width: 100, sortable: true
+                }, {
+                    field: 'PlaceBirth',
+                    title: '@BaseRes.OEC_COL_065',
+                    align: 'center',
+                    width: 100, sortable: true
+                }, {
+                    field: 'ChineseCode',
+                    title: '@BaseRes.OEC_COL_066',
+                    align: 'center',
+                    width: 100, sortable: true
+                }@*, {
+                    field: 'operation',
+                    title: '@BaseRes.OEC_COL_041',
+                    align: 'center',
+                    width: 150, sortable: true,
+                    formatter: function (value, row, index) {
+                        var operationhtml = '';
+                        @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Edit))
+                        {
+                           @:operationhtml+= '<a class="l-btn l-btn-small l-btn-plain"><span class="l-btn-left l-btn-icon-left" onclick=Edit("' + row.Entityid + '","@BaseRes.OEC_COL_067",1,true) ><span class="l-btn-text">@BaseRes.OEC_COL_043</span><span class="l-btn-icon icon-edit">&nbsp;</span></span></a>';
+
+                        }
+                        operationhtml+= '<a class="l-btn l-btn-small l-btn-plain"><span class="l-btn-left l-btn-icon-left" onclick=Edit("' + row.Entityid + '","@BaseRes.OEC_COL_067",1,false) ><span class="l-btn-text">查看</span><span class="l-btn-icon icon_webedite">&nbsp;</span></span></a>';
+                        @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Delete))
+                        {
+                            @:operationhtml += '<a class="l-btn l-btn-small l-btn-plain"><span class="l-btn-left l-btn-icon-left" onclick=deletePerson(1,"' +row.Entityid + '") ><span class="l-btn-text">@BaseRes.OEC_COL_044</span><span class="l-btn-icon icon-remove">&nbsp;</span></span></a>';
+
+                        }
+                        return operationhtml;
+                    }
+                }*@]
+            ] ,onLoadSuccess: function (data) {
+                $('#date1').datagrid('clearSelections');
+            },
+            onDblClickRow: function (rowIndex, rowData) {
+                @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Edit))
+                {
+                    @:Edit(rowData.Entityid, "@(BaseRes.OEC_COL_067)", 1,true);
+                                }
+
+            }, onSelect: function (rowIndex, rowData) {
+                tmprow = rowData;
+            }, onCheck: function (rowIndex, rowData) {
+                tmprow = rowData;
+            },
+            onClickRow: function (rowIndex, rowData) {
+                tmprow = rowData;
+            },
+            toolbar: [
+                @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Create))
+                {
+                    @:{ text: '@BaseRes.OEC_COL_045', iconCls: 'icon-add', handler: function () { showAdd('@BaseRes.OEC_COL_071', 1); } }, '-',
+                }
+                @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Edit))
+                {
+                    @: {text: '@BaseRes.MGC_CTL_008', iconCls: 'icon-edit', handler: function () {
+                                        @:      var selectRows = $('#date1').datagrid('getSelected');
+                                        @:      if (!selectRows) {
+                                            @:          $.messager.alert('@BaseRes.COM_CTL_NOTICE', "@BaseRes.MGC_CTL_031");
+                                            @:          return;
+                                            @:      }
+                                        @:  Edit(selectRows.Entityid, "@BaseRes.OEC_COL_067", 1,true);
+                                        @: }
+                                        @:}, '-',
+                }
+                {
+                    text: '@BaseRes.OSP_CTL_161',
+                    iconCls: 'icon_webedite',
+                    handler: function () {
+                        var selectRows = $('#date1').datagrid('getSelected');
+                        if (!selectRows) {
+                            $.messager.alert('@BaseRes.COM_CTL_NOTICE', "@BaseRes.OEC_COL_182");
+                            return;
+                        }
+                        Edit(selectRows.Entityid, "@BaseRes.OEC_COL_183",1,false);
+                    }
+                }, '-',
+                @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Delete))
+                {
+                    @: { text: '@(BaseRes.PAC_COL_019)', iconCls: 'icon-remove', handler: function () { deletePerson(1); } }, '-',
+                }
+                @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Export))
+                {
+                     @:{ text: '@BaseRes.OEC_COL_047', iconCls: 'icon_export', handler: function () { getCountExportP() } }
+                }
+
+
+            ]
+        });
+    }
+
+
+    function getCountExportP() {
+        var selectRows = $('#date1').datagrid('getData'); console.log(selectRows.total);
+        if (selectRows.total < 1) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', "导出数据不能为空。", "info"); return;
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/OnlineEntity/GetCountExportP',
+            data: {
+                FullName_Cn: $("#PFullName_Cn").val(),
+                FullName_En: $("#PFullName_En").val(),
+                Alias_En: $("#PAlias_En").val(),
+                Alias_Cn: $("#PAlias_Cn").val(),
+                Nickname: $("#PNickname").val(),
+                BirthdateStart: $("#PBirthdateStart").datetimebox('getValue'),
+                BirthdateEnd: $("#PBirthdateEnd").datetimebox('getValue'),
+                Gender: $("#PGender").combobox('getValue'),
+                Nationality: $("#PNationality").combobox('getValue'),
+                MaritalStatus: $("#PMaritalStatus").combobox('getValue'),
+                PlaceBirth: $("#PPlaceBirth").val(),
+                ChineseCode: $("#PChineseCode").val()
+            },
+            success: function (data) {
+                debugger;
+                if (data.result) {
+                    newExportEntityP();
+                }else{
+                    $.messager.alert('@BaseRes.COM_CTL_NOTICE', data.Msg,"info");
+                }
+            }
+        });
+    }
+
+    //公司导出
+    function newExportEntityP(){
+        var selectRows = $('#date1').datagrid('getData'); console.log(selectRows.total);
+        if (selectRows.total < 1) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', "导出数据不能为空。","info"); return;
+        }
+        debugger;
+        var rpt_quanxian = new Array();
+        var column = new Object();
+        column.FullName_Cn=$("#PFullName_Cn").val(),
+        column.FullName_En=$("#PFullName_En").val(),
+        column.Alias_En= $("#PAlias_En").val(),
+        column.Alias_Cn=$("#PAlias_Cn").val(),
+        column.Nickname= $("#PNickname").val(),
+        column.BirthdateStart= $("#PBirthdateStart").datetimebox('getValue'),
+        column.BirthdateEnd= $("#PBirthdateEnd").datetimebox('getValue'),
+        column.Gender= $("#PGender").combobox('getValue'),
+        column.Nationality=$("#PNationality").combobox('getValue'),
+        column.MaritalStatus= $("#PMaritalStatus").combobox('getValue'),
+        column.PlaceBirth= $("#PPlaceBirth").val(),
+        column.ChineseCode=$("#PChineseCode").val()
+        rpt_quanxian.push(column);
+        window.location.href = "/OnlineEntity/NewExportP?condition=" + JSON.stringify(rpt_quanxian);
+
+    }
+
+    function deletePerson(start) {
+
+        @*if (start == 2) {
+            checkedrows = $('#data').datagrid('getSelected');
+        }
+        else if (start == 1) {
+            checkedrows = $('#date1').datagrid('getSelected');
+        }
+        if (checkedrows.length == 0) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', "@BaseRes.OEC_COL_068");
+            return;
+        }*@
+        var checkedrows =null;
+        if (start==1) {
+            checkedrows = $('#date1').datagrid('getChecked');
+        } else {
+            checkedrows = $('#data').datagrid('getChecked');
+        }
+        if (checkedrows.length == 0) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', "@(BaseRes.PAC_COL_020)");
+            return;
+        }
+
+        var para = {}
+        for (var i = 0; i < checkedrows.length; i++) {
+            para["Entityid[" + i + "]"] = checkedrows[i].Entityid;
+        }
+        para["start"] = start;
+
+        $.messager.confirm("@BaseRes.COM_CTL_NOTICE", "@BaseRes.OEC_COL_184", function (r) {
+            if (r) {
+                @*$.ajax({
+                    type: 'POST',
+                    url: "/OnlineEntity/deleteData",
+                    data: {
+                        Entityid: entityId,
+                        start: start
+                    },
+                    success: function (data) {
+
+                        if (data.result == 1) {
+                            if (start == 1) {
+                                $('#date1').datagrid('reload');    // reload the user data
+                            }
+                            else {
+                                $('#data').datagrid('reload');
+                            }
+                        } else {
+                            $.messager.alert('@BaseRes.COM_CTL_NOTICE', data.Msg);
+                        }
+                    }
+                });*@
+                $.post('/OnlineEntity/deleteData', para, function (res) {
+
+                    if (res.result == 1) {
+                        if (start == 1) {
+                            $('#date1').datagrid('reload');    // reload the user data
+                        }
+                        else {
+                            $('#data').datagrid('reload');
+                        }
+                    } else {
+
+                        $.messager.alert('@BaseRes.COM_CTL_NOTICE', res.Msg);
+                    }
+                });
+            }
+
+        });
+    }
+
+    function showAdd(title, type) {
+        $('#adddlg').dialog({
+            title: title,
+            closed: false,
+            cache: false,
+            iconCls: "icon-add",
+            href: '/OnlineEntity/AddEntity?type=' + type,
+            modal: true,
+            onLoad: function () {
+                $('#Flag').combobox({
+
+                    onSelect: function () {
+                        var FlagValue = $("#Flag").combobox('getValue');
+                        if (FlagValue!=1) {
+                            $("#Param1TD1").hide();
+                            $("#Param1TD2").hide();
+                        } else {
+                            $("#Param1TD1").show();
+                            $("#Param1TD2").show();
+                        }
+
+                    }
+                });
+            }
+        });
+    }
+
+    function Edit(entityid, title, type,isEdit) {
+        $('#adddlg').dialog({
+            title: title,
+            closed: false,
+            cache: false,
+
+            iconCls: isEdit ? "icon-edit" : "icon_webedite",
+            href: '/OnlineEntity/Edit?entityId=' + entityid + '&type=' + type+ '&isEdit=' + isEdit,
+            modal: true
+        });
+    }
+
+    function addEntityClosePubDialg() {
+        $('#adddlg').dialog('close');
+    }
+
+
+</script>

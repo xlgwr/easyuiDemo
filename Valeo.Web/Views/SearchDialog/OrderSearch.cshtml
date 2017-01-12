@@ -1,0 +1,144 @@
+﻿@{
+    bool isRadio = (bool)ViewBag.IsRadio;
+    Layout = null;
+}
+
+<script src="~/Scripts/forms/SearchDialog/SearchDialog.js"></script>
+<script type="text/javascript">
+    $(function () {
+        loadDataOrder();
+        $("#btnSerachdlg").click(function () {
+            var dd = $("#ffsearch").serialize() + "&Total=@ViewBag.Total";
+            //console.log(dd);
+            loadDataOrder('/OrderList/ListPage?' + dd);
+        });
+    });
+    function loadDataOrder(url) {
+        $('#OrderList').datagrid({
+            url: url,
+            //width: 1000,
+            //height: 400,
+            //width: ($(window).width()*0.90),
+            height: 275,
+            //fit:true,
+            fitColumns: true, //列自适应
+            nowrap: false,
+            idField: 'Id', //主键列的列名
+            loadMsg: '正在加载信息...',
+            pagination: true, //是否有分页
+            @if(isRadio)
+            {
+                @:singleSelect: true,//是否单行选择
+                                                            }else
+            {
+                @:singleSelect: false,//是否单行选择
+                                                            }
+            pageSize: 10, //每页多少条数据
+            pageNumber: 1, //默认的页
+            pageList: [10, 20, 30],
+            // queryParams: pars, //往后台传递参数
+            columns: [
+                [
+                  @if(!isRadio)
+                  {
+                      @:{ field: 'UserName11', checkbox: true, align: 'center', width: 100 },
+                  }
+                    { field: 'OrderID', title: '订单单号', align: 'center', width: 90, sortable: true },
+                    { field: 'OrderDateVM', title: '订单日期', align: 'center', width: 80, sortable: true },
+                    { field: 'OrderTypeVM', title: '订单来源', align: 'center', width: 50, sortable: true },
+                    {
+                        field: 'MemberName', title: '账户名', align: 'center', width: 60, sortable: true
+                    },
+                    { field: 'Currency', title: '币种', align: 'center', width: 30, sortable: true },
+                    { field: 'Total', title: '订单金额', align: 'center', width: 80, sortable: true },
+                    { field: 'PayWayVM', title: '支付类型', align: 'center', width: 30, sortable: true },
+                    { field: 'PayStateVM', title: '支付状态', align: 'center', width: 50, sortable: true },
+                    { field: 'PaymentWayVM', title: '支付方式', align: 'center', width: 50, sortable: true },
+                    { field: 'EnableVM', title: '订单状态', align: 'center', width: 50, sortable: true },
+                    { field: 'InvoiceDateVM', title: '发票日', align: 'center', width: 80, sortable: true },
+                    { field: 'Remark', title: '备注', align: 'center', width: 60, sortable: true }]
+            ],
+            onLoadSuccess: function (data) {
+                $('#OrderList').datagrid('clearSelections');
+            }
+
+        });
+    }
+</script>
+
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'center'" class="padd10">
+
+        <div class="easyui-panel" title="查询条件" style="width:99%;padding:10px;">
+            <form id="ffsearch">
+                <table style="width:auto;">
+                    <tr>
+                        <td class="title95">订单单号:</td>
+                        <td><input type="text" class="easyui-textbox" id="sOrderID" name="OrderID" /></td>
+                        <td class="title95">订单日期:</td>
+                        <td>
+                            <input class="easyui-datebox" type="datetime" name="OrderDateFrom">
+                        </td>
+                        <td class="title95">至</td>
+                        <td>
+                            <input class="easyui-datebox" type="datetime" name="OrderDateTo">
+                        </td>
+                        <td colspan="2" style="text-align: left;">
+                            <input name="ckInvoice" type="checkbox" style="width: 20px;">七天内需开发票订单
+                        </td>
+                    </tr>
+                    <tr>
+
+                        <td class="title95">支付类型:</td>
+                        <td>
+                            <select name="PayWay" class="easyui-combobox filewidth" editable="false" panelheight="auto">
+                                <option value="-1">全部</option>
+                                <option value="0">现结</option>
+                                <option value="1">月结</option>
+                                <option value="2">包年</option>
+                                <option value="3">特殊</option>
+                            </select>
+                        </td>
+                        <td class="title95"></td>
+                        <td></td>
+                        <td class="title95"></td>
+                        <td></td>
+                        <td class="title95"></td>
+                        <td>
+                            @if (!isRadio)
+                            {
+                                <input type="hidden" name="Currency" value="@(ViewBag.Currency)" />
+                                <input type="hidden" name="MemberName" value="@(ViewBag.MemberName)" />
+                                <input type="hidden" name="IsInvoice" value="true" />
+                                <input type="hidden" name="PayWay" value="-1" />
+                                <input type="hidden" name="ValidityDateDays" value="-1" />
+                            }
+
+                        </td>
+                    </tr>
+                </table>
+                <div class="textcenter">
+                    <a href="javascript:void(0)" id="btnSerachdlg" class="easyui-linkbutton c6 width70">查询</a>
+                </div>
+            </form>
+
+        </div>
+        <br />
+        <table id="OrderList" title="查询结果" style="width: 99%"></table>
+
+
+    </div>
+    <div data-options="region:'south',border:false" style="text-align:right;padding:5px 0 0;">
+        <a class="easyui-linkbutton width80" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="clickAffirm()">确认</a>
+        <a class="easyui-linkbutton width80" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="closeDialogSearch()">取消</a>
+    </div>
+</div>
+<script>
+
+    function clickAffirm() {
+        var getSelected = $('#OrderList').datagrid('@(isRadio ? "getSelected" : "getSelections")');
+        @(ViewBag.FunctionName)(getSelected);
+        closeDialogSearch();
+
+    }
+</script>

@@ -1,0 +1,317 @@
+﻿@using Valeo.Lang;
+@{
+    Layout = null;
+}
+<script src="~/Scripts/forms/EasyuiVerification.js"></script>
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'center'" class="padd10new"> 
+        <div class="paddl30">
+            <form id="packageAddForm" action="/Package/AddSave" class="easyui-form" method="post" >
+                <table cellpadding="5">
+                    <tr>
+                        <td class="title95">@(BaseRes.PAC_ADD_001):</td>
+                        <td><input class="easyui-textbox filewidth_n" type="text" name="PackageId" id="AddPackageId" data-options="required:true,validType:['EmptyString','length[0,32]']"></td>
+                        <td class="title95">@(BaseRes.PAC_ADD_002):</td>
+                        <td>
+                            <select id="AddMemberGradeId" name="MemberGradeId" class="easyui-combobox filewidth">
+                                @{var memberGrades = (List<Valeo.Domain.MemberGrade.MemberGradeModel>) ViewBag.MemberGrades;}
+                                @foreach (var item in memberGrades)
+                                {
+                                    <option value="@item.MemberGradeID">@item.MemberGrade</option>
+                                }
+                            </select>
+                        </td>
+                        <td class="title95">@(BaseRes.PAC_ADD_003):</td>
+                        <td><input class="easyui-textbox filewidth_n" type="text" name="PackageName" id="PackageName" data-options="required:true,validType:['EmptyString','length[0,64]']"> </td>
+                        <td></td>
+                        <td></td>
+                    
+                    </tr>
+                    <tr>
+                        <td class="title95">@(BaseRes.PAC_ADD_004):</td>
+                        <td>
+                            <select name="Currency" id="AddCurrency" class="easyui-combobox filewidth">
+                                @{var currencys = (List<Valeo.Domain.Parameter.ParameterModel>) ViewBag.Currencys;}
+                                @foreach (var item in currencys)
+                                {
+                                    <option value="@item.Paramvalue">@item.Paramvalue</option>
+                                }
+                            </select>
+                        </td>
+
+                        <td class="title95">@(BaseRes.PAC_ADD_005):</td>
+                        <td><input class="easyui-textbox filewidth_n" type="text" name="Total" id="AddTotal" value="0" readonly="readonly"><b class="unitCurrency">$</b></td>
+                        <td class="title95">@(BaseRes.PAC_ADD_006):</td>
+                        <td><input class="easyui-textbox filewidth_n" type="text" name="DiscountTotal" id="AddDiscountTotal" data-options="required:false,validType:['Product','length[0,16]']"><b class="unitCurrency">$</b></td>
+
+                        <td class="title95">@(BaseRes.PAC_ADD_007):</td>
+                        <td colspan="3"><input class="easyui-numberbox filewidth_n" type="text" name="Discount" id="AddDiscount" value="0" data-options="required:true,min:0,precision:0,max:100"> %</td>
+
+
+                    </tr>
+
+                    <tr>
+
+                        <td colspan="8">
+                            <table id="dgProductAdd" class="easyui-datagrid" title="产品列表"></table>
+                        </td>
+                    </tr>
+                </table>
+
+            </form>
+        </div>
+    </div>
+    <div data-options="region:'south',border:false" style="text-align:right;padding:5px 0 0;">
+        <a class="easyui-linkbutton width80" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="addPackage()">@(BaseRes.PAC_ADD_018)</a>
+        <a class="easyui-linkbutton width80" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="closeDialog()">@(BaseRes.PAC_ADD_019)</a>
+    </div>
+</div>
+
+<script>
+    pageToken = 0;
+    function addPackage() {
+        if (!$("#packageAddForm").form('validate')) {
+            return false;
+        }
+        dgProductAdd.accept();
+        if ($('#AddPackageId').val().replace(/^\s*|\s*$/g, "").length == 0) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', '@(BaseRes.PAC_ADD_020)！');
+            $("input", $("#AddPackageId").next("span")).focus();
+            return false;
+        }
+        if ($('#PackageName').val().replace(/^\s*|\s*$/g, "").length == 0) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', '套餐名称不能为空！');
+            $("input", $("#PackageName").next("span")).focus();
+            return false;
+        }
+        var submitform = $('#packageAddForm');
+        var paraData = submitform.serialize();
+
+        if (dgProductAdd.thisdg.datagrid("getRows").length == 0) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', '请添加产品！');
+            return false;
+        }
+        paraData += "&PackageListsString=" + encodeURIComponent(JSON.stringify(dgProductAdd.thisdg.datagrid("getRows")));
+        if (pageToken) {
+            return false;
+        } else {
+            pageToken = 1;
+        }
+        $.ajax({
+            type: 'POST',
+            url: submitform.attr('action'),
+            data: paraData,
+            success: function (data) {
+                if (data.result) {
+                    $.messager.alert('@BaseRes.COM_CTL_NOTICE', data.Msg, 'info', function () {
+                        closeDialog();
+                        //loadData();
+
+                        var pars = {
+                            PackageID: $("#PackageIDSearch").val(),
+                            Currency: $("#CurrencySearch").combo("getValue"),
+                            MemberGradeID: $("#MemberGradeIDSearch").combo("getValue")
+                        };
+                        var url = "/Package/PackagePage";
+                        loadData(url, pars);
+
+                    });
+                } else {
+                    $.messager.alert('@BaseRes.COM_CTL_NOTICE', data.Msg);
+
+                }
+                pageToken = 0;
+            }
+        });
+    }
+
+</script>
+<script>
+    function dgDel(obj) {
+        var selectRows = obj.thisdg.datagrid('getSelected');
+        if (!selectRows) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', "请选择要删除的记录。");
+            return;
+        }
+        var index = obj.thisdg.datagrid('getRowIndex', selectRows);
+        obj.deleteRow(index);
+    }
+    dgProductAdd = {
+        data: [],
+        editIndex:undefined,
+        thisdg: $("#dgProductAdd"),
+        bindDatagrid: function (data) {
+            dgProductAdd.thisdg.datagrid({
+                data: data,
+                height: 270,
+                singleSelect: false,
+                columns: [
+                    [
+                        { field: 'PackageListId', hidden: true },
+                        { field: 'ProductId', title: '@(BaseRes.PAC_ADD_010)', width: 150 },
+                        { field: 'ProductName', title: '@(BaseRes.PAC_ADD_011)', width: 300 },
+                        { field: 'Validity', title: '有效期（月）', width: 100 },
+                            { field: 'Currency', hidden: true },
+                        { field: 'Price', title: '@(BaseRes.PAC_ADD_012)', width: 100 }, 
+                        { field: 'Unit', title: '@(BaseRes.PAC_ADD_013)', width: 100, editor: {
+                            type:'numberbox',
+                            options: {
+                                min:1,
+                                max: 99999,
+                                precision:0,
+                                required:true
+                            }
+                        } },
+                        { field: 'Subtotal', title: '@(BaseRes.PAC_ADD_014)', width: 100 },
+                        { field: 'Discount', hidden: true },
+                        { field: 'DiscountPrice', title: '@(BaseRes.PAC_ADD_015)', width: 100 },
+                        { field: 'DiscountSubtotal', title: '@(BaseRes.PAC_ADD_016)', width: 100 },
+                    
+                        { field: 'PackageID', hidden: true }@*, 
+                        {
+                            field: 'operation',
+                            title: '@(BaseRes.PAC_ADD_017)',
+                            align: 'center',
+                            width: 100,
+                            formatter: function (value, row, index) {
+                                var operationhtml = '<span class="l-btn-left l-btn-icon-left" onclick=dgProductAdd.deleteRow("' + index + '") ><span class="l-btn-text">删除</span><span class="l-btn-icon icon-remove">&nbsp;</span></span>';
+                                return operationhtml;
+                            }
+                        }*@
+                    ]
+                ],
+                toolbar: [
+                    {
+                        text: '@(BaseRes.PUB_WED_022)',
+                        iconCls: 'icon-add',
+                        handler: function () { dgProductAdd.append(); }
+                    }, {
+                        text: '@(BaseRes.ONC_EDT_051)',
+                        iconCls: 'icon-remove',
+                        handler: function () { dgDel(dgProductAdd); }
+                    }
+                ],
+                onClickRow: function (index) {
+                    dgProductAdd.onClickRow(index);
+                }
+            });
+        },
+        endEditing: function () {
+            if (dgProductAdd.editIndex == undefined) {
+
+                return true;
+            }
+            if (dgProductAdd.thisdg.datagrid('validateRow', dgProductAdd.editIndex)) {
+                dgProductAdd.thisdg.datagrid('endEdit', dgProductAdd.editIndex);
+                dgProductAdd.editIndex = undefined;
+                SetTotal();
+                return true;
+            } else {
+                return false;
+            }
+        },
+        onClickRow: function (index) {
+            if (dgProductAdd.editIndex != index) {
+                if (dgProductAdd.endEditing()) {
+                    dgProductAdd.thisdg.datagrid('selectRow', index)
+                        .datagrid('beginEdit', index);
+                    dgProductAdd.editIndex = index;
+                } else {
+                    dgProductAdd.thisdg.datagrid('selectRow', dgProductAdd.editIndex);
+                }
+            } else {
+                dgProductAdd.endEditing();
+            }
+        },
+        append: function () { 
+            $('#searchdlg').dialog({
+                title: '@(BaseRes.PAC_ADD_008)',
+                closed: false,
+                cache: false,
+                href: '/SearchDialog/ProductSearch?functionName=dgProductAdd.addallback&memberGradeId=' + $("#AddMemberGradeId").combo("getValue") + "&currency=" + $("#AddCurrency").combo("getValue"),
+                modal: true
+            });
+        },
+        addallback: function (jsondata) {
+            var packageProducts = dgProductAdd.thisdg.datagrid("getRows");
+            for (var item in packageProducts) {
+                if (packageProducts.hasOwnProperty(item)) {
+                    if (packageProducts[item].ProductId == jsondata.ProductID) {
+                        return;
+                    }
+                }
+            }
+            var discount=Number($("#AddDiscount").textbox('getValue'))/100;
+            var newDatarow = {
+                PackageListId:0,
+                ProductId: jsondata.ProductID, //产品ID 
+                ProductName: jsondata.ProductName, //产品名称
+                Currency:"0",
+                Price: jsondata.Price, //产品单价    
+                Unit: 1, //次数
+                Subtotal: jsondata.Price, //总价 
+                Discount: $("#AddDiscount").textbox('getValue'),
+                DiscountPrice: (jsondata.Price * discount).toFixed(2), //折扣单价
+                DiscountSubtotal: (jsondata.Price * discount).toFixed(2), //折扣小计
+                Validity: jsondata.Validity,
+                PackageID:0
+            }; 
+            packageProducts.push(newDatarow);
+            dgProductAdd.bindDatagrid(packageProducts);
+            SetTotal();
+        },
+        removeit: function () {
+            if (dgProductAdd.editIndex == undefined) {
+                return
+            }
+            dgProductAdd.thisdg.datagrid('cancelEdit', dgProductAdd.editIndex)
+                .datagrid('deleteRow', dgProductAdd.editIndex);
+            dgProductAdd.editIndex = undefined;
+        },
+        deleteRow: function (i) {
+            if (dgProductAdd.endEditing()) {
+                dgProductAdd.thisdg.datagrid('deleteRow', i);
+                dgProductAdd.bindDatagrid(dgProductAdd.thisdg.datagrid("getRows"));
+            }
+            SetTotal();
+        },
+        accept: function () {
+            if (dgProductAdd.endEditing()) {
+                dgProductAdd.thisdg.datagrid('acceptChanges');
+            }
+            SetTotal();
+        },
+        reject: function () {
+            dgProductAdd.thisdg.datagrid('rejectChanges');
+            dgProductAdd.editIndex = undefined;
+        }
+    };
+    function SetTotal() {
+        var dgProductData = dgProductAdd.thisdg.datagrid("getRows");
+        var discount = Number($("#AddDiscount").textbox('getValue')) / 100;
+        if (discount == 0) {
+            discount = 1;
+        }
+        var totalAmount = 0;
+        for (var i = 0; i < dgProductData.length; i++) {
+            dgProductData[i].Discount = $("#AddDiscount").textbox('getValue');
+            dgProductData[i].Subtotal = (Number(dgProductData[i].Price) * Number(dgProductData[i].Unit)).toFixed(0);
+            dgProductData[i].DiscountPrice = (Number(dgProductData[i].Price) * discount).toFixed(0);
+            dgProductData[i].DiscountSubtotal = (Number(dgProductData[i].Subtotal) * discount).toFixed(0);
+            totalAmount += Number(dgProductData[i].Subtotal);
+        }
+        dgProductAdd.bindDatagrid(dgProductData);
+        dgProductAdd.editIndex = undefined;
+        var addDiscountSubtotal = (totalAmount * discount).toFixed(0);
+        $("#AddTotal").textbox('setValue', totalAmount.toFixed(0));
+        $("#AddDiscountTotal").textbox('setValue', addDiscountSubtotal);
+        if ($("#AddCurrency").combobox('getValue') == "RMB") {
+            $(".unitCurrency").html("￥");
+        } else {
+            $(".unitCurrency").html("$");
+        }
+    }
+
+    dgProductAdd.bindDatagrid(dgProductAdd.data);
+
+</script>

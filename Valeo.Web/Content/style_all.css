@@ -1,0 +1,63 @@
+.btn{
+	width: auto;
+	padding: 2px 10px !important;
+	background: #E0ECFF !important;
+	border-radius: 2px;
+	-webkit-border-radius: 2px;
+}
+.btn{
+	background: #95B8E7;
+}
+.padding10{
+	padding: 10px;
+	box-sizing: border-box;
+}
+.width100p{
+	width: 100%;
+}
+.inputradio input[type=radio]{
+	width: 20px;
+}
+.inputradio .huoyue{
+	display: inline-block;
+	width: 50px;
+	text-align: right;
+	color: red;
+}
+.sec {
+	/*border:1px solid #0094ff;*/
+	width: 100%;
+}
+.sec th{
+	text-align: left;
+}
+.sec tr td input[type=checkbox]{
+	padding-top: 2px;
+	width: 20px;
+}
+.tableborder{
+	background: #EDF4FF;
+}
+.tableborder td{
+	padding-left: 5px;
+	background: #FFFFFF;
+}
+.tdcenter{
+	text-align: center;
+}
+.table_default{
+	background: #EDF4FF;
+}
+.table_default tr th{
+	padding: 5px;
+	background: #F4F4F4;
+	color: #333333;
+}
+.table_default tr td{
+	padding: 5px;
+	background: #FFFFFF;
+}
+#west .combo-panel {
+  height:200px;
+  overflow: auto;
+}

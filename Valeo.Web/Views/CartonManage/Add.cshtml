@@ -1,0 +1,157 @@
+﻿@using Valeo.Lang;
+@using Valeo.Domain.Valeo;
+@model v_carton
+@{
+    Layout = null;
+
+    var postUrl = "";
+    var isAdd = false;
+    var isSearch = false;
+    if (ViewBag.isAdd == true)
+    {
+        isAdd = true;
+        postUrl = "/CartonManage/AddSave";
+    }
+    else
+    {
+        isSearch = ViewBag.isSearch;
+        postUrl = "/CartonManage/EditSave";
+
+    }
+}
+
+<script src="~/Scripts/forms/EasyuiVerification.js"></script>
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'center'" class="padd10new">
+        <form id="CartonForm" action="@postUrl" class="easyui-form" method="post">
+            <table>
+                <tr>
+                    <td class="title95">纸箱型号</td>
+                    <td>
+                        @if (ViewBag.isAdd == true)
+                        {
+                            <input type="text" id="cartonNO" name="cartonNO" class="easyui-textbox filewidth" value="" data-options="required:true,validType:['length[0,64]']" />
+                        }
+                        else
+                        {
+                            <input type="text" id="cartonNO" name="cartonNO" class="easyui-textbox filewidth" readonly="readonly" />
+                        }
+                        <span style="color: #ff0000">*</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="title95">纸箱尺寸</td>
+                    <td>
+                        <input type="text" id="cartonSize" name="cartonSize" class="easyui-textbox filewidth" data-options="required:true,validType:['length[0,64]']" />
+                    </td>
+                    <td class="title95">卡板类型</td>
+                    <td>
+                        <input class="easyui-combobox" type="text" name="cardType" id="cardType" editable="false" data-options="
+                                                                            required:true,
+                                                                            url:'/Combox/cardType',
+                                                                            method:'get',
+                                                                            valueField:'cardNO',
+                                                                            textField:'cardNO',
+                                                                            panelHeight:'auto'" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="title95">卡板可放箱数</td>
+                    <td>
+                        <input type="text" id="pcs" name="pcs" class="easyui-numberbox filewidth" data-options="min:0" />箱
+                    </td>
+                </tr>
+                <tr>
+
+                    <td class="title95">备注</td>
+                    <td colspan="5">
+                        <textarea name="remark" style="width: 99%;" rows="3" maxlength="255" data-options="validType:['length[0,255]']"></textarea>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div data-options="region:'south',border:false" style="text-align:right;padding:5px 0 0;">
+        @if (!isSearch)
+        {
+            <a class="easyui-linkbutton width80" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="saveCarton(this)">保存</a>
+        }
+        <a class="easyui-linkbutton width80" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="closeDialog()">取消</a>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        @if (isAdd==false)
+        {
+          @: { setEditDataCarton(); }
+                        }
+        else
+        {
+        @: { setAddDataCarton(); }
+                        }
+    });
+    ///////////
+    function setEditDataCarton() {
+        $.ajax({
+            type: 'get',
+            url: "/CartonManage/getModel",
+            data: { id: '@Model.cartonNO' },
+            success: function (data) {
+                if (data.result) {
+                    $('#CartonForm').form('load', data.value);
+                } else {
+                    $.messager.alert('提示信息 ', data.Msg);
+                }
+            },
+            error: function (e) {
+                console.log(e);
+                disablelinkbutton(btn, 0)
+                $.messager.alert('提示信息 ', "服务器没有响应", 'error');
+            }
+        });
+    }
+    function setAddDataCarton() {
+        $('#CartonForm').form('clear');
+        //$('#CartonForm').form('load',
+        //    {
+        //        cardType: 1
+        //    });
+    }
+
+    function submitForm(formId, btn) {
+        var submitform = $('#' + formId);
+        $.ajax({
+            type: 'POST',
+            url: submitform.attr('action'),
+            data: submitform.serialize(),
+            success: function (data) {
+
+                disablelinkbutton(btn, 0)
+
+                if (data.result) {
+                    $.messager.alert('提示信息 ', data.Msg, 'info', function () {
+                        submitform[0].reset();
+                        closeDialog();
+                        loadData();
+                    });
+                } else {
+                    $.messager.alert('提示信息 ', data.Msg, 'error');
+                }
+            },
+            error: function (e) {
+                console.log(e);
+                disablelinkbutton(btn, 0)
+                $.messager.alert('提示信息 ', "服务器没有响应", 'error');
+            }
+        });
+    }
+    /////////////
+    function saveCarton(btn) {
+        if (!$("#CartonForm").form('validate')) {
+            return false;
+        }
+        disablelinkbutton(btn, 1)
+        submitForm("CartonForm",btn);
+    }
+</script>

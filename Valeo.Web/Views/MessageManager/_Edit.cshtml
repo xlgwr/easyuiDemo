@@ -1,0 +1,77 @@
+﻿@using Valeo.Domain.Message;
+@using Valeo.Lang;
+@model MessageVM
+@{
+    Layout = null;
+}
+
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'center'" class="padd10">
+        <form id="EditMessageForm" action="/MessageManager/EditMessage" class="easyui-form" method="post" >
+            <table class="sec" >
+                <tr>
+                    <td class="title95">@BaseRes.MML_COL_023</td>
+                    <td >
+                        <textarea name="addMemberName" rows="2" id="addMemberName" cols="15" style="width: 397px" maxlength="256" disabled="disabled">@Model.MemberName</textarea>
+                        @*<input type="text" class="easyui-textbox" id="addMemberName" style="width: 397px;height:25px" readonly="readonly" name="MemberName" value="@Model.MemberName" />*@
+                        <input type="hidden" id="addMemberId" name="MemberID" value="@Model.MemberID"/>
+                        <input type="hidden" id="addMessageId" name="MessageID" value="@Model.MessageID" />
+                        <input type="hidden" id="addSendTime" name="SendTime" value="@Model.SendTime" />
+                        <input type="hidden" id="addSendTime" name="SendTime" value="@Model.addtime" />
+                        <input type="hidden" id="addSendTime" name="SendTime" value="@Model.adduser" />
+                        <input type="hidden" id="addSendTime" name="SendTime" value="@Model.Type" />
+                        @*<a id="AddMemberName" class="easyui-linkbutton c6 width70" style="width: 47px;" onclick="GetUserList()">@BaseRes.MML_COL_024</a>*@
+                    </td>
+                </tr>
+                <tr>
+                    <td class="title95">@BaseRes.MML_COL_017</td>
+                    <td>
+                        <input type="text" class="easyui-textbox" id="messageTitle" name="messageTitle" style="width: 397px;height:25px" value="@Model.MessageTitle" data-options="validType:'length[0,64]'" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="title95" >@BaseRes.MML_COL_025</td>
+                    <td>
+                        <textarea name="Message" rows="10" cols="70" style="width: 397px" maxlength="512">@Model.Message</textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="title95" valign="center" align="center">
+                        &nbsp;
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div data-options="region:'south',border:false" style="text-align:right;padding:5px 0 0;">
+        @if ( ViewBag.IsEdit)
+        {
+            <a class="easyui-linkbutton width80" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="EditMessage()">@BaseRes.MML_COL_029</a>
+            <a class="easyui-linkbutton width80" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="closeDialog()">@BaseRes.MML_COL_027</a>
+        }
+        else
+        {
+            <a class="easyui-linkbutton width80" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="closeDialog()">@BaseRes.PUB_CTL_134</a>
+        }
+        
+    </div>
+    <script>
+        function EditMessage() {
+            if (!$("#EditMessageForm").form('validate')) {
+                return false;
+            }
+            var submitform = $('#EditMessageForm');
+
+            if ($("#addMemberName").val().trim() == "") {
+                $.messager.alert('@BaseRes.COM_CTL_NOTICE', "@BaseRes.MML_COL_030");
+                return false;
+            } else {
+                submitForm("EditMessageForm");
+            }
+              
+        }
+    </script>
+</div>

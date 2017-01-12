@@ -1,0 +1,291 @@
+﻿@using Valeo.Domain.Common
+@using Valeo.Domain.Enum
+@using Valeo.Lang
+@{
+    Layout = "~/Views/Shared/_Layout_Index.cshtml";
+}
+@{
+    List<SelectListItem> ListCourt = ViewBag.ListCourt;         //法院
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+    <div class="mar10" data-options="fit:true,plain:true">
+        <div class="padd10">
+            <div class="easyui-panel" title="@BaseRes.MML_COL_016" style="width: 99%; padding: 10px; margin-bottom:10px">
+                <form id="CaseTypeForm">
+                    <table>
+                        <tr>
+                            <td class="title95">@BaseRes.PTC_COL_003</td>
+                            <td>
+                                <input type="text" class="easyui-textbox  filewidth_n" name="CaseType" id="CaseType" value="" />
+                            </td>
+                            <td class="title95">@BaseRes.PTC_COL_004</td>
+                            <td>
+                                <input id="CaseType_En" name="CaseType_En" class="easyui-textbox  filewidth_n" type="text">
+                            </td>
+                            <td class="title95">@BaseRes.PTC_COL_005</td>
+                            <td>
+                                <input id="CaseType_Cn" name="CaseType_Cn" class="easyui-textbox  filewidth_n" type="text">
+                            </td>
+                            <td class="title95">@BaseRes.PTC_COL_006</td>
+                            <td>
+                                @Html.DropDownList("CourtID", ListCourt, new { @class = "easyui-combobox filewidth" })
+
+                            </td>
+                        </tr>
+                        <tr>
+
+
+                            <td class="title95">@BaseRes.PTC_COL_007</td>
+                            <td>
+                                <select class="easyui-combobox filewidth" id="Tykpe" name="Tykpe" data-options="editable:false">
+                                    <option value="-1" selected="selected">@BaseRes.PTC_COL_008</option>
+                                    <option value="1">@BaseRes.PTC_COL_009 </option>
+                                    <option value="2">@BaseRes.PTC_COL_010</option>
+                                </select>
+                            </td>
+                        </tr>
+
+                    </table>
+                </form>
+                <div class="textcenter">
+                    @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Search))
+                    {
+                        <a href="javascript:void(0)" id="btnSerach" class="easyui-linkbutton c6 width70">@BaseRes.MLO_COL_040</a> 
+                        
+                    }
+
+                    <a href="javascript:void(0)" id="" class="easyui-linkbutton c9 width70"
+                       onclick="$('#CaseTypeForm').form('clear'); $.parser.parse('#CaseTypeForm');">@BaseRes.MLO_COL_043</a>
+                </div>
+            </div>
+
+            <table id="data" title="@BaseRes.MML_COL_020" style="width: 99%;"></table>
+        </div>
+    </div>
+
+    <div id="editdlg" class="easyui-window" title="@BaseRes.MML_COL_021" data-options="modal:true,closed:true,iconCls:'icon-add',maximized:true" style="width:650px;height:500px;padding:5px;">
+    </div>
+
+    <script type="text/javascript">
+    $(function () {
+        loadData();
+        $("#btnSerach").click(function () {
+            var pars = {
+                CaseType: $.trim($("#CaseType").val()),
+                CaseType_En: $.trim($("#CaseType_En").val()),
+                CaseType_Cn: $.trim($("#CaseType_Cn").val()),
+                CourtID: $.trim($("#CourtID").combobox('getValue')),
+                Tykpe: $.trim($("#Tykpe").combobox('getValue'))
+            };
+            var url = "/CaseType/GetCaseTypePage";
+            loadData(pars, url);
+        });
+    });
+
+
+    function loadData(pars, url) {
+        $('#data').datagrid({
+            url: url,
+            height: ($(window).height() * 0.93) - 127,
+            fitColumns: true, //列自适应
+            nowrap: false,
+            idField: 'CaseTypeID', //主键列的列名
+            loadMsg: '@BaseRes.MML_COL_001',
+            pagination: true, //是否有分页
+            singleSelect: true,//是否单行选择
+            pageSize: 50, //每页多少条数据
+            pageNumber: 1, //默认的页
+            striped: true,
+            pageList: [50, 100, 150, 200],
+            queryParams: pars, //往后台传递参数
+            columns: [
+                [
+                    //{ field: 'CaseTypeID', checkbox: true, align: 'center', width: 100 },
+                    {
+                    field: 'CaseType',
+                    title: '@BaseRes.PTC_COL_011',
+                    align: 'center',
+                    width: 100, sortable: true
+                }, {
+                    field: 'CaseType_En',
+                    title: '@BaseRes.PTC_COL_012',
+                    align: 'center',
+                    width: 100, sortable: true
+                }, {
+                    field: 'CaseType_Cn',
+                    title: '@BaseRes.PTC_COL_013',
+                    align: 'center',
+                    width: 100, sortable: true
+                }, {
+                    field: 'CourtCode',
+                    title: '@BaseRes.PTC_COL_014',
+                    align: 'center',
+                    width: 100, sortable: true
+                }, {
+                    field: 'Tykpe',
+                    title: '@BaseRes.PTC_COL_015',
+                    align: 'center',
+                    width: 100,
+                    sortable: true,
+                    formatter: function (value, row, index) {
+                        if (value == 1) {
+                            return '@BaseRes.PTC_COL_009';
+                        }
+                        if (value == 2) {
+                            return '@BaseRes.PTC_COL_010';
+                        }
+                    }
+
+                }@*, {
+                    field: 'operator',
+                    title: '操作',
+                    align: 'center',
+                    width: 50, formatter: function (value, row, index) {
+                        var operationhtml = '';
+                        @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Edit))
+                            {
+                                @:operationhtml += '<a class="l-btn l-btn-small l-btn-plain"><span class="l-btn-left l-btn-icon-left" onclick=Edit("' + row.CaseTypeID + '","修改") ><span class="l-btn-text">修改</span><span class="l-btn-icon icon-edit">&nbsp;</span></span></a>';
+
+                            }
+                        @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Delete))
+                            {
+                                @:operationhtml += '<a class="l-btn l-btn-small l-btn-plain"><span class="l-btn-left l-btn-icon-left" onclick=DeletComPany() ><span class="l-btn-text">@(BaseRes.TSK_CTL_012)</span><span class="l-btn-icon icon-remove">&nbsp;</span></span></a>';
+
+                            }
+
+                        return operationhtml;
+                    }
+                }*@]
+
+            ], onClickRow: function (rowIndex, rowData) {
+                tmprow = rowData;
+            }, onLoadSuccess: function (data) {
+                $('#data').datagrid('clearSelections');
+            },
+            onDblClickRow: function (rowIndex, rowData) {
+                @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Edit))
+                {
+                    @:Edit(rowData.CaseTypeID, "@BaseRes.MML_COL_008", true);
+                                }
+
+            }, toolbar: [
+                @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Create))
+                    {
+                    @:{ text: '@BaseRes.SPS_TIT_005', iconCls: 'icon-add', handler: function () { showAdd('@BaseRes.MML_COL_010'); } }, '-',
+                 }
+                 @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Edit))
+                {
+                    @: {text: '@BaseRes.MGC_CTL_008', iconCls: 'icon-edit', handler: function () {
+                    @:      var selectRows = $('#data').datagrid('getSelected');
+                    @:      if (!selectRows) {
+                    @:          $.messager.alert('@BaseRes.COM_CTL_NOTICE', "@BaseRes.MGC_CTL_031");
+                    @:          return;
+                    @:      }
+                    @:  Edit(selectRows.CaseTypeID, "@BaseRes.MML_COL_008", true);
+                    @: }
+                    @:}, '-',
+                 }
+                {
+                    text: '@BaseRes.OSP_CTL_161',
+                    iconCls: 'icon_webedite',
+                    handler: function () {
+                        var selectRows = $('#data').datagrid('getSelected');
+                        if (!selectRows) {
+                            $.messager.alert('@BaseRes.COM_CTL_NOTICE', "@BaseRes.OEC_COL_182");
+                            return;
+                        }
+                        Edit(selectRows.CaseTypeID, "@BaseRes.OSP_CTL_161", false);
+                    }
+                }, '-',
+               @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Delete))
+               {
+                    @: { text: '@(BaseRes.PAC_COL_019)', iconCls: 'icon-remove', handler: function () { DeletComPany(); } }
+                }
+
+            ]
+        });
+    }
+
+    comPanyjs = {
+        closeDialog: function () {
+            $('#editdlg').dialog('close');
+        }
+    }
+    function showAdd(title) {
+        $('#editdlg').dialog({
+            title: title,
+            closed: false,
+            cache: false,
+            iconCls: "icon-add",
+            href: '/CaseType/Add',
+            modal: true,
+            onLoad: function () {
+
+            }
+        });
+    }
+
+    function Edit(CaseTypeID, title, isEdit) {
+        $('#editdlg').dialog({
+            title: title,
+            closed: false,
+            cache: false,
+            iconCls: isEdit ? "icon-edit" : "icon_webedite",
+            href: '/CaseType/Edit?CaseTypeID=' + CaseTypeID + '&isEdit=' + isEdit,
+            modal: true
+        });
+    }
+
+    function DeletComPany() {
+        var checkedrows = $('#data').datagrid('getChecked');
+
+        if (checkedrows.length == 0) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', "@(BaseRes.PAC_COL_020)");
+            return;
+        }
+
+        var para = {}
+        for (var i = 0; i < checkedrows.length; i++) {
+            para["CaseTypeID[" + i + "]"] = checkedrows[i].CaseTypeID;
+        }
+        $.messager.confirm('@BaseRes.COM_CTL_NOTICE', '@BaseRes.MML_COL_015', function (r) {
+            if (r) {
+                $.post('/CaseType/DeleteData', para, function (res) {
+
+                    if (res.result == 1) {
+                        $('#data').datagrid('reload');
+                    } else {
+
+                        $.messager.alert('@BaseRes.COM_CTL_NOTICE', res.Msg);
+                    }
+                });
+            }
+            @*$.ajax({
+                type: 'POST',
+                url: "/CaseType/DeleteData",
+                data: {
+                    CaseTypeID: checkedrows.CaseTypeID
+                },
+                success: function (data) {
+                    if (data.result == 1) {
+                        $('#data').datagrid('reload');    // reload the user data
+                    } else {
+                        $.messager.alert("@BaseRes.COM_CTL_NOTICE", data.Msg);
+
+                    }
+                }
+            });*@
+        });
+    }
+
+    </script>
+
+</body>
+</html>

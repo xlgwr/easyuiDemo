@@ -1,0 +1,221 @@
+﻿@using Valeo.Lang;
+@using Valeo.Domain.Valeo;
+@model v_lableModel
+@{
+    Layout = null;
+
+    var postUrl = "";
+    var isAdd = false;
+    var isSearch = false;
+    if (ViewBag.isAdd == true)
+    {
+        isAdd = true;
+        postUrl = "/LableModelManage/AddSave";
+    }
+    else
+    {
+        isSearch = ViewBag.isSearch;
+        postUrl = "/LableModelManage/EditSave";
+
+    }
+}
+
+<script src="~/Scripts/forms/EasyuiVerification.js"></script>
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'center'" class="padd10new">
+        <form id="LableModelForm" action="@postUrl" class="easyui-form" method="post">
+            <table>
+                <tr>
+                    @if (ViewBag.isAdd != true)
+                    {
+                        <td class="title95">模板ID</td>
+                        <td>
+                            <input type="text" id="lableID" name="lableID" class="easyui-textbox filewidth" readonly="readonly" />
+                        </td>
+                    }
+                    <td class="title95"></td>
+                    <td></td>
+                    <td class="title95"></td>
+                    <td></td>
+                    <td class="title95"></td>
+                    <td></td>
+                    <td class="title95"></td>
+                    <td></td>
+                    <td class="title95"></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="title95">模板名称</td>
+                    <td colspan="5">
+                        <input type="text" id="lableName" name="lableName" class="easyui-textbox" style="width: 100%;" data-options="required:true,validType:['length[0,64]']" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="title95">上传模板(xls/xlsx)</td>
+                    <td>
+                        @if (!isSearch)
+                        {
+                            <input style="width:148px;" type="file" class="filewidth" id="postFiles" name="postFiles" onchange="UploadImg(0)" data-options="required:true" />
+                        }
+                        <input id="path" name="path" type="hidden" />
+                    </td>
+                    <td>
+                        <a id="aLink1" name="aLink1" class="easyui-linkbutton c1" style="width:50px;display:none">浏览</a>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td class="title95">备注</td>
+                    <td colspan="5">
+                        <textarea name="remark" style="width: 99%;" rows="3" maxlength="255" data-options="validType:['length[0,255]']"></textarea>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div data-options="region:'south',border:false" style="text-align:right;padding:5px 0 0; ">
+        @if (!isSearch)
+        {
+            <a class="easyui-linkbutton width80" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="saveLableModel(this)">保存</a>
+        }
+        <a class="easyui-linkbutton width80" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="closeDialog()">取消</a>
+    </div>
+</div>
+
+<script>
+    $(function () {
+
+        @if (isAdd==false)
+        {
+        @: { setEditDataLableModel(); }
+                                                        }
+        else
+        {
+        @: { setAddDataLableModel(); }
+                                                        }
+    });
+    ///////////
+    function setEditDataLableModel() {
+        $.ajax({
+            type: 'get',
+            url: "/LableModelManage/getModel",
+            data: { id: '@Model.lableID' },
+            success: function (data) {
+                if (data.result) {
+                    $('#LableModelForm').form('load', data.value);
+                    funAlink(data.value.path, data.value.lableID + data.value.lableName + "标签模板")
+                } else {
+                    $.messager.alert('提示信息 ', data.Msg);
+                }
+            },
+            error: function (e) {
+                console.log(e);
+                disablelinkbutton(btn, 0)
+                $.messager.alert('提示信息 ', "服务器没有响应", 'error');
+            }
+        });
+    }
+    function funAlink(path, name) {
+        if (path) {
+            $('#aLink1').css({ display: "block" });
+            if (chkImgType(path)) {
+                $('#aLink1').unbind("click").click(function () {
+                    funShowImg(path);
+                })
+            } else {
+                $('#aLink1').unbind("click").click(function () {
+                    funDownfile(path, name);
+                })
+            }
+        }
+    }
+    function setAddDataLableModel() {
+        $('#LableModelForm').form('clear');
+        //$('#LableModelForm').form('load',
+        //    {
+        //        cardType: 1
+        //    });
+    }
+
+    function submitForm(formId, btn) {
+        var submitform = $('#' + formId);
+        $.ajax({
+            type: 'POST',
+            url: submitform.attr('action'),
+            data: submitform.serialize(),
+            success: function (data) {
+
+                disablelinkbutton(btn, 0)
+
+                if (data.result) {
+                    $.messager.alert('提示信息 ', data.Msg, 'info', function () {
+                        submitform[0].reset();
+                        closeDialog();
+                        loadData();
+                    });
+                } else {
+                    $.messager.alert('提示信息 ', data.Msg, 'error');
+                }
+            },
+            error: function (e) {
+                console.log(e);
+                disablelinkbutton(btn, 0)
+                $.messager.alert('提示信息 ', "服务器没有响应", 'error');
+            }
+        });
+    }
+    /////////////
+    function saveLableModel(btn) {
+        if (!$("#LableModelForm").form('validate')) {
+            return false;
+        }
+        var dd = $("#path").val();
+        if (!dd) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', "请上传标签模板。", 'error', function () {
+                $("#postFiles").focus();
+            });
+            return;
+        }
+        //console.log(btn);
+        disablelinkbutton(btn, 1)
+        submitForm("LableModelForm", btn);
+    }
+
+    /// 保存添加图片PDF
+    /// 0:图片格式为jpg,png,bmp或PDF、xls、xlsx
+    /// 1:PDF
+    /// 2:xls、xlsx
+    ///
+    /// pathType
+    /// 0.默认根文件目录:/Uploads
+    /// 1.系统文件目录SystemFile:
+    /// 2.数据文件目录DataFile:
+    /// 3.其它tmp/
+    function UploadImg(flag) {
+        $("#LableModelForm").ajaxSubmit({
+            url: "/LableModelManage/UploadsFiles",
+            type: 'post',
+            data: { iType: 2, pathType: 1, msgTitle: "标签模板" },
+            success: function (data) {
+                if (data.result) {
+
+                    $('#LableModelForm').form('load',
+                    {
+                        path: data.path
+                    });
+
+                    funAlink(data.path, "tmp标签模板")
+
+                    $.messager.alert('@BaseRes.COM_CTL_NOTICE', "上传成功。", 'info');
+                } else {
+                    $.messager.alert('@BaseRes.COM_CTL_NOTICE', "上传失败。" + res.msg, 'error');
+                }
+            },
+            error: function (er) {
+
+                $.messager.alert('@BaseRes.COM_CTL_NOTICE', '操作失败！', 'error');
+            },
+            dataType: 'json'
+        });
+    }
+</script>

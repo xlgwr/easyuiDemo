@@ -1,0 +1,99 @@
+﻿@using Valeo.Domain.Combox;
+@using Valeo.Lang
+@model ComboxListVM
+@{
+    Layout = null;
+}
+@{
+    //List<SelectListItem> ListCombox=ViewBag.ListCombox;
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>_Edit</title>
+</head>
+<body>
+    <div class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'center'" class="padd10">
+            <form id="EditCombox" action="/SetPullDown/@(Model.ComboxListId == 0 ? "AddSave" : "EditSave")" class="easyui-form class=" easyui-form" method="post" >
+                <table class="sec">
+                    <input type="hidden"  name="ComboxName" value="@Model.ComboxName" />
+                    <input type="hidden" name="ComboxId" value="@Model.ComboxId" />
+                    <input type="hidden" name="ComboxListId" value="@Model.ComboxListId" />
+                    <input type="hidden"  name="ComboxListKey" value="@Model.ComboxListKey" />
+                  
+                    @*<tr>
+                        <td>下拉分类：</td>
+                        <td>
+                            @Html.DropDownList("ComboxId", ListCombox, new { @class = "easyui-combobox filewidth" })
+                        </td>
+                    </tr>*@
+                    <tr>
+                        <td>@BaseRes.SPD_COL_001</td>
+                        <td><input type="text" class="easyui-textbox easyui-numberbox filewidth_n" id="ComboxListKey"  value="@Model.ComboxListKey" disabled="disabled" data-options="required:true,validType:'length[0,64]'" /></td>
+                    </tr>
+                    <tr>
+                        <td>@BaseRes.SPD_COL_002</td>
+                        <td><input type="text" class="easyui-textbox filewidth_n" id="ComboxListName" name="ComboxListName" value="@Model.ComboxListName" data-options="required:true,validType:'length[0,64]'" /></td>
+                    </tr>
+                    <tr>
+                        <td>@BaseRes.SPD_COL_003</td>
+                        <td><input type="text" class="easyui-textbox filewidth_n" id="LanguageCode" name="LanguageCode" value="@Model.LanguageCode" data-options="required:true,validType:'length[0,32]'" /></td>
+                    </tr>
+                    <tr>
+                        <td>@BaseRes.SPD_COL_004</td>
+                        <td><input type="text" class="easyui-validatebox easyui-numberbox filewidth_n" id="DspNo" name="DspNo" value="@Model.DspNo"  data-options="validType:'length[0,10]'" /></td>
+                    </tr>
+                    <tr>
+                        <td>@BaseRes.SPD_COL_005</td>
+                        <td><textarea name="Remark" rows="15" cols="70" maxlength="256">@Model.Remark</textarea></td>
+                    </tr>
+                </table>
+            </form>
+
+            
+        </div>
+          
+        <div data-options="region:'south',border:false" style="text-align: right; padding: 5px 0 0;">
+        @if (Model.ComboxListId == 0 || ViewBag.IsEdit)
+        {
+            <a class="easyui-linkbutton width80" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="javascript:editCombox()">@BaseRes.ONC_EDT_040</a>
+            <a class="easyui-linkbutton width80" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="javascript: comboxjs.closeDialog()">@BaseRes.ONC_EDT_041</a>
+        }
+        else
+        {
+           <a class="easyui-linkbutton width80" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="javascript: comboxjs.closeDialog()">@BaseRes.PUB_CTL_134</a> 
+        }
+            
+        </div>  
+        <script type="text/javascript">
+            @*$("#ComboxId").val(@Model.ComboxName);*@
+            function editCombox() {
+                
+                if (!$("#EditCombox").form('validate')) {
+                    return false;
+                }
+                var submitform = $('#EditCombox');
+                
+                $.ajax({
+                    type: 'POST',
+                    url: submitform.attr('action'),
+                    data: submitform.serialize(),
+                    success: function (data) {
+                        if (data.result==1) {
+                            submitform[0].reset();
+                            comboxjs.closeDialog();
+                            loadData();
+                        } else {
+                            $.messager.alert("@BaseRes.COM_CTL_NOTICE", data.Msg);
+                        }
+                    }
+                });
+            }
+        </script>
+
+    </div>
+</body>
+</html>

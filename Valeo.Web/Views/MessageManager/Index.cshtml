@@ -1,0 +1,284 @@
+﻿@using Valeo.Domain.Common
+@using Valeo.Domain.Enum
+@using Valeo.Lang;
+@{
+    ViewBag.Title = "~/Views/Shared/_Layout_Index.cshtml";
+}
+<script src="~/Scripts/jQuery.Form.js"></script>
+<script src="~/Scripts/forms/MessageManager/message.js"></script>
+<script src="~/Scripts/forms/EasyuiVerification.js"></script>
+<script type="text/javascript">
+    var now = new Date();
+    var date = new Date(now.getTime() - 7 * 24 * 3600 * 1000);
+    var fdate = (date.getFullYear()) + "-" + (date.getMonth() + 1) + "-" + (date.getDate());
+    var tdate = (new Date().getFullYear()) + "-" + (new Date().getMonth() + 1) + "-" + (new Date().getDate());
+    $(function () {
+
+        function stringToDate(str) {
+            var tempStrs = str.split(" ");
+            var dateStrs = tempStrs[0].split("-");
+            var year = parseInt(dateStrs[0], 10);
+            var month = parseInt(dateStrs[1], 10) - 1;
+            var day = parseInt(dateStrs[2], 10);
+
+            var date = new Date(year, month, day);
+            return date;
+        }
+
+        $('#messageTimeS').datebox().datebox('calendar').calendar({
+            validator: function (date) {
+                debugger;
+                var edate = $("#messageTimeE").datebox('getValue');
+                if (edate == "") {
+                    return date;
+                } else {
+                    var now = stringToDate(edate);
+                    return date <= now;
+                }
+            }
+        });
+        $('#messageTimeE').datebox().datebox('calendar').calendar({
+            validator: function (date) {
+                debugger;
+                var sdate = $("#messageTimeS").datebox('getValue');
+                if (sdate == "") {
+                    return date;
+                } else {
+                    var now = stringToDate(sdate);
+                    return now <= date;
+                }
+            }
+        });
+
+        $("#SearchInvoice").form('load', {
+            SendTimeS: fdate,
+            SendTimeE:tdate
+        });
+        loadData();
+        $("#btnSerach").click(function () {
+            if (!$("#SearchInvoice").form('validate')) {
+                return false;
+            }
+            var pars = {
+                MessageTitle: $("#messageTitle").val(),
+                SendTimeS: $("#messageTimeS").datebox('getValue').trim(),
+                SendTimeE: $("#messageTimeE").datebox('getValue').trim()
+            };
+            url = '/MessageManager/InitDataMessge';
+            loadData(pars, url);
+        });
+    });
+    function clearformSearch() {
+        $('#SearchInvoice').form('clear');
+        $.parser.parse('#SearchInvoice');
+        $("#SearchInvoice").form('load', {
+            SendTimeS: fdate,
+            SendTimeE: tdate
+        });
+
+    }
+    function closeDialogSearch() {
+        $('#searchdlg').dialog('close');
+    }
+    //加载数据
+    function loadData(pars, url) {
+
+        $('#InvoiceList').datagrid({
+            url: url,
+            data: { "total": 0, "rows": [] },
+            //width: ($(window).width() * 0.90),
+            height: ($(window).height() * 0.99) - 127,
+            //fit:true,
+            fitColumns: true, //列自适应
+            nowrap: false,
+            idField: 'RecipientID', //主键列的列名
+            loadMsg: '@BaseRes.MML_COL_001',
+            pagination: true, //是否有分页
+            singleSelect: true,//是否单行选择
+            pageSize: 50, //每页多少条数据
+            pageNumber: 1, //默认的页
+            pageList: [50, 100, 150, 200],
+            striped: true,
+            queryParams: pars, //往后台传递参数
+            columns: [
+                [
+                    //{
+                    //field: 'MessageID',
+                    //checkbox: true,
+                    //align: 'center',
+                    //width: 100
+                    //},
+
+                {
+                    field: 'MemberName',
+                    title: '@BaseRes.MML_COL_002',
+                    align: 'center',
+                    width: 100, sortable: true
+                }, {
+                    field: 'MessageTitle',
+                    title: '@BaseRes.MML_COL_003',
+                    align: 'center',
+                    width: 100, sortable: true
+                }, {
+                    field: 'Message',
+                    title: '@BaseRes.MML_COL_004',
+                    align: 'center',
+                    width: 100, sortable: true
+                }, {
+                    field: 'SendTime',
+                    title: '@BaseRes.MML_COL_005',
+                    align: 'center',
+                    width: 150, sortable: true
+                }@*, {
+                    field: 'operation',
+                    title: '@BaseRes.MML_COL_006',
+                    align: 'center',
+                    width: 50,
+                    formatter: function (value, row, index) {
+                        var operationhtml = '';
+                        @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Edit))
+                        {
+                            @:operationhtml += '<span class="l-btn-left l-btn-icon-left" onclick=showEdit("' + row.MessageID + '","@BaseRes.MML_COL_007") ><span class="l-btn-text">@BaseRes.MML_COL_008</span><span class="l-btn-icon icon-edit">&nbsp;</span></span>';
+
+                        }
+
+                        return operationhtml;
+                    }
+                }*@
+                ]
+            ], onLoadSuccess: function (data) {
+                $('#InvoiceList').datagrid('clearSelections');
+            },
+            onDblClickRow: function (rowIndex, rowData) {
+                @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Edit))
+                {
+                    @:showEdit(rowData.MessageID, "@BaseRes.PRO_COL_038", true);
+                 }
+
+            },
+            toolbar: [
+                @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Create))
+                {
+                    @:{ text: '@BaseRes.MML_COL_010', iconCls: 'icon-add', handler: function () { showAdd('@BaseRes.MML_COL_011'); } },
+                }
+                 @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Edit))
+                {
+                    @: {text: '@BaseRes.MGC_CTL_008', iconCls: 'icon-edit', handler: function () {
+                    @:      var selectRows = $('#InvoiceList').datagrid('getSelected');
+                    @:      if (!selectRows) {
+                    @:          $.messager.alert('@BaseRes.COM_CTL_NOTICE', "@BaseRes.MGC_CTL_031");
+                    @:          return;
+                    @:      }
+                    @:  showEdit(selectRows.MessageID, "@BaseRes.PRO_COL_038", true);
+                    @: }
+                    @:}, '-',
+                 }
+                 {
+                     text: '@BaseRes.OSP_CTL_161',
+                     iconCls: 'icon_webedite',
+                     handler: function () {
+                         var selectRows = $('#InvoiceList').datagrid('getSelected');
+                         if (!selectRows) {
+                             $.messager.alert('@BaseRes.COM_CTL_NOTICE', "@BaseRes.OEC_COL_182");
+                             return;
+                         }
+                         showEdit(selectRows.MessageID, "@BaseRes.OSP_CTL_161", false);
+                     }
+                 }, '-',
+                @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Delete))
+                {
+                   @:{ text: '@BaseRes.MML_COL_012', iconCls: 'icon-remove', handler: function () { deleteMeaasges(); } }
+                }
+
+            ]
+        });
+    }
+
+    function deleteMeaasges() {
+        var checkedrows = $('#InvoiceList').datagrid('getChecked');
+        if (checkedrows.length == 0) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', "@BaseRes.CIS_COL_009");
+            return;
+        }
+
+        var para = {}
+        for (var i = 0; i < checkedrows.length; i++) {
+            para["messageIds[" + i + "]"] = checkedrows[i].MessageID;
+        }
+        $.messager.confirm('@BaseRes.COM_CTL_NOTICE', '@BaseRes.MML_COL_015', function (r) {
+            if (r) {
+                $.post('/MessageManager/Deletes', para, function (res) {
+                    if (res.result) {
+                        $('#InvoiceList').datagrid('reload');
+                    } else {
+                        $.messager.alert('@BaseRes.COM_CTL_NOTICE', res.Msg);
+                    }
+                }, "json");
+            }
+        });
+    }
+
+    function deleteMessage(messageId) {
+        $.messager.confirm('@BaseRes.COM_CTL_NOTICE', '@BaseRes.MML_COL_015', function (r) {
+            if (r) {
+                $.post('/MessageManager/Deletes', "messageIds=" + messageId, function (res) {
+                    if (res.result) {
+                        $('#InvoiceList').datagrid('reload');
+                    } else {
+                        $.messager.alert('@BaseRes.COM_CTL_NOTICE', res.Msg);
+                    }
+                });
+            }
+        });
+    }
+
+
+    function showSendMessage() {
+        parent.SendMessageDemo();
+    }
+</script>
+    <div class="mar10" data-options="fit:true,plain:true">
+        <div class="padd10">
+            <div class="easyui-panel" title="@BaseRes.MML_COL_016" style="width: 99%; padding: 10px; margin-bottom:10px">
+
+                <form id="SearchInvoice" action="/Invoice/exportInvoice">
+                    <table>
+                        <tr>
+                            <td class="title95">@BaseRes.MML_COL_017</td>
+                            <td><input type="text" class="easyui-textbox filewidth" name="OrderId" id="messageTitle" data-options="validType:'length[0,64]'" value="" /></td>
+                            <td class="title95">@BaseRes.MML_COL_018</td>
+                            <td>
+                                <input id="messageTimeS" name="SendTimeS" class="easyui-datebox filewidth" data-options="validType:['DateDay']" type="datetime">
+                            </td>
+                            <td class="tdcenter">
+                               @BaseRes.IRC_COL_027
+                            </td>
+                            <td>
+                                <input id="messageTimeE" name="SendTimeE" class="easyui-datebox filewidth" data-options="validType:['DateDay']" type="datetime">
+                            </td>
+                          
+                        </tr>
+
+                    </table>
+                    <div class="textcenter">
+                        @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Search))
+                        {
+                            @:<a href="javascript:void(0)" id="btnSerach" class="easyui-linkbutton c6 width70">@BaseRes.IRC_COL_028</a>
+                        }
+                        <a href="javascript:void(0)" id="" class="easyui-linkbutton c9 width70" onclick="clearformSearch();">@BaseRes.LOA_COL_039</a>
+                       
+                    </div>
+                </form>
+            </div>
+
+            <table id="InvoiceList" title="@BaseRes.MML_COL_020" style="width: 99%;"></table>
+        </div>
+    </div>
+
+    <div id="editdlg" class="easyui-window" title="@BaseRes.MML_COL_021" data-options="modal:true,closed:true,iconCls:'icon-add',maximized:true" style="width:600px;height:555px;padding:5px;">
+
+</div>
+    <div id="searchdlg" class="easyui-window" title="@BaseRes.MML_COL_022" data-options="modal:true,closed:true,iconCls:'icon-add',maximized:true" style="width:1150px;height:550px;padding:5px;">
+
+</div>
+

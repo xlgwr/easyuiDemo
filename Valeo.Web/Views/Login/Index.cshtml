@@ -1,0 +1,99 @@
+﻿@using Valeo.Lang;
+@using Valeo;
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<head>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@BaseRes.COM_CTL_SYSNAME</title>
+     
+    <link href="@Url.Content("~/Content/login.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/demo.css")" rel="stylesheet" type="text/css" />
+     
+    <link href="@Url.Content("~/Content/themes/default/easyui.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/themes/icon.css")" rel="stylesheet" type="text/css" /> 
+    <script src="@Url.Content("~/Scripts/jquery.min.js")" type="text/javascript"></script>
+
+
+
+    <script src="@Url.Content("~/Scripts/forms/main/login_index.js")" type="text/javascript"></script>
+
+    <script type="text/javascript">
+
+    function getSubmitInputCheck() {
+        if ($("#txtUserId").val().replace(/^\s*|\s*$/g, "").length <= 0) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE ', '@BaseRes.LGN_MSG_001');
+            return false;
+        }
+
+        if ($("#txtLoginPwd").val().replace(/^\s*|\s*$/g, "").length <= 0) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE ', '@BaseRes.LGN_MSG_002');
+            return false;
+        }
+
+        return true;
+    }
+
+    function getPswdForgetInputCheck() {
+
+        if ($("#txtUserId").val().replace(/^\s*|\s*$/g, "").length <= 0) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE ', '@BaseRes.LGN_MSG_001');
+            return false;
+        }
+
+        return true;
+    }
+        
+  
+
+    </script>
+
+</head>
+
+<body>
+    <div id="layout_div" class="easyui-layout" fit="true"  style="display: none"></div>
+        <div class="login-bg"></div>
+        <div id="loginbox">
+            <form id="loginform" class="form-vertical">
+                @*<form id="loginform" class="form-vertical" action="index.html" />*@
+                <div id="logo">
+                    <img src="~/Content/images/logo_nw.png" alt="" />
+                </div>
+                <p style="color: #FFFFFF;">@BaseRes.LGN_CTL_001</p>
+                <div class="control-group">
+                    <div class="controls">
+                        <div class="input-prepend">
+                            <span class="login-us-span"></span><input id="txtUserId" type="text" placeholder="@BaseRes.LGN_CTL_002" class="login-us-input" maxlength="32" />
+                        </div>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <div class="input-prepend">
+                            <span class="login-pw-span"></span><input id="txtLoginPwd" type="password" placeholder="@BaseRes.LGN_CTL_003" class="login-pw-input" maxlength="32" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <span class="pull-right login-span"><a href="#" class="flip-link" id="btnForgot">@BaseRes.LGN_CTL_006</a></span>
+                </div>
+                <div class="form-actions">
+                    <span class="pull-right">
+                        <input type="button" id="btnLogin" class="easyui-linkbutton c6  l-btn bgcolor" style="width: 215px; height: 30px;" value="@BaseRes.LGN_CTL_008" />
+                    </span>
+                </div>
+                
+                <div style="color: red; margin-top: 30px;">2016-12-23版本</div>
+            </form>
+        </div>
+</body>
+
+ 
+<script src="@Url.Content("~/Scripts/jquery.easyui.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/easyui-lang-zh_CN.js")" type="text/javascript"></script>

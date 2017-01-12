@@ -1,0 +1,118 @@
+﻿@using App.Lang;
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Main</title>
+      
+    <link href="@Url.Content("~/Content/themes/default/easyui.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/theme/icon.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/theme/color.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/theme/demo.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/style_all.css?v=2")" rel="stylesheet" type="text/css" />
+   
+     <script src="@Url.Content("~/Scripts/jquery.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.easyui.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/easyui-lang-zh_CN.js")" type="text/javascript"></script> 
+
+    <script src="@Url.Content("~/Scripts/umeditor/umeditor.config.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/umeditor/umeditor/umeditor.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/umeditor/lang/zh-cn/zh-cn.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jQuery.Form.js")" type="text/javascript"></script>
+ 
+    @*@Styles.Render("~/Content/css") 
+    <link rel="stylesheet" type="text/css" href="~/Scripts/easyui/themes/gray/easyui.css"> 
+    <link rel="stylesheet" type="text/css" href="~/Sc*@ripts/easyui/themes/icon.css">
+    @*<link rel="stylesheet" type="text/css" href="~/Content/UpLoad.css">*@
+
+
+    @*<script type="text/javascript" src="~/Scripts/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/easyui/src/jquery.form.js"></script>
+    <script type="text/javascript" src="~/Scripts/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.easyui.plus.js"></script>
+    <script type="text/javascript" src="~/Scripts/easyui/locale/easyui-lang-zh_CN.js"></script> 
+ 
+    <script type="text/javascript" src="~/Scripts/validate/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/validate/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/validate/jquery.validate.unobtrusive.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/validate/jquery.validate.unobtrusive.plus.js"></script>
+    <script type="text/javascript" src="~/Scripts/uploadPreview.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.form.js"></script>*@
+
+    <script type="text/javascript">
+
+        function IsRangeIn(target, min, max, isMust) {
+  
+            if (target == null || target == '')
+            {
+                if (!isMust) return false;
+            }
+
+            var num = parseFloat(target);
+ 
+            if (num < min || num > max) {
+                return true;
+            }
+
+            return false;
+        }
+
+        function IsRangeCompare(min, max, isMust) {
+
+            if (min == null || min == '' || max == null || max == '') {
+                if (!isMust) return true;
+            }
+           
+            if (parseFloat(min) > parseFloat(max)) {
+                return false;
+            }
+
+            return true;
+        }
+
+
+        @*//日历控件处理
+        $.fn.datebox.defaults.formatter = function (date) {
+            var y = date.getFullYear();
+            var m = date.getMonth() + 1;
+            var d = date.getDate();
+            return y + '-' + m + '-' + d;
+        }
+        $.fn.datebox.defaults.currentText = '@BaseRes.COM_CTL_TODAY';
+        $.fn.datebox.defaults.closeText = '@BaseRes.COM_CTL_CLOSE';
+        $.fn.datebox.defaults.cleanText = '@BaseRes.COM_CTL_CLEAR';
+        $.fn.calendar.defaults.weeks = ['@BaseRes.COM_CTL_SUNDAY', '@BaseRes.COM_CTL_MONDAY', '@BaseRes.COM_CTL_TUESDAY', '@BaseRes.COM_CTL_WEDNESDAY', '@BaseRes.COM_CTL_THURSDAY', '@BaseRes.COM_CTL_FRIDAY', '@BaseRes.COM_CTL_SATURDAY'];
+        $.fn.calendar.defaults.months = ['@BaseRes.COM_CTL_JAN', '@BaseRes.COM_CTL_FEB', '@BaseRes.COM_CTL_MARCH', '@BaseRes.COM_CTL_APRIL', '@BaseRes.COM_CTL_MAY', '@BaseRes.COM_CTL_JUNE', '@BaseRes.COM_CTL_JULY', '@BaseRes.COM_CTL_AUGUST', '@BaseRes.COM_CTL_SEPTEMBER', '@BaseRes.COM_CTL_OCTOBER', '@BaseRes.COM_CTL_NOVEMBER', '@BaseRes.COM_CTL_DECEMBER'];
+
+        //数字格式化处理
+        function number_format(number, decimals, dec_point, thousands_sep) {
+            var n = !isFinite(+number) ? 0 : +number,
+                prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+                sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+                dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+                s = '',
+                toFixedFix = function (n, prec) {
+                    var k = Math.pow(10, prec);
+                    return '' + Math.round(n * k) / k;
+                };
+            // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+            s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+            if (s[0].length > 3) {
+                s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+            }
+            if ((s[1] || '').length < prec) {
+                s[1] = s[1] || '';
+                s[1] += new Array(prec - s[1].length + 1).join('0');
+            } return s.join(dec);
+        }*@
+    </script>
+
+</head>
+
+<body>
+
+    @RenderBody()
+
+</body>
+</html>

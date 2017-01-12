@@ -1,0 +1,264 @@
+﻿@using Valeo.Domain.Common
+@using Valeo.Domain.Enum
+@using Valeo.Domain.User;
+@using Valeo.Lang;
+@model UserModel
+@{ 
+    Layout = "~/Views/Shared/_Layout_Index.cshtml";
+}
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>用户管理</title> 
+    <script src="~/Scripts/forms/user/user.js"></script>
+    <script type="text/javascript">
+    $(function () {
+        loadData();
+        $("#btnSerach").click(function () {
+            var pars = {
+                UserName: $("#searchUserName").val(),
+                FullName_En: $("#searchFullName_En").val(),
+                FullName_Cn: $("#searchFullName_Cn").val(),
+                FullName_Tm: $("#searchFullName_Tm").val(),
+                UserGradeID: $("#searchUserGradeID").combo("getValue")
+            };
+            loadData(pars, '/User/UserPage');
+
+            $('#userList').datagrid('clearSelections');
+
+        });
+        $(window).resize(function () {
+            $('#userList').datagrid('resize', {
+                height: ($(window).height()) - 170
+            }).datagrid('resize', {
+                height: ($(window).height()) - 170
+            });
+        });
+    });
+
+
+    function loadData(pars, url) {
+        $('#userList').datagrid({
+            url: url,
+            data: { "total": 0, "rows": [] },
+            //width: 1000,
+            //height: 400,
+            //width: ($(window).width() * 0.90),
+            height: ($(window).height()) - 170,
+            //fit:true,
+            fitColumns: true, //列自适应
+            checkbox: true,
+            nowrap: false,
+            idField: 'UserID', //主键列的列名
+            loadMsg: '正在加载信息...',
+            pagination: true, //是否有分页
+            singleSelect: true,//是否单行选择
+            pageSize: 50, //每页多少条数据
+            pageNumber: 1, //默认的页
+            striped: true,
+            pageList: [50, 100, 150, 200],
+            queryParams: pars, //往后台传递参数
+            columns: [
+                [
+                    {
+                        field: 'ck', hidden: true, checkbox: true
+                    },
+                    {
+                        field: 'UserID',
+                        title: '@BaseRes.USE_COL_002',
+                        align: 'center',
+                        width: 100, sortable: true
+                    }, {
+                        field: 'FullName_En',
+                        title: '@(BaseRes.USE_COL_003)',
+                        align: 'center',
+                        width: 100, sortable: true
+                    }, {
+                        field: 'FullName_Tm',
+                        title: '@(BaseRes.USE_COL_004)',
+                        align: 'center',
+                        width: 100, sortable: true
+                    }, {
+                        field: 'FullName_Cn',
+                        title: '@(BaseRes.USE_COL_005)',
+                        align: 'center',
+                        width: 100, sortable: true
+                    }, {
+                        field: 'Status',
+                        title: '@(BaseRes.USE_COL_006)',
+                        align: 'center',
+                        width: 100,
+                        formatter: function (value, row, index) {
+                            if (value == 1) {
+                                return '@(BaseRes.USE_COL_012)';
+                            } else {
+                                return '@(BaseRes.USE_COL_013)';
+                            }
+                        }
+
+                    }, {
+                        field: 'UserGradeName',
+                        title: '@(BaseRes.USE_COL_007)',
+                        align: 'center',
+                        width: 100
+                    }, {
+                        field: 'Remark',
+                        title: '@(BaseRes.USE_COL_011)',
+                        align: 'center',
+                        width: 100
+                    }@*, {
+                        field: 'aa',
+                        title: '@(BaseRes.USE_COL_008)',
+                        align: 'center',
+                        width: 100,
+                        formatter: function (value, row, index) {
+                            var operationhtml = '';
+                            @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Edit))
+                            {
+                               @:operationhtml += '<a class="l-btn l-btn-small l-btn-plain"><span class="l-btn-left l-btn-icon-left" onclick=showEdit("' + row.UserID + '","@(BaseRes.USE_TIT_002)") ><span class="l-btn-text">@(BaseRes.USE_COL_009)</span><span class="l-btn-icon icon-edit">&nbsp;</span></span></a>';
+                                                                                                                                                                        }
+                            @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Delete))
+                            {
+                               @:operationhtml += '<a class="l-btn l-btn-small l-btn-plain"><span class="l-btn-left l-btn-icon-left" onclick=deleteUser("' + row.UserID + '") ><span class="l-btn-text">@(BaseRes.TSK_CTL_012)</span><span class="l-btn-icon icon-remove">&nbsp;</span></span></a>';
+
+                            }
+                            return operationhtml;
+                        }
+                    }*@]
+            ],
+            onLoadSuccess: function (data) {
+                $('#userList').datagrid('clearSelections');
+            },
+            toolbar: [
+                @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Create))
+                {
+                    @:{ text: '@(BaseRes.USE_COL_010)', iconCls: 'icon-add', handler: function () { showAdd('@(BaseRes.USE_TIT_001)'); } },
+                }
+                 @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Edit))
+                 {
+                     @:{ text: '@(BaseRes.USE_COL_009)', iconCls: 'icon-edit', handler: function() {
+                     @:      var selectRows = $('#userList').datagrid('getSelected');
+                     @:      if (!selectRows) {
+                     @:          $.messager.alert('@BaseRes.COM_CTL_NOTICE', "请选择要修改的记录。");
+                     @:      return;
+                     @:       }
+                     @:showEdit(selectRows.UserID, '@(BaseRes.USE_TIT_002)'); 
+                     @: } },
+                 }
+                @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Delete))
+                {
+                    @:{ text: '@(BaseRes.TSK_CTL_012)', iconCls: 'icon-remove', handler: function () { deleteUsers(); } }
+                }
+
+            ]
+        });
+    }
+    function deleteUsers() {
+        var checkedrows = $('#userList').datagrid('getChecked');
+        if (checkedrows.length == 0) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', "@(BaseRes.USE_MSG_020)");
+            return;
+        }
+        var para = {}
+        for (var i = 0; i < checkedrows.length; i++) {
+            para["userIds[" + i + "]"] = checkedrows[i].UserID;
+        }
+        $.messager.confirm('@BaseRes.COM_CTL_NOTICE ', '@(BaseRes.USE_MSG_017)', function (r) {
+            if (r) {
+                $.post('/User/Deletes', para, function (res) {
+                    if (res.result) {
+                        $('#userList').datagrid('reload');    // reload the user data
+                    } else {
+                        $.messager.alert('@BaseRes.COM_CTL_NOTICE', res.Msg);
+                    }
+                }, "json");
+            }
+        });
+    }
+    function deleteUser(userId) {
+        $.messager.confirm('@BaseRes.COM_CTL_NOTICE ', '@(BaseRes.USE_MSG_018)', function (r) {
+            if (r) {
+                $.post('/User/Deletes', "userIds=" + userId, function (res) {
+                    if (res.result) {
+                        $('#userList').datagrid('reload');
+                    } else {
+                        $.messager.alert('@BaseRes.COM_CTL_NOTICE', res.Msg);
+                    }
+                });
+            }
+        });
+    }
+
+
+
+</script>
+</head>
+<body>
+    <div class="mar10" data-options="fit:true,plain:true" >
+        <div class="padd10">
+            <div class="easyui-panel" title="查询条件" style="width: 99%; padding: 10px; margin-bottom: 10px;">
+                <form id="SearchForm">
+                    <table>
+                        <tr>
+                            <td class="title95">@BaseRes.USE_SEA_001</td>
+                            <td>
+                                <input type="text" class="easyui-textbox filewidth_n" id="searchUserName" name="Surname" value="" data-options="validType:['length[0,64]']" />
+                            </td>
+                            <td class="title95">@BaseRes.USE_SEA_002</td>
+                            <td>
+                                <input type="text" class="easyui-textbox filewidth_n" id="searchFullName_En" name="Surname" value="" data-options="validType:['length[0,64]']" />
+                            </td>
+                            <td class="title95">@BaseRes.USE_SEA_003</td>
+                            <td>
+                                <input type="text" class="easyui-textbox filewidth_n" id="searchFullName_Tm" name="Surname" value="" data-options="validType:['length[0,64]']" />
+                            </td>
+                            <td class="title95">@BaseRes.USE_SEA_004</td>
+                            <td>
+                                <input type="text" class="easyui-textbox filewidth_n" id="searchFullName_Cn" name="Surname" value="" data-options="validType:['length[0,64]']" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="title95">@BaseRes.USE_SEA_005</td>
+                            <td>
+                                <select name="memberGradeId" class="easyui-combobox filewidth" id="searchUserGradeID">
+                                    <option value="0">@BaseRes.USE_SEA_006</option>
+                                    @{var userGrades = (List<Valeo.Domain.UserGrade.UserGradeModelVM>) ViewBag.UserGrades;}
+                                    @foreach (var item in userGrades)
+                                    {
+                                        <option value="@item.UserGradeID">@item.UserGrade</option>
+                                    }
+                                </select>
+
+                            </td>
+                         
+                        </tr>
+                    </table>
+                    <div class="textcenter">
+                        @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Search))
+                        {
+                            <a href="javascript:void(0)" id="btnSerach" class="easyui-linkbutton c6 width70">@BaseRes.USE_SEA_007</a>
+                        }
+
+                        <a href="javascript:void(0)" onclick="$('#SearchForm').form('clear'); $.parser.parse('#SearchForm');" class="easyui-linkbutton c9 width70">重置</a>
+                    </div>
+                </form>
+            </div>
+            <table id="userList" title="查询结果" style="width: 99%;"></table>
+            </div>
+    </div>
+    <!--
+        作者：152645239@qq.com
+        时间：2016-07-06
+        描述：新增弹出框
+    -->
+ 
+    <div id="editdlg" class="easyui-dialog" style="width:600px;height:400px;padding:5px;" data-options="
+				iconCls: 'icon-save',
+				toolbar: '#dlg-toolbar',
+				buttons: '#dlg-buttons',
+				closed:true,maximized:true
+			">
+    </div>
+</body>
+</html>

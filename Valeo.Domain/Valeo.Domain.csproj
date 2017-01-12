@@ -1,0 +1,318 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{FA11F13A-6BE5-4474-A7EE-3F30EB8554B2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Valeo.Domain</RootNamespace>
+    <AssemblyName>Valeo.Domain</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>E:\Program Files (x86)\Microsoft Visual Studio 2013\Visual Studio Tools for Office\PIA\Office15\Microsoft.Office.Interop.Excel.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.QualityTools.Testing.Fakes, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="MvcPaging">
+      <HintPath>..\packages\MvcPaging.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.5.0.4\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI">
+      <HintPath>..\packages\NPOI.2.2.1\lib\net40\NPOI.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OOXML">
+      <HintPath>..\packages\NPOI.2.2.1\lib\net40\NPOI.OOXML.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXml4Net">
+      <HintPath>..\packages\NPOI.2.2.1\lib\net40\NPOI.OpenXml4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXmlFormats">
+      <HintPath>..\packages\NPOI.2.2.1\lib\net40\NPOI.OpenXmlFormats.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.Composition.Registration" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AutoMinitor\AutoMonitorModel.cs" />
+    <Compile Include="AutoMinitor\AutoMonitoringLogModel.cs" />
+    <Compile Include="AutoMinitor\ResultAutoMonitoringModel.cs" />
+    <Compile Include="AutoMinitor\ReportAutoMonitoringModel.cs" />
+    <Compile Include="AutoMinitor\TaskAutoListModel.cs" />
+    <Compile Include="AutoMinitor\TaskAutoList2VM.cs" />
+    <Compile Include="Combox\ComboxListModel.cs" />
+    <Compile Include="Combox\ComboxListVM.cs" />
+    <Compile Include="Combox\ComboxModel.cs" />
+    <Compile Include="Common\DataConvert.cs" />
+    <Compile Include="Common\DataTableHelper.cs" />
+    <Compile Include="Common\ExcelHelper.cs" />
+    <Compile Include="Common\FileUpload.cs" />
+    <Compile Include="Common\Encryption.cs" />
+    <Compile Include="Common\JsonHandler.cs" />
+    <Compile Include="Common\PubLanguage.cs" />
+    <Compile Include="Common\RoleOperate.cs" />
+    <Compile Include="Email\EmailAppModel.cs" />
+    <Compile Include="Email\EmailListModel.cs" />
+    <Compile Include="Email\SetEmailModel.cs" />
+    <Compile Include="Enum\EnumCase.cs" />
+    <Compile Include="Enum\EnumCombox.cs" />
+    <Compile Include="Enum\EnumCommon.cs" />
+    <Compile Include="Enum\EnumOperateType.cs" />
+    <Compile Include="Enum\EnumOrder.cs" />
+    <Compile Include="Enum\EnumPackageProductId.cs" />
+    <Compile Include="Enum\EnumModel.cs" />
+    <Compile Include="Enum\Enums.cs" />
+    <Compile Include="Main\UserAuthVM.cs" />
+    <Compile Include="Main\ShortNameVm.cs" />
+    <Compile Include="Main\UserInfo.cs" />
+    <Compile Include="Main\WordVM.cs" />
+    <Compile Include="ManageCenter\ContactPerson\ContactPersonModel.cs" />
+    <Compile Include="ManageCenter\Country\CountryModel.cs" />
+    <Compile Include="ManageCenter\Master\MasterModel.cs" />
+    <Compile Include="ManageCenter\MemberComany\MemberComanyModel.cs" />
+    <Compile Include="ManageCenter\Member\MemberModel.cs" />
+    <Compile Include="ManageCenter\Message\MessageModel.cs" />
+    <Compile Include="ManageCenter\Message\MessageVM.cs" />
+    <Compile Include="ManageCenter\Message\RecipientModel.cs" />
+    <Compile Include="ManageCenter\Order\OrderModel.cs" />
+    <Compile Include="ManageCenter\Order\OrderListModel.cs" />
+    <Compile Include="ManageCenter\Order\OrderVM.cs" />
+    <Compile Include="ManageCenter\Order\PaymentModel.cs" />
+    <Compile Include="ManageCenter\Product\PrdctVM.cs" />
+    <Compile Include="ManageCenter\SearchHistory\SearchHistoryVM.cs" />
+    <Compile Include="ManageCenter\SearchHistory\TaskAutoGroupModel.cs" />
+    <Compile Include="ManageCenter\SearchHistory\TaskAutoMonitoringModel.cs" />
+    <Compile Include="ManageCenter\SearchHistory\TaskAutoVM.cs" />
+    <Compile Include="ManageCenter\SearchHistory\TaskOfflineCaseModel.cs" />
+    <Compile Include="ManageCenter\SearchHistory\TaskOfflineCaseVM.cs" />
+    <Compile Include="ManageCenter\SearchHistory\TaskOfflineCompanyModel.cs" />
+    <Compile Include="ManageCenter\SearchHistory\TaskOfflineCompanyVM.cs" />
+    <Compile Include="ManageCenter\SearchHistory\TaskOfflineLandModel.cs" />
+    <Compile Include="ManageCenter\SearchHistory\TaskOfflineLandVM.cs" />
+    <Compile Include="ManageCenter\SearchHistory\TaskOfflineOtherModel.cs" />
+    <Compile Include="ManageCenter\SearchHistory\TaskOfflineOtherVM.cs" />
+    <Compile Include="ManageCenter\SearchHistory\CaseModel.cs" />
+    <Compile Include="ManageCenter\SearchHistory\TaskOnlineCaseModel.cs" />
+    <Compile Include="ManageCenter\SearchHistory\TaskOnlineCaseVM.cs" />
+    <Compile Include="ManageCenter\SearchHistory\TaskOnlineCompanyModel.cs" />
+    <Compile Include="ManageCenter\SearchHistory\TaskOnlineCompanyVM.cs" />
+    <Compile Include="ManageCenter\SearchHistory\TaskOnlineLandModel.cs" />
+    <Compile Include="ManageCenter\SearchHistory\TaskOnlineLandVM.cs" />
+    <Compile Include="ManageCenter\SearchHistory\TaskOnlineLoanModel.cs" />
+    <Compile Include="ManageCenter\SearchHistory\TaskOnlineLoanVM.cs" />
+    <Compile Include="ManageCenter\SearchHistory\TaskOnlinePublicModel.cs" />
+    <Compile Include="ManageCenter\SearchHistory\TaskOnlinePublicVM.cs" />
+    <Compile Include="ManageCenter\WebEdit\HtmlDataModel.cs" />
+    <Compile Include="ManageCenter\WebEdit\PublicityPageVM .cs" />
+    <Compile Include="MemberGradeRight\MemberGradeRightModel.cs" />
+    <Compile Include="MemberGradeRight\MemberGradeRightVM.cs" />
+    <Compile Include="MemberGrade\MemberGradeModel.cs" />
+    <Compile Include="MemberGrade\MemberGradeVM.cs" />
+    <Compile Include="MemberGrade\RightKeyModel.cs" />
+    <Compile Include="MemberGrade\RightKeyVM.cs" />
+    <Compile Include="MemberRight\MemberRightModel.cs" />
+    <Compile Include="MemberSetMealRelation\MemberSetMealRelationListModel.cs" />
+    <Compile Include="MemberSetMealRelation\MemberSetMealRelationModel.cs" />
+    <Compile Include="Member\FileVM.cs" />
+    <Compile Include="Member\MemberListVM.cs" />
+    <Compile Include="Member\MemberLogVM.cs" />
+    <Compile Include="Member\MemberModel.cs" />
+    <Compile Include="Member\MemberSearchModel.cs" />
+    <Compile Include="ModelDb\AddressModel.cs" />
+    <Compile Include="ModelDb\AppealCaseModel.cs" />
+    <Compile Include="ModelDb\BankAccountModel.cs" />
+    <Compile Include="ModelDb\CaseItemsModel.cs" />
+    <Compile Include="ModelDb\CaseMainModel.cs" />
+    <Compile Include="ModelDb\CaseModel.cs" />
+    <Compile Include="ModelDb\CaseTypeModel.cs" />
+    <Compile Include="ModelDb\CollateralModel.cs" />
+    <Compile Include="ModelDb\CollateralShareModel.cs" />
+    <Compile Include="ModelDb\CompanyChangeModel.cs" />
+    <Compile Include="ModelDb\CompanyModel.cs" />
+    <Compile Include="ModelDb\CompanyReportModel.cs" />
+    <Compile Include="ModelDb\CountryModel.cs" />
+    <Compile Include="ModelDb\CourtModel.cs" />
+    <Compile Include="ModelDb\CourtOrderModel.cs" />
+    <Compile Include="ModelDb\DefendantModel.cs" />
+    <Compile Include="ModelDb\DirectorsModel.cs" />
+    <Compile Include="ModelDb\DisqualificationModel.cs" />
+    <Compile Include="ModelDb\EducationModel.cs" />
+    <Compile Include="ModelDb\EmailsModel.cs" />
+    <Compile Include="ModelDb\EmploymentHistoryModel.cs" />
+    <Compile Include="ModelDb\entityCommMainModel.cs" />
+    <Compile Include="ModelDb\EntityModel.cs" />
+    <Compile Include="ModelDb\HtmlPageCaseModel.cs" />
+    <Compile Include="ModelDb\HtmlPageComModel.cs" />
+    <Compile Include="ModelDb\HtmlPagePubModel.cs" />
+    <Compile Include="ModelDb\IDDocumentsModel.cs" />
+    <Compile Include="ModelDb\JudgeModel.cs" />
+    <Compile Include="ModelDb\JudgmentModel.cs" />
+    <Compile Include="ModelDb\LoanModel.cs" />
+    <Compile Include="ModelDb\LoanrRelationModel.cs" />
+    <Compile Include="ModelDb\MediaReportModel.cs" />
+    <Compile Include="ModelDb\OwnerRelationModel.cs" />
+    <Compile Include="ModelDb\PersonModel.cs" />
+    <Compile Include="ModelDb\PlaintiffModel.cs" />
+    <Compile Include="ModelDb\PublicRelationModel.cs" />
+    <Compile Include="ModelDb\PublicTableModel.cs" />
+    <Compile Include="ModelDb\PublicTypeModel.cs" />
+    <Compile Include="ModelDb\RelationModel.cs" />
+    <Compile Include="ModelDb\RelationshipsModel.cs" />
+    <Compile Include="ModelDb\RepresentationDModel.cs" />
+    <Compile Include="ModelDb\RepresentationPModel.cs" />
+    <Compile Include="ModelDb\SecretaryModel.cs" />
+    <Compile Include="ModelDb\SecuritieModel.cs" />
+    <Compile Include="ModelDb\ShareholdersModel.cs" />
+    <Compile Include="ModelDb\SocialNetworkModel.cs" />
+    <Compile Include="ModelDb\SysModuleModel.cs" />
+    <Compile Include="ModelDb\TableModel.cs" />
+    <Compile Include="ModelDb\TelephonesModel.cs" />
+    <Compile Include="ModelDb\UpdateLogModel.cs" />
+    <Compile Include="Models\CollateralModel.cs" />
+    <Compile Include="Models\CollateralShareModel.cs" />
+    <Compile Include="Models\HtmlPageCaseModel.cs" />
+    <Compile Include="Models\HtmlPageComModel.cs" />
+    <Compile Include="Models\HtmlPagePubModel.cs" />
+    <Compile Include="Models\LoanModel.cs" />
+    <Compile Include="Models\LoanrRelationModel.cs" />
+    <Compile Include="Models\PublicRelationModel.cs" />
+    <Compile Include="Models\PublicTypeModel.cs" />
+    <Compile Include="Models\SecuritieModel.cs" />
+    <Compile Include="Models\SysModuleModel.cs" />
+    <Compile Include="Models\TableColumnModel.cs" />
+    <Compile Include="Models\TableModel.cs" />
+    <Compile Include="OnlineEntity\BankAccountVM.cs" />
+    <Compile Include="OnlineEntity\CompanyModelVM.cs" />
+    <Compile Include="OnlineEntity\CompanySearchVM.cs" />
+    <Compile Include="OnlineEntity\EducationVM.cs" />
+    <Compile Include="OnlineEntity\EntityFormVM.cs" />
+    <Compile Include="OnlineEntity\IDDocumentsVM.cs" />
+    <Compile Include="OnlineEntity\MediaReportVM.cs" />
+    <Compile Include="OnlineEntity\PersonModelVM.cs" />
+    <Compile Include="OnlineEntity\PersonSearchVM.cs" />
+    <Compile Include="OnlineEntity\RelationshipsVM.cs" />
+    <Compile Include="OnlineEntity\TelephonesVM.cs" />
+    <Compile Include="ParameterSetting\CaseTypeVM.cs" />
+    <Compile Include="ParameterSetting\ComParameterModel.cs" />
+    <Compile Include="ParameterSetting\PubTypeVM.cs" />
+    <Compile Include="ParameterSetting\ShortNameModelVM.cs" />
+    <Compile Include="ParameterSetting\ShortNameModel.cs" />
+    <Compile Include="ParameterSetting\WordModelVM.cs" />
+    <Compile Include="ParameterSetting\WordModel.cs" />
+    <Compile Include="ParameterSetting\SysParameterVM.cs" />
+    <Compile Include="ParameterSetting\SysParameterModel.cs" />
+    <Compile Include="ParameterSetting\URLModel.cs" />
+    <Compile Include="ParameterSetting\SetEmailModel.cs" />
+    <Compile Include="Parameter\ParameterModel.cs" />
+    <Compile Include="ParameterSetting\DataGradeModel.cs" />
+    <Compile Include="Person.cs" />
+    <Compile Include="Product\ProductListModel.cs" />
+    <Compile Include="Product\ProductModel.cs" />
+    <Compile Include="Product\ProductSearchModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ManageCenter\Master\MasterVM.cs" />
+    <Compile Include="SearchDialog\CompanySearchVm.cs" />
+    <Compile Include="SearchDialog\EntityFormVm.cs" />
+    <Compile Include="SearchDialog\PersonSearchVm.cs" />
+    <Compile Include="UserGrade\UserDataRelationModel.cs" />
+    <Compile Include="UserGrade\UserGradeModel.cs" />
+    <Compile Include="UserPower\SysModuleVM.cs" />
+    <Compile Include="User\LogRecordModel.cs" />
+    <Compile Include="User\UserModel.cs" />
+    <Compile Include="User\LogRecordSearchModel.cs" />
+    <Compile Include="User\UserSearchModel.cs" />
+    <Compile Include="Valeo\vBase.cs" />
+    <Compile Include="Valeo\v_carsupport.cs" />
+    <Compile Include="Valeo\v_customer_doc.cs" />
+    <Compile Include="Valeo\v_ship.cs" />
+    <Compile Include="Valeo\v_lableModel.cs" />
+    <Compile Include="Valeo\v_carton.cs" />
+    <Compile Include="Valeo\v_card.cs" />
+    <Compile Include="Valeo\v_customer.cs" />
+    <Compile Include="Valeo\v_material.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Valeo.DbUtility\Valeo.DbUtility.csproj">
+      <Project>{58FE70A3-31A0-4EBB-8897-3E6DEEE810DE}</Project>
+      <Name>Valeo.DbUtility</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Valeo.Lang\Valeo.Lang.csproj">
+      <Project>{02eefcfb-f524-49b7-8783-5a08ec0d84fb}</Project>
+      <Name>Valeo.Lang</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Register\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ModelDb\1改此文件夹请先看.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

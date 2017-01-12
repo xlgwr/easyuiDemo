@@ -1,0 +1,231 @@
+﻿@using Valeo.Domain.Common
+@using Valeo.Domain.Enum
+@using Valeo.Domain.User;
+@using Valeo.Lang;
+@model UserModel
+@{ 
+    Layout = "~/Views/Shared/_Layout_Index.cshtml";
+} 
+<script src="~/Scripts/forms/package/package.js"></script>
+
+
+ 
+
+ 
+
+    <script type="text/javascript">
+    $(function () {
+        loadData();
+        $("#btnSerach").click(function () {
+            var pars = {
+                PackageID: $("#PackageIDSearch").val(),
+                Currency: $("#CurrencySearch").combo("getValue"),
+                MemberGradeID: $("#MemberGradeIDSearch").combo("getValue")
+            };
+            var url = "/Package/PackagePage";
+            loadData(url,pars);
+        });
+        $(window).resize(function () {
+            $('#packageList').datagrid('resize', {
+                height: ($(window).height()) - 150
+            }).datagrid('resize', {
+                height: ($(window).height()) - 150
+            });
+        });
+    });
+    function loadData(url,pars) {
+        $('#packageList').datagrid({
+            url: url,
+            data:{"total":0,"rows":[]},
+            //width: 1000,
+            //height: 400,
+            //width: ($(window).width() * 0.90),
+            height: ($(window).height()) - 150,
+            //fit:true,
+            fitColumns: true, //列自适应
+            nowrap: false,
+            idField: 'PackageID',//主键列的列名
+            loadMsg: '@(BaseRes.PAC_COL_007)...',
+            pagination: true,//是否有分页
+            singleSelect: true,//是否单行选择
+            pageSize: 50,//每页多少条数据
+            pageNumber: 1,//默认的页
+            striped: true,
+            pageList: [50, 100, 150, 200],
+            queryParams: pars,//往后台传递参数
+            columns: [[
+                //{ field: 'UserName11', checkbox: true, align: 'center', width: 100 },
+                  { field: 'PackageID', title: '@(BaseRes.PAC_COL_008)', align: 'center', width: 100 ,sortable:true },
+                  { field: 'PackageName', title: '@(BaseRes.PAC_COL_009)', align: 'center', width: 500, sortable: true },
+                  { field: 'Currency', title: '@(BaseRes.PAC_COL_010)', align: 'center', width: 100, sortable: true },
+                  { field: 'Total', title: '@(BaseRes.PAC_COL_011)', align: 'right', width: 100, sortable: true },
+                  { field: 'MemberGradesName', title: '@(BaseRes.PAC_COL_012)', align: 'center', width: 100 },
+                  @*{
+                      field: 'operation', title: '@(BaseRes.PAC_COL_013)', align: 'center', width: 150,
+                      formatter: function (value, row, index) {
+                          var operationhtml = '<span class="l-btn-left l-btn-icon-left" onclick=showEdit("' + row.PackageID + '","查看套餐",false) ><span class="l-btn-text">查看</span><span class="l-btn-icon icon_webedite">&nbsp;</span></span>';
+                           @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Edit))
+                           {
+                               @:operationhtml+= '<span class="l-btn-left l-btn-icon-left" onclick=showEdit("' + row.PackageID + '","@(BaseRes.PAC_COL_014)",true) ><span class="l-btn-text">@(BaseRes.PAC_COL_015)</span><span class="l-btn-icon icon-edit">&nbsp;</span></span>';
+                           }
+                            @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Delete))
+                            {
+                                @:operationhtml += '<span class="l-btn-left l-btn-icon-left" onclick=deletePackage("' + row.PackageID + '") ><span class="l-btn-text">@(BaseRes.PAC_COL_016)</span><span class="l-btn-icon icon-remove">&nbsp;</span></span>';
+                            }
+                            return operationhtml;
+                      }
+                  }*@
+            ]],
+
+            onLoadSuccess: function (data) {
+                $('#packageList').datagrid('clearSelections');
+                $(".datagrid-htable td div").css({
+                    "text-align": "center"
+                });
+
+
+
+                //$(".datagrid-striped tbody tr:nth-child(odd) td ").css({
+                //    "background-color": "Red"
+                //});
+
+
+
+            },
+            onDblClickRow: function (rowIndex, rowData) {
+               @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Edit))
+               {
+                   @:showEdit(rowData.PackageID, "@(BaseRes.PAC_COL_014)", true);
+               }
+                   
+            },
+            toolbar: [
+                 @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Create))
+                 {
+                     @:{text:'@(BaseRes.PAC_COL_017)',iconCls:'icon-add',handler:function(){showAdd('@(BaseRes.PAC_COL_018)');}},
+                 }
+                                     @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Edit))
+                {
+                    @:{text: '修改', iconCls: 'icon-edit', handler: function () {
+                    @:      var selectRows = $('#packageList').datagrid('getSelected');
+                    @:      if (!selectRows) {
+                    @:          $.messager.alert('@BaseRes.COM_CTL_NOTICE', "请选择要修改的记录。");
+                    @:      return;
+                    @:  }
+                    @:  showEdit(selectRows.PackageID, "@(BaseRes.PAC_COL_014)", true);
+                    @: }
+                    @:}, '-',   
+                    } 
+                {
+                    text: '查看',
+                    iconCls: 'icon_webedite',
+                    handler: function () {
+                        var selectRows = $('#packageList').datagrid('getSelected');
+                        if (!selectRows) {
+                            $.messager.alert('@BaseRes.COM_CTL_NOTICE', "请选择要查看的记录。");
+                            return;
+                        }
+                        showEdit(selectRows.PackageID, "查看套餐", false);
+                    }
+                },
+                  @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Delete))
+                  {
+                     @:'-', { text: '@(BaseRes.PAC_COL_019)', iconCls: 'icon-remove', handler: function () { deletePackage(); } }
+                  }
+            ]
+        });
+    }
+    function deletePackages() {
+        var checkedrows = $('#packageList').datagrid('getChecked');
+        if (checkedrows.length == 0) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', "@(BaseRes.PAC_COL_020)");
+            return;
+        }
+        var para = {}
+        for (var i = 0; i < checkedrows.length; i++) {
+            para["packageIds[" + i + "]"] = checkedrows[i].PackageID;
+        }
+        $.messager.confirm('@BaseRes.COM_CTL_NOTICE', '@(BaseRes.PAC_COL_021)', function (r) {
+            if (r) {
+                $.post('/Package/Deletes', para, function (res) {
+                    if (res.result) {
+                        $('#packageList').datagrid('reload');
+                    } else {
+                        $.messager.alert('@BaseRes.COM_CTL_NOTICE', res.Msg);
+                    }
+                }, "json");
+            }
+        });
+
+    }
+        function deletePackage() {
+            var selectRows = $('#packageList').datagrid('getSelected');
+            if (!selectRows) {
+                $.messager.alert('提示信息', "@(BaseRes.PAC_COL_020)");
+                return;
+            }
+        $.messager.confirm('@BaseRes.COM_CTL_NOTICE', '@(BaseRes.PAC_COL_022)', function (r) {
+            if (r) {
+                $.post('/Package/Deletes', "packageIds=" + selectRows.PackageID, function (res) {
+                    if (res.result) {
+                        $('#packageList').datagrid('reload');
+                    } else {
+                        $.messager.alert('@BaseRes.COM_CTL_NOTICE', res.Msg);
+                    }
+                });
+            }
+        });
+    }
+
+</script>
+    <div class="mar10" data-options="fit:true,plain:true">
+        <div class="padd10">
+            <div class="easyui-panel" title="查询条件" style="width: 99%; padding: 10px; margin-bottom: 10px;">
+                <form id="SearchForm">
+                    <table>
+                        <tr>
+                            <td class="title95">@(BaseRes.PAC_COL_001):</td>
+                            <td><input type="text" class="easyui-textbox filewidth_n" id="PackageIDSearch" value="" data-options="validType:['length[0,64]']" /></td>
+                            <td class="title95">@(BaseRes.PAC_COL_002):</td>
+                            <td>
+                                <select name="CurrencySearch" class="easyui-combobox filewidth" id="CurrencySearch" data-options="editable:false">
+                                    <option value="-1" selected="selected">@(BaseRes.PAC_COL_003)</option>
+                                    @{var currencys = (List<Valeo.Domain.Parameter.ParameterModel>) ViewBag.Currencys;}
+                                    @foreach (var item in currencys)
+                                {
+                                        <option value="@item.Paramvalue">@item.Paramvalue</option>
+                                }
+
+                                </select>
+                            </td>
+                            <td class="title95">@(BaseRes.PAC_COL_004):</td>
+                            <td>
+                                <select name="memberGradeIdSearch" class="easyui-combobox filewidth" id="MemberGradeIDSearch" data-options="editable:false">
+                                    <option selected="selected" value="-1">@(BaseRes.PAC_COL_005)</option>
+                                    @{var memberGrades = (List<Valeo.Domain.MemberGrade.MemberGradeModel>) ViewBag.MemberGrades;}
+                                    @foreach (var item in memberGrades)
+                                {
+                                        <option value="@item.MemberGradeID">@item.MemberGrade</option>
+                                }
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="textcenter">
+                        @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Search))
+                        {
+                            <a href="javascript:void(0)" id="btnSerach" class="easyui-linkbutton c6 width70">@(BaseRes.PAC_COL_006)</a>
+                        }
+                        <a href="javascript:void(0)" onclick="$('#SearchForm').form('clear'); $.parser.parse('#SearchForm');" class="easyui-linkbutton c9 width70">重置</a>
+                    </div>
+                </form>
+</div>
+
+            <table id="packageList" title="查询结果" style="width: 99%;"></table>
+        </div>
+    </div>
+
+<div id="editdlg" class="easyui-window" title="" data-options="modal:true,closed:true,iconCls:'icon-add',maximized:true" style="width:1190px;height:555px;padding:0;">
+</div>
+<div id="searchdlg" class="easyui-window" title="" data-options="modal:true,closed:true,iconCls:'icon-add',maximized:true" style="width:1150px;height:550px;">
+</div>

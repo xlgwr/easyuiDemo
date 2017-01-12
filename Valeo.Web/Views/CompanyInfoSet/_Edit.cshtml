@@ -1,0 +1,90 @@
+﻿@using Valeo.Domain.ParameterSetting;
+@using Valeo.Lang
+@model ComParameterModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>_Edit</title>
+</head>
+<body>
+    <div class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'center'" class="padd10">
+            <form id="CompanyId" action="/CompanyInfoSet/@(Model.Comkey==null? "AddSave" : "EditSave")" class="easyui-form class=" easyui-form" method="post" >
+                <table class="sec">
+                    <input type="hidden"   name="Comkey" value="@Model.Comkey" />
+                    <tr>
+                        <td>@BaseRes.CIS_COL_010</td>
+                        <td>
+                            <input type="text" class="easyui-validatebox easyui-textbox" id="Comkey"  value="@Model.Comkey" disabled="disabled" data-options="required:true"  />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>@BaseRes.CIS_COL_002</td>
+                        <td><input type="text" class="easyui-textbox filewidth" id="Comvalue" name="Comvalue" value="@Model.Comvalue" data-options="validType:'length[0,256]'" /></td>
+                    </tr>
+                    <tr>
+                        <td>@BaseRes.CIS_COL_003</td>
+                        <td><input type="text" class="easyui-validatebox easyui-numberbox" data-options="validType:'length[0,8]'" id="Comtype" name="Comtype" value="@Model.Comtype" /></td>
+                    </tr>
+                    <tr>
+                        <td>@BaseRes.CIS_COL_011</td>
+                        <td><input type="text" data-options="validType:'length[0,64]'" class="easyui-validatebox easyui-numberbox" id="DspNo" name="DspNo" value="@Model.DspNo" /></td>
+                    </tr>
+                    <tr>
+                        <td>@BaseRes.CIS_COL_012</td>
+                        <td><textarea name="Remark" rows="15" cols="70" data-options="validType:'length[0,256]'">@Model.Remark</textarea></td>
+                    </tr>
+                </table>
+            </form>
+
+
+        </div>
+
+        <div data-options="region:'south',border:false" style="text-align: right; padding: 5px 0 0;">
+            @if (Model.Comkey == null || ViewBag.IsEdit)
+            {
+                <a class="easyui-linkbutton width80" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="javascript:editcomPany()">@BaseRes.DLL_SEA_001</a>
+                <a class="easyui-linkbutton width80" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="javascript:comPanyjs.closeDialog()">@BaseRes.DLL_SEA_002</a>
+            }
+            else
+            {
+                <a class="easyui-linkbutton width80" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="javascript:comPanyjs.closeDialog()">@BaseRes.ESD_CTL_011</a>
+            }
+            
+        </div>
+    </div>
+
+    <script type="text/javascript">
+   
+        function editcomPany() {
+            
+            if (!$("#CompanyId").form('validate')) {
+            return false;
+        }
+            var submitform = $('#CompanyId');
+        var submitform = $('#CompanyId');
+        $.ajax({
+            type: 'POST',
+            url: submitform.attr('action'),
+            data: submitform.serialize(),
+            success: function (data) {
+                if (data.result == 1) {
+                    submitform[0].reset();
+                    comPanyjs.closeDialog();
+                    loadData();
+                } else {
+                    alert(data.Msg);
+                }
+            }
+        });
+    }
+    </script>
+
+</body>
+</html>

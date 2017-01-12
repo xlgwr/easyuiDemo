@@ -1,0 +1,832 @@
+﻿@*@model Valeo.Models.Sys.AccountModel*@
+@using App.Lang;
+@using Valeo;
+@using Valeo.Domain.Common
+@using Valeo.Lang
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>法雷奥汽车内部控制(深圳)有限公司系统</title>
+
+    <link href="@Url.Content("~/Content/index.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/themes/default/easyui.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/themes/icon.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/demo.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/index.css")" rel="stylesheet" type="text/css" />
+
+    <script src="@Url.Content("~/Scripts/jquery.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.easyui.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/forms/main/home.index.js")" type="text/javascript"></script>
+
+    <script>
+        $.ajaxSetup({ cache: false });
+        $(function () {
+            bindEvent();
+        });
+
+        function bindEvent() {
+            $(".btn_menu").click(function () {
+                var title = $(this).text();
+                var url = $(this).attr("url");
+                var isSelect = $("#container").tabs('exists', title);
+                if (isSelect) {
+                    $("#container").tabs('select', title);
+
+                    return;
+                }
+
+                $("#container").tabs('add', {
+                    title: title,
+                    content: CreateContent(url),
+                    closable: true
+                });
+            });
+        }
+
+        function GetLogout() {
+             
+            $.ajax({
+                type: "post",
+                dataType: "json",
+                url: '/Home/GetLogout', //回发到的页面    
+                success: function (data) {
+                    window.location.href = '/Login/Index';
+                    //if (data.type == 1) {
+                    //    window.location.href = '/Login/Index';
+                    //}
+                    //else {
+                    //    $.messager.alert('提示信息', data.message);
+                    //}
+                }
+            })
+
+            return true;
+        }
+
+
+        function lookMember(memberName) {
+             
+            var isSelect = $("#container").tabs('exists', '会员信息查看');
+            if (isSelect) {
+                $("#container").tabs('select', '会员信息查看');
+                var tab = $('#container').tabs('getSelected');  // 获取选择的面板
+                tab.panel({content: CreateContent('/MemberList/Index?memberName=' + memberName)});
+
+                return;
+            } 
+            $("#container").tabs('add', {
+                title: '会员信息查看', 
+                content: CreateContent('/MemberList/Index?memberName=' + memberName),
+                closable: true
+            });
+        }
+        function lookCourt(id) {  //法庭查看
+
+            var isSelect = $("#container").tabs('exists', '法庭数据');
+            if (isSelect) {
+                $("#container").tabs('select', '法庭数据');
+                var tab = $('#container').tabs('getSelected');  // 获取选择的面板
+                tab.panel({ content: CreateContent('/OnlineCourt/Index?isEdit=true&id=' + id) });
+
+                return;
+            }
+            $("#container").tabs('add', {
+                title: '法庭数据',
+                content: CreateContent('/OnlineCourt/Index?isEdit=true&id=' + id),
+                closable: true
+            });
+        }
+        function lookCompany(id) {   //公司查看
+
+            var isSelect = $("#container").tabs('exists', '公司数据');
+            if (isSelect) {
+                $("#container").tabs('select', '公司数据');
+                var tab = $('#container').tabs('getSelected');  // 获取选择的面板
+                tab.panel({ content: CreateContent('/OnlineCompany/Index?isEdit=true&id=' + id) });
+
+                return;
+            }
+            $("#container").tabs('add', {
+                title: '公司数据',
+                content: CreateContent('/OnlineCompany/Index?isEdit=true&id=' + id),
+                closable: true
+            });
+        }
+        function lookLand(id) {   //土地数据
+
+            var isSelect = $("#container").tabs('exists', '土地数据');
+            if (isSelect) {
+                $("#container").tabs('select', '土地数据');
+                var tab = $('#container').tabs('getSelected');  // 获取选择的面板
+                tab.panel({ content: CreateContent('/OnlineLand/Index?isEdit=true&id=' + id) });
+
+                return;
+            }
+            $("#container").tabs('add', {
+                title: '土地数据',
+                content: CreateContent('/OnlineLand/Index?isEdit=true&id=' + id),
+                closable: true
+            });
+        }
+        function lookLoan(id) {   //信贷数据
+
+            var isSelect = $("#container").tabs('exists', '信贷数据');
+            if (isSelect) {
+                $("#container").tabs('select', '信贷数据');
+                var tab = $('#container').tabs('getSelected');  // 获取选择的面板
+                tab.panel({ content: CreateContent('/OnlineLoan/Index?isEdit=true&id=' + id) });
+
+                return;
+            }
+            $("#container").tabs('add', {
+                title: '信贷数据',
+                content: CreateContent('/OnlineLoan/Index?isEdit=true&id=' + id),
+                closable: true
+            });
+        }
+        function lookPub(publicId, tableId, title) {   //公共数据
+
+            var isSelect = $("#container").tabs('exists', '公共数据');
+            if (isSelect) {
+                $("#container").tabs('select', '公共数据');
+                var tab = $('#container').tabs('getSelected');  // 获取选择的面板
+                tab.panel({ content: CreateContent('/OnlinePub/Index?isEdit=true&publicId=' + publicId + '&tableId=' + tableId + "&title=" + encodeURIComponent(title)) });
+
+                return;
+            }
+            $("#container").tabs('add', {
+                title: '公共数据',
+                content: CreateContent('/OnlinePub/Index?isEdit=true&publicId=' + publicId + '&tableId=' + tableId + "&title=" + encodeURIComponent(title)),
+                closable: true
+            });
+        }
+        function lookEntity(id) {   //entity
+
+            var isSelect = $("#container").tabs('exists', '实体数据');
+            if (isSelect) {
+                $("#container").tabs('select', '实体数据');
+                var tab = $('#container').tabs('getSelected');  // 获取选择的面板
+                tab.panel({ content: CreateContent('/OnlineEntity/Index?isEdit=true&id=' + id) });
+
+                return;
+            }
+            $("#container").tabs('add', {
+                title: '实体数据',
+                content: CreateContent('/OnlineEntity/Index?isEdit=true&id=' + id),
+                closable: true
+            });
+        }
+        function generateInvoice(jsonOrders) {
+            var para = '';
+            var tmporderIds = [];
+            for (var i = 0; i < jsonOrders.length; i++) {
+                para += "&orderIds=" + jsonOrders[i].OrderID;
+                tmporderIds.push(jsonOrders[i].OrderID);
+            }
+            
+            $.post('/Invoice/CheckOrderToInvoices', { orderIds: tmporderIds }, function (res) {
+                if (!res.result) {
+                    $.messager.alert('@BaseRes.COM_CTL_NOTICE', res.Msg, 'info');
+                    return;
+                } else {
+                    var isSelect = $("#container").tabs('exists', '发票查看');
+                    if (isSelect) {
+                        $("#container").tabs('select', '发票查看');
+                        var tab = $('#container').tabs('getSelected'); // 获取选择的面板
+                        tab.panel({ content: '<iframe  id="LookInvoice" name="LookInvoice" scrolling="no" frameborder="0" fit="true" style="height:99%;width:100%;min-height:510px;"></iframe>' });
+                    } else {
+                        $("#container").tabs('add', {
+                            title: '发票查看',
+                            content: '<iframe  id="LookInvoice" name="LookInvoice" scrolling="no" frameborder="0" fit="true" style="height:99%;width:100%;min-height:510px;"></iframe>',
+                            closable: true
+                        });
+                    }
+
+                    var postForm = document.createElement("form");
+                    postForm.method = "post";
+                    postForm.action = "/Invoice/Index?isAdd=true";
+                    postForm.target = "LookInvoice";
+
+                    var input = document.createElement("input");
+                    input.type = "hidden";
+                    input.name = "orderIds";
+                    var strA = "";
+                    for (var i = 0; i < jsonOrders.length; i++) {
+                        strA += jsonOrders[i].OrderID + ',';
+                    }
+                    input.value = strA;
+                    postForm.appendChild(input);
+                    document.body.appendChild(postForm);
+                    postForm.submit();
+                    //用完之后，不要忘记删掉  
+                    postForm.removeChild(input);
+                    document.body.removeChild(postForm);
+                }
+            })
+            
+        }
+        function CreateContent(url) {
+            var strHtml = '<iframe src="' + url + '" scrolling="no" frameborder="0" fit="true" style="height:99%;width:100%;min-height:510px;"></iframe>';
+            return strHtml;
+        }
+
+        //发送邮件
+        function sendEmailPrivew(reportId, bigType, SmallType, taskId, MemberName, Content,TaskListID) {
+            
+            var isSelect = $("#container").tabs('exists', '@BaseRes.ERD_CTL_006');
+            if (isSelect) {
+                $("#container").tabs('select', '@BaseRes.ERD_CTL_006');
+                var tab = $('#container').tabs('getSelected'); // 获取选择的面板
+                tab.panel({ content: '<iframe  id="SendEmailP" name="SendEmailP" scrolling="no" frameborder="0" fit="true" style="height:99%;width:100%;min-height:510px;"></iframe>' });
+            } else {
+                $("#container").tabs('add', {
+                    title: '@BaseRes.ERD_CTL_006',
+                    content: '<iframe  id="SendEmailP" name="SendEmailP" scrolling="no" frameborder="0" fit="true" style="height:99%;width:100%;min-height:510px;"></iframe>',
+                    closable: true
+                });
+            }
+
+            var postForm = document.createElement("form");
+            postForm.method = "post";
+            var url = '/EmailSend/IndexReport?SmallType=' + SmallType + "&bigType=" + bigType + "&taskId=" + taskId + "&reportId=" + reportId + "&type=0&memberName=" + MemberName + "&Content=" + Content + "&TaskListID=" + TaskListID;
+            console.log(url);
+            postForm.action = url;
+            postForm.target = "SendEmailP";
+
+            var input = document.createElement("input");
+            input.type = "hidden";
+            input.name = "emails";
+            postForm.appendChild(input);
+            document.body.appendChild(postForm);
+            postForm.submit();
+            //用完之后，不要忘记删掉  
+            postForm.removeChild(input);
+            document.body.removeChild(postForm);
+        }
+
+        //发送邮件
+        function sendEmailNew() {
+
+            var isSelect = $("#container").tabs('exists', '@BaseRes.ERD_CTL_006');
+            if (isSelect) {
+                $("#container").tabs('select', '@BaseRes.ERD_CTL_006');
+                var tab = $('#container').tabs('getSelected'); // 获取选择的面板
+                tab.panel({ content: '<iframe  id="SendEmailP" name="SendEmailP" scrolling="no" frameborder="0" fit="true" style="height:99%;width:100%;min-height:510px;"></iframe>' });
+            } else {
+                $("#container").tabs('add', {
+                    title: '@BaseRes.ERD_CTL_006',
+                    content: '<iframe  id="SendEmailP" name="SendEmailP" scrolling="no" frameborder="0" fit="true" style="height:99%;width:100%;min-height:510px;"></iframe>',
+                    closable: true
+                });
+            }
+
+            var postForm = document.createElement("form");
+            postForm.method = "post";
+            var url = "/EmailSend/Index";
+            console.log(url);
+            postForm.action = url;
+            postForm.target = "SendEmailP";
+
+            var input = document.createElement("input");
+            input.type = "hidden";
+            input.name = "emails";
+            postForm.appendChild(input);
+            document.body.appendChild(postForm);
+            postForm.submit();
+            //用完之后，不要忘记删掉  
+            postForm.removeChild(input);
+            document.body.removeChild(postForm);
+        }
+        //发送邮件发票
+        function sendEmailInvoces(EmailAppModel, MemberID) {
+
+            var isSelect = $("#container").tabs('exists', '@BaseRes.ERD_CTL_006');
+            if (isSelect) {
+                $("#container").tabs('select', '@BaseRes.ERD_CTL_006');
+                var tab = $('#container').tabs('getSelected'); // 获取选择的面板
+                tab.panel({ content: '<iframe  id="SendEmailP" name="SendEmailP" scrolling="no" frameborder="0" fit="true" style="height:99%;width:100%;min-height:510px;"></iframe>' });
+            } else {
+                $("#container").tabs('add', {
+                    title: '@BaseRes.ERD_CTL_006',
+                    content: '<iframe  id="SendEmailP" name="SendEmailP" scrolling="no" frameborder="0" fit="true" style="height:99%;width:100%;min-height:510px;"></iframe>',
+                    closable: true
+                });
+            }
+
+            var postForm = document.createElement("form");
+            postForm.method = "post";
+            var url = "/EmailSend/SendMailDialogPost?memberID=" + MemberID
+                + "&retId=" + EmailAppModel.retId
+                + "&ToMail=" + EmailAppModel.ToMail
+                + "&Subject=" + EmailAppModel.Subject;
+            console.log(url);
+            postForm.action = url;
+            postForm.target = "SendEmailP";
+
+            var input = document.createElement("input");
+            input.type = "hidden";
+            input.name = "EmailBody";
+            input.value = EmailAppModel.EmailBody
+            postForm.appendChild(input);
+
+
+            document.body.appendChild(postForm);
+            postForm.submit();
+            //用完之后，不要忘记删掉  
+            postForm.removeChild(input);
+            document.body.removeChild(postForm);
+        }
+        function SendMessageDemo() {
+            var isSelect = $("#container").tabs('exists', '发送消息');
+            if (isSelect) {
+                $("#container").tabs('select', '发送消息');
+                var tab = $('#container').tabs('getSelected'); // 获取选择的面板
+                tab.panel({ content: '<iframe  id="SendMessage" name="SendMessage" scrolling="no" frameborder="0" fit="true" style="height:99%;width:100%;min-height:510px;"></iframe>' });
+            } else {
+                $("#container").tabs('add', {
+                    title: '发送消息',
+                    content: '<iframe  id="SendMessage" name="SendMessage" scrolling="no" frameborder="0" fit="true" style="height:99%;width:100%;min-height:510px;"></iframe>',
+                    closable: true
+                });
+            }
+
+            var postForm = document.createElement("form");
+            postForm.method = "post";
+            postForm.action = "/ReportList/DemoIndex";
+            postForm.target = "SendMessage";
+
+            var input = document.createElement("input");
+            input.type = "hidden";
+            input.name = "reportList";
+
+            input.value =null;
+            postForm.appendChild(input);
+            document.body.appendChild(postForm);
+            postForm.submit();
+            //用完之后，不要忘记删掉  
+            postForm.removeChild(input);
+            document.body.removeChild(postForm);
+        }
+
+
+        //任务中新增报告
+        function TaskNewReport(selectRows, m_SmallType) {
+           
+            var isSelect = $("#container").tabs('exists', '报告查看');
+            if (isSelect) {
+                $("#container").tabs('select', '报告查看');
+                var tab = $('#container').tabs('getSelected'); // 获取选择的面板
+                tab.panel({ content: '<iframe  id="NewReport" name="NewReport" scrolling="no" frameborder="0" fit="true" style="height:99%;width:100%;min-height:510px;"></iframe>' });
+            } else {
+                $("#container").tabs('add', {
+                    title: '报告查看',
+                    content: '<iframe  id="NewReport" name="NewReport" scrolling="no" frameborder="0" fit="true" style="height:99%;width:100%;min-height:510px;"></iframe>',
+                    closable: true
+                });
+            }
+
+            var postForm = document.createElement("form");
+            postForm.method = "post";
+            postForm.action = "/ReportList/Index?isAdd=true";
+            postForm.target = "NewReport";
+
+            var input = document.createElement("input");
+            input.type = "hidden";
+            input.name = "reportList";
+            var reportList = {
+                SmallType: m_SmallType,
+                TaskID: selectRows.TaskID,
+                MemberName: selectRows.MemberName,
+                courtModel: [],
+                companyModel: [],
+                landModel: [],
+                loanModel: [],
+                publicModel: [],
+                tableModel: []
+            };
+
+
+            input.value = JSON.stringify(reportList);
+            postForm.appendChild(input);
+            document.body.appendChild(postForm);
+            postForm.submit();
+            //用完之后，不要忘记删掉  
+            postForm.removeChild(input);
+            document.body.removeChild(postForm);
+        }
+
+        //任务中报告查看
+        function TaskSelectReport(selectRows, m_SmallType) {
+            debugger;
+
+            var isSelect = $("#container").tabs('exists', '报告查看');
+            if (isSelect) {
+                $("#container").tabs('select', '报告查看');
+                var tab = $('#container').tabs('getSelected'); // 获取选择的面板
+                tab.panel({ content: '<iframe  id="SelectReport" name="SelectReport" frameborder="0" fit="true" style="height:99%;width:100%;min-height:510px;"></iframe>' });
+            } else {
+                $("#container").tabs('add', {
+                    title: '报告查看',
+                    content: '<iframe  id="SelectReport" name="SelectReport"  frameborder="0" fit="true" style="height:99%;width:100%;min-height:510px;"></iframe>',
+                    closable: true
+                });
+            }
+            //自动监察点击组别的浏览报告,查看的是当前组别所有搜索人员的信息
+            if (selectRows.BigType == 2 && selectRows.Content.length == 0 && selectRows.Progress == 1) {
+                var postForm = document.createElement("form");
+                postForm.method = "post";
+                postForm.action = '/AutoMontoring/ReportList?flag=0&taskId=' + selectRows.TaskID;
+                postForm.target = "SelectReport";
+
+                var input = document.createElement("input");
+                input.type = "hidden";
+                input.name = "reportList";
+                var reportList;
+                input.value = JSON.stringify(reportList);
+                postForm.appendChild(input);
+                document.body.appendChild(postForm);
+                postForm.submit();
+                //用完之后，不要忘记删掉  
+                postForm.removeChild(input);
+                document.body.removeChild(postForm);
+
+            } else {
+                var postForm = document.createElement("form");
+                postForm.method = "post";
+                postForm.action = "/ReportList/Index?isAdd=true&isSelected=true";
+                postForm.target = "SelectReport";
+
+                var input = document.createElement("input");
+                input.type = "hidden";
+                input.name = "reportList";
+                var reportList = {
+                    SmallType: m_SmallType,
+                    BigType: selectRows.BigType,
+                    TaskID: selectRows.TaskID,
+                    MemberName: selectRows.MemberName,
+                    ReportID: selectRows.ReportID,
+                    courtModel: [],
+                    companyModel: [],
+                    landModel: [],
+                    loanModel: [],
+                    publicModel: [],
+                    tableModel: []
+                };
+
+                input.value = JSON.stringify(reportList);
+                postForm.appendChild(input);
+                document.body.appendChild(postForm);
+                postForm.submit();
+                //用完之后，不要忘记删掉  
+                postForm.removeChild(input);
+                document.body.removeChild(postForm);
+            }
+        }
+
+
+        //生成报告
+        function generateReport(selectRows,m_SmallType) {
+
+            var isSelect = $("#container").tabs('exists', '报告查看');
+            if (isSelect) {
+                $("#container").tabs('select', '报告查看');
+                var tab = $('#container').tabs('getSelected'); // 获取选择的面板
+                tab.panel({ content: '<iframe  id="LookReport" name="LookReport" scrolling="no" frameborder="0" fit="true" style="height:99%;width:100%;min-height:510px;"></iframe>' });
+            } else {
+                $("#container").tabs('add', {
+                    title: '报告查看',
+                    content: '<iframe  id="LookReport" name="LookReport" scrolling="no" frameborder="0" fit="true" style="height:99%;width:100%;min-height:510px;"></iframe>',
+                    closable: true
+                });
+            }           
+          
+            var postForm = document.createElement("form");
+            postForm.method = "post";
+            postForm.action = "/ReportList/Index?isAdd=true";
+            postForm.target = "LookReport";
+
+            var input = document.createElement("input");
+            input.type = "hidden";
+            input.name = "reportList";
+            var reportList = {
+                SmallType:m_SmallType,
+                courtModel: [],
+                companyModel: [],
+                landModel: [],
+                loanModel: [],
+                publicModel: [],
+                tableModel:[]
+            };
+            if (m_SmallType == 0) {
+                //法庭
+                for (var i = 0; i < selectRows.length; i++) {
+                    reportList.courtModel.push({ Id: selectRows[i].Id });
+                }
+            } else if (m_SmallType == 1) {
+                 //公司
+                for (var i = 0; i < selectRows.length; i++) {
+                    reportList.companyModel.push({ Entityid: selectRows[i].Entityid });
+                }
+            } else if (m_SmallType == 2) {
+                //土地
+                for (var i = 0; i < selectRows.length; i++) {
+                    reportList.landModel.push({ LandID: selectRows[i].LandID });
+                }
+
+            } else if (m_SmallType == 3) {
+                //信贷
+                for (var i = 0; i < selectRows.length; i++) {
+                    reportList.loanModel.push({ LoanID: selectRows[i].Loanid });
+                }
+
+            } else if (m_SmallType == 4) {
+                //其他
+            } else if (m_SmallType == 5) {
+               //公共
+            } else if (m_SmallType == 6) {
+                //全部
+                for (var i = 0; i < selectRows.length; i++) {
+                    if (selectRows[i].TypeID == 0) {
+                        //全部数据—法庭
+                        reportList.courtModel.push({ Id: selectRows[i].Id });
+
+                    } else if (selectRows[i].TypeID == 1) {
+                        //全部数据—公司
+                        reportList.companyModel.push({ Entityid: selectRows[i].Entityid });
+
+                    } else if (selectRows[i].TypeID == 2) {
+                        //全部数据—土地
+                        reportList.landModel.push({ LandID: selectRows[i].LandID });
+
+                    } else if (selectRows[i].TypeID == 3) {
+                        //全部数据—信贷
+                        reportList.loanModel.push({ LoanID: selectRows[i].Loanid });
+
+                    } else if (selectRows[i].TypeID == 5) {
+                        //全部数据—公共
+                        reportList.tableModel.push({ TableID: selectRows[i].TableID, PublicID: selectRows[i].PublicID, PublicTypeID: selectRows[i].PublicTypeID });
+                    }
+
+                }
+            }      
+            
+            input.value = JSON.stringify(reportList);
+            postForm.appendChild(input);
+            document.body.appendChild(postForm);
+            postForm.submit();
+            //用完之后，不要忘记删掉  
+            postForm.removeChild(input);
+            document.body.removeChild(postForm);
+
+        }
+
+
+
+        //生成报价
+        function generateQuote(dd) {
+            var para = '';
+            var tmpID = undefined;
+            var tmpNameAll = undefined;
+
+            for (var i = 0; i < dd.length; i++) {
+                var curritem = dd[i];
+                console.log(curritem);
+                if (curritem.State == 1 || curritem.State == 3) {
+                    $.messager.alert('@BaseRes.COM_CTL_NOTICE', "请选择【申请状态】都是【待报价】的记录。")
+                    return;
+                }
+                var accessTo = ["0", "1", "2", "5"];
+                if (accessTo.indexOf(curritem.ApplyType)==-1) {
+                    $.messager.alert('@BaseRes.COM_CTL_NOTICE', "请选择【产品类型】是【0.法庭、1.公司、2.土地、5.其他】的记录。")
+                    return;
+                }
+                tmpNameAll = curritem.MemberID + "," + curritem.MemberName
+
+                if (!tmpID) {
+
+                    tmpID = curritem.ApplyID + "," + curritem.ApplyType + ",-1";
+                } else {
+                    tmpID += "_" + curritem.ApplyID + "," + curritem.ApplyType + ",-1";
+                }
+            }
+            console.log(tmpID);
+
+            //$('#openWindowDlg').dialog({
+            //    title: '生成报价单',
+            //    closed: false,
+            //    cache: false,
+            //    href: '/QuoteList/Create/' + tmpID + "/" + tmpNameAll,
+            //    modal: true,
+            //});
+
+            var isSelect = $("#container").tabs('exists', '报价单');
+            if (isSelect) {
+                $("#container").tabs('select', '报价单');
+                var tab = $('#container').tabs('getSelected'); // 获取选择的面板
+                tab.panel({ content: '<iframe id="LookQuote" name="LookQuote" scrolling="no" frameborder="0" fit="true" style="height:99%;width:100%;min-height:510px;"></iframe>' });
+            } else {
+                $("#container").tabs('add', {
+                    title: '报价单',
+                    content: '<iframe id="LookQuote" name="LookQuote" scrolling="no" frameborder="0" fit="true" style="height:99%;width:100%;min-height:510px;"></iframe>',
+                    closable: true
+                });
+            }
+
+            var postForm = document.createElement("form");
+            postForm.id = "ffLookQuote"
+            postForm.method = "post";
+            postForm.action = "/QuoteList/Index";
+            postForm.target = "LookQuote";
+
+            var input = document.createElement("input");
+            input.type = "hidden";
+            input.name = "isAdd";
+            input.value = true;
+            
+            var input1 = document.createElement("input");
+            input1.type = "hidden";
+            input1.name = "ApplyIDs";
+            input1.value = tmpID;
+
+            var input2 = document.createElement("input");
+            input2.type = "hidden";
+            input2.name = "MemberName";
+            input2.value =tmpNameAll;
+
+            postForm.appendChild(input);
+            postForm.appendChild(input1);
+            postForm.appendChild(input2);
+
+            document.body.appendChild(postForm);
+            postForm.submit();
+
+            //用完之后，不要忘记删掉  
+            postForm.removeChild(input);
+            postForm.removeChild(input1);
+            postForm.removeChild(input2);
+            document.body.removeChild(postForm);
+        }
+
+        //生成订单
+        function generateOrders(selectRows) {
+            var Currency1 = undefined;
+            var PayWayVM3 = undefined;
+            var curName1 = undefined;
+            var curName2 = undefined;
+            var tmpID = undefined;
+            var tmpNameAll = undefined;
+
+            for (var i = 0; i < selectRows.length; i++) {
+
+                var curritem = selectRows[i];
+                ///////////////////////
+                if (curritem.QuoteConfirm != 1) {
+                    $.messager.alert('@BaseRes.COM_CTL_NOTICE', "请选择【状态】都是【已回签】的记录。", 'error')
+                    return;
+                }
+                if (curName1) {
+                    if (curName1 !== curritem.MemberID) {
+                        $.messager.alert('@BaseRes.COM_CTL_NOTICE', "请选择【账户名】相同的记录。", 'error')
+                        return;
+                    }
+                    if (Currency1 !== curritem.Currency) {
+                        $.messager.alert('@BaseRes.COM_CTL_NOTICE', "请选择【账户名及币别】相同的记录。", 'error')
+                        return;
+                    }
+                } else {
+                    curName1 = curritem.MemberID;
+                    curName2 = curritem.MemberName;
+                    Currency1 = curritem.Currency;
+                    PayWayVM3 = curritem.PayWay;
+                }
+
+                /////////////////////////////
+                if (!tmpID) {
+                    tmpID = curritem.QuoteID;
+                } else {
+                    tmpID += "," + curritem.QuoteID;
+                }
+            }//
+
+            tmpNameAll = curName1 + "," + curName2 + "," + Currency1 + "," + PayWayVM3
+            console.log("转成生订单:" + tmpID);
+
+            //查询是否已生成订单
+            $.post('/QuoteList/getAllQuoteListForOrder', { id: 0, models: tmpID }, function (res) {
+                console.log(res);
+                if (res.type) {
+                    //
+                    if (!res.total) {
+                        $.messager.alert('@BaseRes.COM_CTL_NOTICE', "此报价单已经生成了订单，无法再次生成。", 'info');
+                        return;
+                    } else {
+                        var isSelect = $("#container").tabs('exists', '订单管理');
+                        if (isSelect) {
+                            $("#container").tabs('select', '订单管理');
+                            var tab = $('#container').tabs('getSelected'); // 获取选择的面板
+                            tab.panel({ content: '<iframe id="LookOrder" name="LookOrder" scrolling="no" frameborder="0" fit="true" style="height:99%;width:100%;min-height:510px;"></iframe>' });
+                        } else {
+                            $("#container").tabs('add', {
+                                title: '订单管理',
+                                content: '<iframe id="LookOrder" name="LookOrder" scrolling="no" frameborder="0" fit="true" style="height:99%;width:100%;min-height:510px;"></iframe>',
+                                closable: true
+                            });
+                        }
+
+                        var postForm = document.createElement("form");
+                        postForm.id = "ffLookOrder"
+                        postForm.method = "post";
+                        postForm.action = "/OrderList/Index";
+                        postForm.target = "LookOrder";
+
+                        var input = document.createElement("input");
+                        input.type = "hidden";
+                        input.name = "isAdd";
+                        input.value = true;
+
+                        var input1 = document.createElement("input");
+                        input1.type = "hidden";
+                        input1.name = "QuoteIDs";
+                        input1.value = tmpID;
+
+                        var input2 = document.createElement("input");
+                        input2.type = "hidden";
+                        input2.name = "MemberName";
+                        input2.value = tmpNameAll;
+
+                        postForm.appendChild(input);
+                        postForm.appendChild(input1);
+                        postForm.appendChild(input2);
+
+                        document.body.appendChild(postForm);
+                        postForm.submit();
+
+                        //用完之后，不要忘记删掉  
+                        postForm.removeChild(input);
+                        postForm.removeChild(input1);
+                        postForm.removeChild(input2);
+                        document.body.removeChild(postForm);
+                    }
+                    //alert(res.message);
+                } else {
+                    $.messager.alert('@BaseRes.COM_CTL_NOTICE', res.message, 'error');
+                    return;
+                }
+            });
+
+            
+        }
+    </script>
+</head>
+
+<body>
+    <div id="layout_div" class="easyui-layout" fit="true">
+
+        <div data-options="region:'north',border:false" style="overflow:hidden; height:70px;background:#338FCC;padding:10px;padding-left:30px;">
+            <div style="float:left; height:70px;">
+                <img src="~/Content/images/logo_nw.png" height="45" />
+            </div>
+            <!--<div style="color:#fff  ;font-size:3em; float:left;margin-left:30px;">
+               法雷奥汽车内部控制(深圳)有限公司系统
+            </div>-->
+            <div style="float:right;height:70px; margin-right:50px; line-height: 50px; color: #ffffff;">
+                <span  >您好，@(((UserInfo)ViewBag.userInfo).UserID)！</span>
+                <span><a id="btnLogout" href="javascript:void(0)" onclick="GetLogout()">注销</a></span>
+            </div>
+        </div>
+        <div id="west" data-options="region:'west',split:true,title:'菜单'" collapsible:true" style="width:170px;">
+            <div id="nav" class="easyui-accordion" fit="true">
+                @{ var userSysModule = (List<Valeo.Domain.Models.SysModuleModel>) ViewBag.UserSysModule;}
+                @foreach (var topMenu in userSysModule.Where(o => o.Parentid == "0").OrderBy(o => o.Sort))
+                {
+                    <div title="@(topMenu.Mod_nm)" data-options="iconCls:'@(topMenu.Iconic.GetIconic())'" class="ofauto padd5">
+                        <ul class="leftnav"> 
+                            @{var item1 = topMenu;}
+                            @foreach (var nextMenu in userSysModule.Where(o=>o.Parentid==item1.Mod_id).OrderBy(o=>o.Sort))
+                            {
+                                <li><a href="javascript:;" class="btn_menu" url="@(nextMenu.Url)">@(nextMenu.Mod_nm)</a></li>
+                            } 
+                        </ul>
+                    </div>
+                }
+            </div>
+        </div>
+
+
+        <div data-options="region:'center'" style="overflow:hidden">
+            <div class="easyui-tabs" fit="true" id="container" style="overflow:hidden">
+                <div title="主页" style="padding:10px">
+                    法雷奥汽车内部控制(深圳)有限公司系统
+                    <!--<iframe src="/list.html" scrolling="no" frameborder="0" height="1000" width="1100" style="overflow:hidden; margin-bottom:10px;"></iframe>-->
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+

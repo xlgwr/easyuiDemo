@@ -1,0 +1,288 @@
+﻿@using Valeo.Domain.Common
+@using Valeo.Domain.Enum
+@using Valeo.Lang;
+@{
+    ViewBag.Title = "~/Views/Shared/_Layout_Index.cshtml";
+}
+
+ 
+<script src="~/Scripts/forms/product/product.js?t=201612007"></script>
+<script type="text/javascript"> 
+    $(function () {
+        loadData();
+        $("#btnSerach").click(function () {
+            var pars = {
+                //bigType: $("#bigTypeSearch").combobox("getValue"),
+                //SmallType: $("#SmallTypeSearch").combobox("getValue"),
+                //ProductNo: $("#ProductNoSearch").combobox("getValue"),
+                //MemberGradeId: $("#MemberGradeIdSearch").val(),
+                //Currency: $("#CurrencySearch").combobox("getValue")
+                BigType: $("#BigTypeSearch").combobox("getValue"),
+                SmallType: $("#SmallTypeSearch").combobox("getValue"),
+                ProductNo: $("#ProductNoSearch").val(),
+                MemberGradeID: $("#MemberGradeIDSearch").combobox("getValue"),
+                Currency: $("#CurrencySearch").combobox("getValue")
+            };
+            var url = "/Product/ProductPage";
+            loadData(pars, url);
+          
+        });
+        $(window).resize(function () {
+            $('#productList').datagrid('resize', {
+                height: ($(window).height()) - 170
+            }).datagrid('resize', {
+                height: ($(window).height()) - 170
+            });
+        });
+    });
+
+    function loadData(pars, url) {
+        $('#productList').datagrid({
+            url: url,
+            data: { "total": 0, "rows": [] },
+            //width: 1000,
+            //height: 400,
+            //width: ($(window).width() * 0.90),
+            height: ($(window).height()) - 170,
+            //fit:true,
+            fitColumns: true, //列自适应
+            nowrap: false,
+            idField: 'Id',//主键列的列名
+            loadMsg: '@(BaseRes.PRO_COL_019)...',
+            pagination: true,//是否有分页
+            singleSelect: true,//是否单行选择
+            pageSize: 50,//每页多少条数据
+            pageNumber: 1,//默认的页
+            striped: true,
+            pageList: [50, 100, 150, 200],
+            queryParams: pars,//往后台传递参数
+            columns: [[
+                //{ field: 'UserName11', checkbox: true, align: 'center', width: 100 },
+                {
+                    field: 'BigType', title: '@(BaseRes.PRO_COL_020)', align: 'center', width: 100, sortable: true,
+                    formatter: function (value, row, index) {
+                        if (value == 0) {
+                            return '@(BaseRes.PRO_COL_021)';
+                        }
+                        if (value == 1) {
+                            return '@(BaseRes.PRO_COL_022)';
+                        }
+                        if (value == 2) {
+                            return '@(BaseRes.PRO_COL_023)';
+                        }
+                        return value;
+                    }
+                },
+                {
+                    field: 'SmallType', title: '@(BaseRes.PRO_COL_024)', align: 'center', width: 100, sortable: true,
+                    formatter: function (value, row, index) {
+                        if (value == 0) {
+                            return '@(BaseRes.PRO_COL_025)';
+                        }
+                        if (value == 1) {
+                            return '@(BaseRes.PRO_COL_026)';
+                        }
+                        if (value == 2) {
+                            return '@(BaseRes.PRO_COL_027)';
+                        }
+                        if (value == 3) {
+                            return '@(BaseRes.PRO_COL_028)';
+                        }
+                        if (value == 4) {
+                            return '@(BaseRes.PRO_COL_029)';
+                        }
+                        return value;
+                    }
+                },
+                { field: 'ProductID', title: '@(BaseRes.PRO_COL_030)', align: 'center', width: 100, sortable: true },
+                { field: 'ProductName', title: '@(BaseRes.PRO_COL_031)', align: 'center', width: 300, sortable: true },
+                { field: 'Currency', title: '@(BaseRes.PRO_COL_032)', align: 'center', width: 100, sortable: true },
+                { field: 'Price', title: '@(BaseRes.PRO_COL_033)', align: 'right', width: 100, sortable: true },
+                { field: 'DiscountPrice', title: '@(BaseRes.PRO_COL_046)', align: 'right', width: 100, sortable: true, editor: { align: 'right' } },
+                { field: 'MemberGradesName', title: '@(BaseRes.PRO_COL_034)', align: 'center', width: 100 },
+                { field: 'Validity', title: '@(BaseRes.PRO_COL_035)', align: 'right', width: 100, sortable: true }, 
+                @*{
+                    field: 'operation', title: '@(BaseRes.PRO_COL_036)', align: 'center', width: 150,
+                    formatter: function (value, row, index) {
+                        var operationhtml = '<span class="l-btn-left l-btn-icon-left" onclick=showEdit("' + row.ProductID + '","查看产品",false) ><span class="l-btn-text">查看</span><span class="l-btn-icon icon_webedite">&nbsp;</span></span>';
+                        @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Edit))
+                         {
+                             @:operationhtml += '<span class="l-btn-left l-btn-icon-left" onclick=showEdit("' + row.ProductID + '","@(BaseRes.PRO_COL_037)",true) ><span class="l-btn-text">@(BaseRes.PRO_COL_038)</span><span class="l-btn-icon icon-edit">&nbsp;</span></span>';
+                                                                                      }
+                        @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Delete))
+                          {
+                             @:operationhtml += '<span class="l-btn-left l-btn-icon-left" onclick=deleteProdcut("' + row.ProductID + '") ><span class="l-btn-text">@(BaseRes.PRO_COL_039)</span><span class="l-btn-icon icon-remove">&nbsp;</span></span>';
+                                                                                      }
+                        return operationhtml;
+                    }
+                }*@
+            ]],
+            onLoadSuccess: function (data) {
+                $('#productList').datagrid('clearSelections');
+
+                $(".datagrid-htable td div").css({
+                    "text-align": "center"
+                });
+
+            },
+            onDblClickRow: function (rowIndex, rowData) {
+                @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Edit))
+                {
+                    @:showEdit(rowData.ProductID, "@(BaseRes.PRO_COL_037)", true);
+                   }
+                   
+            },
+            toolbar: [
+                @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Create))
+                    {
+                        @:{ text: '@(BaseRes.PRO_COL_040)', iconCls: 'icon-add', handler: function () { showAdd('@(BaseRes.PRO_COL_041)'); } }, '-',   
+                        }
+                @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Edit))
+                {
+                        @:{text: '修改', iconCls: 'icon-edit', handler: function () {
+                            @:      var selectRows = $('#productList').datagrid('getSelected');
+                            @:      if (!selectRows) {
+                            @:          $.messager.alert('@BaseRes.COM_CTL_NOTICE', "请选择要修改的记录。");
+                            @:      return;
+                            @:  }
+                            @:  showEdit( selectRows.ProductID, "@(BaseRes.PRO_COL_037)", true);
+                            @: }
+                            @:}, '-',   
+                    } 
+                {
+                    text: '查看',
+                    iconCls: 'icon_webedite',
+                    handler: function () {
+                        var selectRows = $('#productList').datagrid('getSelected');
+                        if (!selectRows) {
+                            $.messager.alert('@BaseRes.COM_CTL_NOTICE', "请选择要查看的记录。");
+                            return;
+                        }
+                        showEdit(selectRows.ProductID, "查看产品", false);
+                    }
+                },
+                @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Delete))
+                    {
+                        @:'-', { text: '@(BaseRes.PRO_COL_042)', iconCls: 'icon-remove', handler: function () { deletePorduct(); } }
+                        }
+
+            ]
+        });
+    }
+    function deletePorduct() {
+        var checkedrows = $('#productList').datagrid('getSelections');
+        if (checkedrows.length == 0) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', "@(BaseRes.PRO_COL_043)");
+            return;
+        }
+        var para = {}
+        for (var i = 0; i < checkedrows.length; i++) {
+            para["productIds[" + i + "]"] = checkedrows[i].ProductID;
+        }
+        $.messager.confirm('@BaseRes.COM_CTL_NOTICE', '@(BaseRes.PRO_COL_044)', function (r) {
+            if (r) {
+                $.post('/Product/Deletes', para, function (res) {
+                    if (res.result) {
+                        loadData();
+                        //$('#productList').datagrid('reload');
+                    } else {
+                        $.messager.alert('@BaseRes.COM_CTL_NOTICE', res.Msg);
+                    }
+                }, "json");
+            }
+        });
+
+    }
+    function deleteProdcut(productId) {
+        $.messager.confirm('@BaseRes.COM_CTL_NOTICE', '@(BaseRes.PRO_COL_045)', function (r) {
+            if (r) {
+                $.post('/Product/Deletes', "productIds=" + productId, function (res) {
+                    if (res.result) {
+                        loadData();
+                        $('#userList').datagrid('reload');
+                    } else {
+                        $.messager.alert('@BaseRes.COM_CTL_NOTICE', res.Msg);
+                    }
+                });
+            }
+        });
+    }
+
+</script> 
+
+    <div class="mar10" data-options="fit:true,plain:true">
+        <div class="padd10">
+            <div class="easyui-panel" title="查询条件" style="width: 99%; padding: 10px; margin-bottom: 10px;">
+                <form id="SearchForm">
+                    <table>
+                        <tr>
+
+                            <td class="title95">@(BaseRes.PRO_COL_001):</td>
+                            <td>
+                                <select name="bigTypeSearch" class="easyui-combobox filewidth" id="BigTypeSearch" data-options="editable:false">
+                                    <option value="-1" selected="selected">@(BaseRes.PRO_COL_002)</option>
+                                    <option value="0">@(BaseRes.PRO_COL_003)</option>
+                                    <option value="1">@(BaseRes.PRO_COL_004)</option>
+                                    <option value="2">@(BaseRes.PRO_COL_005)</option>
+                                </select>
+                            </td>
+                            <td class="title95">@(BaseRes.PRO_COL_006):</td>
+                            <td>
+                                <select name="SmallTypeSearch" class="easyui-combobox filewidth" id="SmallTypeSearch" data-options="editable:false">
+                                    <option value="-1" selected="selected">@(BaseRes.PRO_COL_007)</option>
+                                    <option value="0">@(BaseRes.PRO_COL_008)</option>
+                                    <option value="1">@(BaseRes.PRO_COL_009)</option>
+                                    <option value="2">@(BaseRes.PRO_COL_010)</option>
+                                    <option value="3">@(BaseRes.PRO_COL_011)</option>
+                                    <option value="4">@(BaseRes.PRO_COL_012)</option>
+                                    <option value="5">其他</option>
+                                </select>
+                            </td>
+                            <td class="title95">@(BaseRes.PRO_COL_013):</td>
+                            <td><input type="text" class="easyui-textbox  filewidth_n" id="ProductNoSearch" name="ProductNoSearch" value="" data-options="validType:['length[0,64]']" /></td>
+                            <td class="title95">@(BaseRes.PRO_COL_014):</td>
+                            <td>
+                                <select name="MemberGradeIdSearch" class="easyui-combobox filewidth" id="MemberGradeIDSearch" data-options="editable:false">
+                                    <option selected="selected" value="-1">@(BaseRes.PRO_COL_015)</option>
+                                    @{var memberGrades = (List<Valeo.Domain.MemberGrade.MemberGradeModel>) ViewBag.MemberGrades;}
+                                    @foreach (var item in memberGrades)
+                                {
+                                        <option value="@item.MemberGradeID">@item.MemberGrade</option>
+                                }
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="title95">@(BaseRes.PRO_COL_016):</td>
+                            <td>
+                                <select name="CurrencySearch" class="easyui-combobox filewidth" id="CurrencySearch" data-options="editable:false">
+                                    <option value="-1" selected="selected">@(BaseRes.PRO_COL_017)</option>
+                                    @{var currencys = (List<Valeo.Domain.Parameter.ParameterModel>) ViewBag.Currencys;}
+                                    @foreach (var item in currencys)
+                                {
+                                        <option value="@item.Paramvalue">@item.Paramvalue</option>
+                                }
+                                </select>
+                            </td>
+                        </tr>
+
+                    </table>
+                    <div class="textcenter">
+                        @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Search))
+                        {
+                            <a href="javascript:void(0)" id="btnSerach" class="easyui-linkbutton c6 width70">@(BaseRes.PRO_COL_018)</a>
+                        }
+
+                        <a href="javascript:void(0)" onclick="$('#SearchForm').form('clear'); $.parser.parse('#SearchForm');" class="easyui-linkbutton c9 width70">重置</a>
+                    </div>
+                </form>
+</div>
+
+            <table id="productList" title="查询结果" style="width: 99%;"></table>
+        </div>
+    </div>
+
+    <div id="editdlg" class="easyui-window" data-options="modal:true,closed:true,iconCls:'icon-add',maximized:true" style="width:1190px;height:555px;padding:5px;">
+
+</div>
+ 

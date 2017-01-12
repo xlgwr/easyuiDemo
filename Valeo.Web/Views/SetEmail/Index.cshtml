@@ -1,0 +1,154 @@
+﻿@using Valeo.Domain.Common
+@using Valeo.Domain.Enum
+@using Valeo.Lang;
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>邮件参数设定</title>
+    <link href="~/Content/themes/default/easyui.css" rel="stylesheet" />
+    <link href="~/Content/themes/icon.css" rel="stylesheet" />
+    <link href="~/Content/themes/color.css" rel="stylesheet" />
+    <link href="~/Content/demo.css" rel="stylesheet" />
+    <link href="~/Content/style_all.css?v=2" rel="stylesheet" />
+   
+</head>
+
+<body>
+    <div class="mar10" data-options="fit:true,plain:true">
+        <div class="padd10">
+            <form id="ff" method="post">
+                <div id="p" class="easyui-panel" title="" style="width:100%;height:500px;padding:10px;">
+
+                    <table>
+                        <tr>
+                            <td class="title95">ID:</td>
+                            <td>
+                                <input class="easyui-textbox" type="text" name="SetEmailID" readonly="readonly" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="title95">@BaseRes.SEM_COL_001:</td>
+                            <td>
+                                <input class="easyui-textbox" type="text" name="Host" data-options="required:true,validType:'length[1,64]'" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="title95">@BaseRes.SEM_COL_002:</td>
+                            <td>
+                                <input class="easyui-numberbox" type="text" name="Port" data-options="required:true,validType:'length[1,6]'" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="title95">@BaseRes.SEM_COL_003:</td>
+                            <td>
+                                <input class="easyui-textbox" type="text" name="MailUsername" data-options="required:true,validType:'length[1,64]'" />@*<span>@BaseRes.SEM_COL_008</span>*@
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="title95">@BaseRes.SEM_COL_004:</td>
+                            <td>
+                                <input class="easyui-textbox" type="password" name="MailPassword" data-options="required:true,validType:'length[0,20]'" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="title95" valign="top">@BaseRes.SEM_COL_005:</td>
+                            <td>
+                                <select class="easyui-combobox" panelheight="auto" type="text" name="EnableSsl" data-options="required:true">
+                                    <option value="0">@BaseRes.SEM_COL_006</option>
+                                    <option value="1">@BaseRes.SEM_COL_007</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="title95" valign="center" align="center">
+                                &nbsp;
+                            </td>
+                            <td>
+                                &nbsp;
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="title95" valign="center" align="center">
+                                &nbsp;
+                            </td>
+                            <td align="left">
+                                @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Edit))
+                                {
+                                    <a href="javascript:void(0)" class="easyui-linkbutton c6 width70" onclick="submitForm()">@BaseRes.SEM_TIT_003</a>
+                                }
+                                
+                            </td>
+                            <td>
+                                <a href="javascript:void(0)" class="easyui-linkbutton c6 width70" onclick="submitFormCancle()">取消</a>
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+            </form>
+            <br />
+        </div>
+    </div>
+    <div>
+        <h3 id="focush2"></h3>
+    </div>
+
+    <script src="~/Scripts/jquery.min.js"></script>
+    <script src="~/Scripts/jquery.easyui.min.js"></script>
+    <script src="~/Scripts/easyui-lang-zh_CN.js"></script>
+    <style>
+        .textbox {
+            width: 130px !important;
+        }
+    </style>
+    <script type="text/javascript">
+
+        $(function () {
+            // display the progress bar
+            $.messager.progress();
+            $('#ff').form('load', '/SetEmail/getModel');	// load from URL
+
+            $('#ff').form('submit', {
+                url: "/SetEmail/Change",
+                onSubmit: function () {
+                    var isValid = $(this).form('validate');
+                    if (!isValid) {
+                        $.messager.progress('close');	// hide progress bar while the form is invalid
+                    }
+                    return isValid;	// return false will stop the form submission
+                },
+                success: function (data) {
+                    var data = eval('(' + data + ')'); // change the JSON string to javascript object
+                    $.messager.progress('close');	// hide progress bar while submit successfully
+
+                    if (data.result) {
+                        $.messager.alert('@BaseRes.COM_CTL_NOTICE', data.Msg, 'info');
+                        $('#ff').form('load', '/SetEmail/getModel');
+                    } else {
+                        $.messager.alert('@BaseRes.COM_CTL_NOTICE', data.Msg, 'info');
+                    }
+
+
+                }
+            });
+        });
+        function submitFormCancle() {
+            $('#ff').form('load', '/SetEmail/getModel');	// load from URL
+        }
+        function submitForm() {
+            var isValid = $('#ff').form('validate');
+            console.log(isValid);
+            if (!isValid) {
+                return;
+            }
+            $('#ff').form('submit');
+        }
+
+    </script>
+</body>
+
+</html>

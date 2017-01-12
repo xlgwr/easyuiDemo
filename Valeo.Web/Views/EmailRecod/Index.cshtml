@@ -1,0 +1,282 @@
+﻿@using Valeo.Lang;
+@using Valeo.Domain;
+@using Valeo.Domain.Common
+@using Valeo.Domain.Enum
+@{
+    Layout = "~/Views/Shared/_Layout_Index.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>@BaseRes.ERD_CTL_001</title>
+    @*<link href="~/Content/themes/default/easyui.css" rel="stylesheet" />
+    <link href="~/Content/themes/icon.css" rel="stylesheet" />
+    <link href="~/Content/themes/color.css" rel="stylesheet" />
+    <link href="~/Content/demo.css" rel="stylesheet" />
+    <link href="~/Content/style_all.css?v=2" rel="stylesheet" />
+    <script src="~/Scripts/jquery.min.js"></script>
+    <script src="~/Scripts/jquery.easyui.min.js"></script>
+    <script src="~/Scripts/easyui-lang-zh_CN.js"></script>*@
+    @*<script src="~/Scripts/forms/user/user.js"></script>*@
+    <script src="~/Scripts/jQuery.Form.js"></script>
+
+    <script type="text/javascript">
+        var now = new Date();
+        var date = new Date(now.getTime() - 7 * 24 * 3600 * 1000);
+        var fdate = (date.getFullYear()) + "-" + (date.getMonth() + 1) + "-" + (date.getDate());
+        var tdate = (new Date().getFullYear()) + "-" + (new Date().getMonth() + 1) + "-" + (new Date().getDate());
+        function clearformSearch() {
+            $('#SearchForm').form('clear');
+            $.parser.parse('#SearchForm');
+            $("#SearchForm").form('load', {
+                SendTimeS: fdate,
+                SendTimeE: tdate
+            });
+
+        }
+        $(function () {
+
+            function stringToDate(str) {
+                var tempStrs = str.split(" ");
+                var dateStrs = tempStrs[0].split("-");
+                var year = parseInt(dateStrs[0], 10);
+                var month = parseInt(dateStrs[1], 10) - 1;
+                var day = parseInt(dateStrs[2], 10);
+
+                var date = new Date(year, month, day);
+                return date;
+            }
+
+            $('#txtSendDateStart').datebox().datebox('calendar').calendar({
+                validator: function (date) {
+                    debugger;
+                    var edate = $("#txtSendDateEnd").datebox('getValue');
+                    if (edate == "") {
+                        return date;
+                    } else {
+                        var now = stringToDate(edate);
+                        return date <= now;
+                    }
+                }
+            });
+            $('#txtSendDateEnd').datebox().datebox('calendar').calendar({
+                validator: function (date) {
+                    debugger;
+                    var sdate = $("#txtSendDateStart").datebox('getValue');
+                    if (sdate == "") {
+                        return date;
+                    } else {
+                        var now = stringToDate(sdate);
+                        return now <= date;
+                    }
+                }
+            });
+
+            $("#SearchForm").form('load', {
+                SendTimeS: fdate,
+                SendTimeE: tdate
+            });
+
+            loadData();
+             
+            $("#btnSerach").click(function () {
+                if ($("#SearchForm").form('validate') && fullnum('txtSendDateStart', 'txtSendDateEnd')) {
+                    //申请单号，申请人，申请类型，来源，开始时间，结束时间
+                    var Email = $("#txtEmail").val();
+                    var Style = $("#txtStyle").val();
+                    var SendDateStart = $('#txtSendDateStart').datebox('getValue');
+                    var SendDateEnd = $('#txtSendDateEnd').datebox('getValue');
+
+
+                    var grid = $('#DataList');
+                    var options = grid.datagrid('getPager').data("pagination").options;
+
+
+                    var pager = $('#DataList').datagrid('getPager');
+
+                    var opts = $('#DataList').datagrid('options');
+                    var pager = $('#DataList').datagrid('getPager');
+                    opts.pageNumber = 1;
+                    opts.pageSize = opts.pageSize;
+                    pager.pagination('refresh', {
+                        pageNumber: 1,
+                        pageSize: opts.pageSize
+                    })
+                    $('#DataList').datagrid({
+
+                        url: '/EmailRecod/EmailRecodPage?'
+                             //+ 'pager=' + encodeURIComponent(pager)
+                            + 'Email=' + encodeURIComponent(Email)
+                            + '&Style=' + encodeURIComponent(Style)
+                            + '&SendDateStart=' + encodeURIComponent(SendDateStart)
+                         + '&SendDateEnd=' + encodeURIComponent(SendDateEnd)
+                    });
+                }
+            });
+
+            $("#btnClear").click(function () {
+                 
+                //申请单号，申请人，申请类型，来源，开始时间，结束时间
+                $('#SearchForm').form('clear');
+                $.parser.parse('#SearchForm');
+                $("#SearchForm").form('load', {
+                    SendTimeS: fdate,
+                    SendTimeE: tdate
+                });
+            });
+
+
+            function loadData(pars,url) {
+
+
+                 
+                $('#DataList').datagrid({
+
+                    url: url,
+                    //width: 1000,
+                    //height: 400,
+                    // width: ($(window).width() * 0.90)+50,
+                    height: ($(window).height() * 0.99) - 127,
+                    //fit:true,
+                    fitColumns: true, //列自适应
+                    nowrap: false,
+                    //idField: 'Id', //主键列的列名
+                    checked: false,
+                    loadMsg: '@BaseRes.IRC_COL_002',
+                    pagination: true, //是否有分页
+                    singleSelect: true,//是否单行选择
+                    pageSize: 50, //每页多少条数据
+                    pageNumber: 1, //默认的页
+                    pageList: [50, 100, 200],
+                    queryParams: pars, //往后台传递参数
+
+
+                    //queryParams: {
+                    //    pager: $('#DataList').datagrid('getPager'),
+                    //    Email: $("#txtEmail").val(),
+                    // },
+
+                    columns: [
+                        [{
+                            field: '@EmailListModel.VarKey.ToMail',
+
+                            title: '@BaseRes.ERD_CTL_002',
+                            align: 'center',
+                            sortable: true,
+                            width: 100
+                        }, {
+                            field: '@EmailListModel.VarKey.Subject',
+                            title: '@BaseRes.ERD_CTL_003',
+                            align: 'center',
+                            sortable: true,
+                            width: 100
+                        }, {
+                            field: '@EmailListModel.VarKey.FromMail',
+                            title: '@BaseRes.ERD_CTL_004',
+                            align: 'center',
+                            sortable: true,
+                            width: 100
+                        }, {
+                            field: 'ReceiveTime_Text',
+                            title: '@BaseRes.ERD_CTL_005',
+                            align: 'center',
+                            sortable: true,
+                            width: 100
+                        }]
+                    ],
+                    toolbar: [{
+                        text: '@BaseRes.ERD_CTL_006',
+                        iconCls: 'icon-add',
+                        handler: function () {
+                             
+                            parent.sendEmailNew();
+                            //window.location.href = "/EmailSend/Index?";
+                            // 
+                            //var para = {}
+                            //para['FromMail'] = '2222';
+                            //$.post('/EmailSend/Index', para, function (res) {
+                            //    if (res.result) {
+                            //        $('#InvoiceList').datagrid('reload');
+                            //    } else {
+                            //       $.messager.alert('@BaseRes.COM_CTL_NOTICE',res.Msg);
+                            //    }
+                            //}, "json");
+                        }
+                    }]
+                });
+            }
+        });
+</script>
+    
+    <style>
+        .textbox {
+            width: 130px !important;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="mar10" data-options="fit:true,plain:true">
+        <div class="padd10">
+            <div class="easyui-panel" title="@BaseRes.SPS_TIT_006"  style="padding:10px; margin-bottom: 10px;">
+                <form id="SearchForm">
+                    <table>
+                        <tr>
+
+                            <td  class="title95">@BaseRes.ERD_CTL_007&nbsp;</td>
+                            <td >
+                                <input id="txtEmail" class="easyui-textbox filewidth_n" maxlength="64" type="text" style="width:95px" />
+                            </td>
+
+                            <td class="title95">@BaseRes.ERD_CTL_008&nbsp;</td>
+                            <td >
+                                <input id="txtStyle" class="easyui-textbox filewidth_n" maxlength="64" type="text" style="width:95px" />
+                            </td>
+
+                            <td  class="title95">@BaseRes.ERD_CTL_009&nbsp;</td>
+
+                            <td >
+                                <input id="txtSendDateStart" name="SendTimeS" class="easyui-datebox filewidth_n" maxlength="64" type="text" style="width:95px" data-options="required:false,validType:['DateDay'],onSelect:function(){fullnum('txtSendDateStart','txtSendDateEnd')}" />
+                            </td>
+
+                            <td >@BaseRes.ARD_CTL_004&nbsp;</td>
+
+                            <td>
+                                <input id="txtSendDateEnd" name="SendTimeE" class="easyui-datebox filewidth_n" maxlength="64" type="text" style="width:95px" data-options="required:false,validType:['DateDay'],onSelect:function(){fullnum('txtSendDateStart','txtSendDateEnd')}" />
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+              
+                <div class="textcenter">
+                    @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Search))
+                    {
+                        <a href="javascript:void(0)" id="btnSerach" class="easyui-linkbutton c6 width70">@BaseRes.ERD_CTL_010</a>
+                    }
+                    <a href="javascript:void(0)" id="btnClear" class="easyui-linkbutton c9 width70">@BaseRes.ERD_CTL_011</a>
+                </div>
+                </div>
+
+            <table id="DataList" title="@BaseRes.ERD_CTL_012"></table>
+            </div>
+    </div>
+    <!--
+        作者：152645239@qq.com
+        时间：2016-07-06
+        描述：新增弹出框
+    -->
+    <div id="editdlg" class="easyui-dialog" style="width:500px;height:400px;padding:5px;" data-options="
+				iconCls: 'icon-save',
+				toolbar: '#dlg-toolbar',
+				buttons: '#dlg-buttons',
+				closed:true
+			">
+    </div>
+</body>
+</html>

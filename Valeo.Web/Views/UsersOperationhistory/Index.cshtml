@@ -1,0 +1,373 @@
+﻿@using Valeo.Domain;
+@using Valeo.Domain.Common
+@using Valeo.Domain.Enum
+@using Valeo.Lang;
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <script>
+        var timeMsg = '@BaseRes.COM_MSG_TIMEF';
+        var title = '@BaseRes.COM_CTL_MSG';
+    </script>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>用户操作记录</title>
+    <link href="~/Content/themes/default/easyui.css" rel="stylesheet" />
+    <link href="~/Content/themes/icon.css" rel="stylesheet" />
+    <link href="~/Content/themes/color.css" rel="stylesheet" />
+    <link href="~/Content/demo.css" rel="stylesheet" />
+    <link href="~/Content/style_all.css?v=2" rel="stylesheet" />
+    <style>
+        .combo-panel {
+            height: auto !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="mar10n" data-options="fit:true,plain:true">
+        <div class="padd10">
+            <div class="easyui-panel" title="查询条件" style="width: 99%; padding: 10px; margin-bottom:10px;">
+                <form id="ffsearch">
+                    <table class="">
+                        <tr>
+                            <td class="title95">@BaseRes.LOG_SEA_001:</td>
+                            <td>
+                                <input type="text" class="easyui-textbox  filewidth_n" id="MemberNameSearch" name="UserName" data-options="
+                            iconWidth: 22,
+                            icons: [ {
+                                iconCls:'icon-search',
+                                handler: function(e){
+                                    ShowMemberSearchDlg();
+                                }
+                            }]
+                            " />
+                                <input type="hidden" id="sMemberIdSearch" name="UserID" value="" />
+                                @*<input type="text" class="easyui-textbox" id="UserName" name="UserName" />*@
+                            </td>
+                            <td class="title95">@BaseRes.LOG_SEA_002:</td>
+                            <td>
+                                <select name="UserGradeID" class="easyui-combobox filewidth" editable="false" panelheight="auto" id="UserGradeID">
+                                    <option value="0">@BaseRes.USE_SEA_006</option>
+                                    @{var userGrades = (List<Valeo.Domain.UserGrade.UserGradeModelVM>)ViewBag.UserGrades;}
+                                    @foreach (var item in userGrades)
+                                    {
+                                        <option value="@item.UserGradeID">@item.UserGrade</option>
+                                    }
+                                </select>
+                            </td>
+                            <td class="title95">@BaseRes.LOG_SEA_003:</td>
+                            <td>
+                                <select name="Form" class="easyui-combobox filewidth" editable="false" id="Form">
+                                    @{var pageSelect = (List<SelectListItem>)ViewBag.pageList;}
+                                    @foreach (var item in pageSelect)
+                                    {
+                                        <option value="@item.Value">@item.Text</option>
+                                    }
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="title95">@BaseRes.LOG_SEA_004:</td>
+                            <td>
+                                <input type="text" class="easyui-datebox filewidth_n" id="AddDateTimeB" name="AddDateTimeB"  />
+                            </td>
+                            <td class="title95" align="center">@BaseRes.LOG_SEA_006:</td>
+                            <td>
+                                <input type="text" class="easyui-datebox filewidth_n" id="AddDateTimeE" name="AddDateTimeE"/>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+
+                <div class="textcenter">
+                    @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Search))
+                    {
+                        <a href="javascript:void(0)" id="btnSerach" class="easyui-linkbutton c6 width70">@BaseRes.LOG_SEA_007</a>
+                    }
+
+                    <a href="javascript:void(0)" id="btnSerachReset" class="easyui-linkbutton c9 width70">重置</a>
+                </div>
+            </div>
+            <table id="date" title="查询结果" style="width: 99%;"></table>
+        </div>
+    </div>
+    <div id="searchdlg" class="easyui-window" title="" data-options="modal:true,closed:true" style="width:1000px;height:500px;padding:5px;">
+
+
+    </div>
+
+    <script src="~/Scripts/jquery.min.js"></script>
+    <script src="~/Scripts/jquery.easyui.min.js"></script>
+    <script src="~/Scripts/easyui-lang-zh_CN.js"></script>
+    <script src="~/Scripts/forms/EasyuiVerification.js"></script>
+
+    <script type="text/javascript">
+        function addDate(today, days, hour) {
+            var a = today.valueOf()
+            a = a + (days * 24 * 60 * 60 * 1000)+(hour*60*60*1000)
+            a = new Date(a)            
+            return a;
+        }
+        function formatDateTime(curr_time) {
+            var strDate = curr_time.getFullYear() + "-";
+            strDate += curr_time.getMonth() + 1 + "-";
+            strDate += curr_time.getDate() + " ";
+            strDate += curr_time.getHours() + ":";
+            strDate += curr_time.getMinutes() + ":";
+            strDate += curr_time.getSeconds();
+            // console.log(strDate);
+            return strDate
+        }
+        function formatDate(curr_time) {
+            var strDate = curr_time.getFullYear() + "-";
+            strDate += curr_time.getMonth() + 1 + "-";
+            strDate += curr_time.getDate() + " ";
+            //strDate += curr_time.getHours() + ":";
+            //strDate += curr_time.getMinutes() + ":";
+            //strDate += curr_time.getSeconds();
+            // console.log(strDate);
+            return strDate
+        }
+        var now = new Date();
+        var addtimeb = formatDate(addDate(now, -1, 0));
+        var addtimee = formatDateTime(addDate(now, 0, 1));
+
+        $(function () {
+
+            function stringToDate(str) {
+                var tempStrs = str.split(" ");
+                var dateStrs = tempStrs[0].split("-");
+                var year = parseInt(dateStrs[0], 10);
+                var month = parseInt(dateStrs[1], 10) - 1;
+                var day = parseInt(dateStrs[2], 10);
+
+                var date = new Date(year, month, day);
+                return date;
+            }
+
+            $('#AddDateTimeB').datebox().datebox('calendar').calendar({
+                validator: function (date) {
+                    debugger;
+                    var edate = $("#AddDateTimeE").datebox('getValue');
+                    if (edate == "") {
+                        return date;
+                    } else {
+                        var now = stringToDate(edate);
+                        return date <= now;
+                    }
+                }
+            });
+            $('#AddDateTimeE').datebox().datebox('calendar').calendar({
+                validator: function (date) {
+                    debugger;
+                    var sdate = $("#AddDateTimeB").datebox('getValue');
+                    if (sdate == "") {
+                        return date;
+                    } else {
+                        var now = stringToDate(sdate);
+                        return now <= date;
+                    }
+                }
+            });
+
+            // get the calendar object
+            $('#AddDateTimeB').datebox({
+                value: addtimeb
+            });
+
+            $("#AddDateTimeE").datebox({
+                value: addtimee
+            });
+
+            $("#AddDateTimeE").datebox({
+                onSelect: function () {
+                    debugger;
+                    var CourtDaySearch = $("#AddDateTimeB").datebox('getValue');
+                    var CourtDaySearchE = $("#AddDateTimeE").datebox('getValue')
+                    if (CourtDaySearchE < CourtDaySearch) {
+                        $("#AddDateTimeE").datebox('setValue', '');
+                        $.messager.alert('@BaseRes.COM_CTL_NOTICE', "结束时间不能小于开始时间！");
+                    }
+                }
+
+            });
+            $("#AddDateTimeB").datebox({
+                onSelect: function () {
+                    debugger;
+                    var CourtDaySearch = $("#AddDateTimeB").datebox('getValue');
+                    var CourtDaySearchE = $("#AddDateTimeE").datebox('getValue')
+                    if (CourtDaySearchE < CourtDaySearch) {
+                        $("#AddDateTimeB").datebox('setValue', '');
+                        $.messager.alert('@BaseRes.COM_CTL_NOTICE', "开始时间不能大于结束时间！");
+                    }
+                }
+
+            });
+
+
+            loadData();
+            $("#btnSerach").click(function () {
+                if ($("#ffsearch").form('validate') && fullnum('AddDateTimeB', 'AddDateTimeE')) {
+                    $('#date').datagrid('load', {
+                        UserName: $("#MemberNameSearch").textbox('getValue').trim(),
+                        UserID: $("#sMemberIdSearch").val().trim(),
+                        UserGradeID: $("#UserGradeID").combo('getValue').trim(),
+                        Form: $("#Form").combo('getValue').trim(),
+                        AddDateTimeB: $("#AddDateTimeB").datebox('getValue').trim(),
+                        AddDateTimeE: $("#AddDateTimeE").datebox('getValue').trim()
+                    });
+                    //$('#date').datagrid('clearSelections');
+                    //loadData(pars);
+                }
+            });
+            $("#btnSerachReset").click(function () {
+                try {
+                    now = new Date();
+                    addtimeb = formatDate(addDate(now, -1, 0));
+                    addtimee = formatDateTime(addDate(now, 0, 1));
+                } catch (e) {
+
+                }
+                $('#ffsearch').form('clear');
+                $('#ffsearch').form('load', {
+                    MemberName: "",
+                    UserID: "",
+                    UserGradeID: 0,
+                    Form: 0
+                });
+
+                $('#AddDateTimeB').datebox({
+                    value: addtimeb
+                });
+
+                $("#AddDateTimeE").datebox({
+                    value: addtimee
+                });
+            });
+        });
+
+        function loadData(pars) {
+            $('#date').datagrid({
+                url: '/UsersOperationhistory/ListPage',
+                //width: 1000,
+                //height: 400,
+                //width: ($(window).width() * 0.90),
+                height: ($(window).height() * 0.99) - 155,
+                //fit:true,
+                fitColumns: true, //列自适应
+                nowrap: false,
+                idField: 'LogID', //主键列的列名
+                loadMsg: '正在加载信息...',
+                pagination: true, //是否有分页
+                singleSelect: false,//是否单行选择
+                striped: true, //奇偶行是否区分
+                pageSize: 50, //每页多少条数据
+                pageNumber: 1, //默认的页
+                pageList: [50, 100, 150, 200],
+                queryParams: pars, //往后台传递参数
+                columns: [
+                    [{ field: 'ck', checkbox: true, align: 'center' }, {
+                        field: 'UserName',
+                        title: '@BaseRes.LOG_COL_001',
+                        sortable: true,
+                        align: 'center',
+                        width: 50
+                    }, {
+                        field: 'FormVM',
+                        title: '@BaseRes.LOG_COL_002',
+                        align: 'center',
+                        sortable: true,
+                        width: 100
+                    }, {
+                        field: 'OperateTypeDesc',
+                        title: '@BaseRes.LOG_COL_003',
+                        align: 'center',
+                        sortable: true,
+                        width: 50
+                    }, {
+                        field: 'UserGrade',
+                        title: '@BaseRes.LOG_COL_004',
+                        align: 'center',
+                        sortable: true,
+                        width: 50
+                    }, {
+                        field: 'Content',
+                        title: '@BaseRes.LOG_COL_005',
+                        align: 'center',
+                        sortable: true,
+                        width: 100
+                    }, {
+                        field: 'AddDateTime',
+                        title: '@BaseRes.LOG_COL_006',
+                        align: 'center',
+                        sortable: true,
+                        width: 50
+                    }]
+                ],
+                onLoadSuccess: function (data) {
+                    $('#date').datagrid('clearSelections');
+                },
+                toolbar: [
+                    @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Delete))
+                {
+                    @:{ text: '@(BaseRes.TSK_CTL_012)', iconCls: 'icon-remove', handler: function () { deletes(); } }
+                    }
+                ]
+            });
+        }
+        function ShowMemberSearchDlg() {
+            $('#searchdlg').dialog({
+                title: "选择用户",
+                width: 1000,
+                height: 500,
+                closed: false,
+                cache: false,
+                maximized: false,
+                href: '/SearchDialog/UserSearch?functionName=GetUserNameSearch',
+                modal: true
+            });
+        }
+        function closeDialogSearch() {
+            $('#searchdlg').dialog('close');
+        }
+        function GetUserNameSearch(memberRow) {
+            console.log(memberRow)
+            $("#sMemberIdSearch").val(memberRow.UserID);
+            $("#MemberNameSearch").textbox('setValue', memberRow.UserName);
+        }
+        function deletes() {
+            var checkedrows = $('#date').datagrid('getChecked');
+            if (!checkedrows.length) {
+                $.messager.alert('@BaseRes.COM_CTL_NOTICE', "没有选中不能进行删除！", 'error');
+                return;
+            }
+            var para = ''
+            for (var i = 0; i < checkedrows.length; i++) {
+                var item = checkedrows[i]
+                if (!para) {
+                    para = item.LogID
+                } else {
+                    para += "," + item.LogID
+                }
+            }
+            console.log(para);
+            $.messager.confirm('@BaseRes.COM_CTL_NOTICE', '确定要删除选中的记录吗？', function (r) {
+                if (r) {
+                    $.post('/UsersOperationhistory/Deletes', { id: para }, function (res) {
+                        console.log(res);
+                        if (res.type) {
+                            $('#date').datagrid('reload');
+                            $.messager.alert('@BaseRes.COM_CTL_NOTICE', res.message, 'info');
+                        } else {
+                            $.messager.alert('@BaseRes.COM_CTL_NOTICE', res.message, 'error');
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,258 @@
+﻿@using Valeo.Lang;
+@{
+    Layout = null;
+}
+<script src="~/Scripts/forms/EasyuiVerification.js"></script>
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'center'" class="padd10new">
+        <div class="paddl30">
+            <form id="AddProductForm" action="/Product/AddSave" class="easyui-form" method="post" >
+                <table  >
+                    <tr>
+                        <td class="title95">@(BaseRes.PRO_ADD_001):</td>
+                        <td ><input class="easyui-validatebox easyui-textbox filewidth_n" type="text" id="ProductId" name="ProductId" data-options="required:true,validType:['EmptyString','length[0,32]']"></td>
+                        <td class="title95">@(BaseRes.PRO_ADD_002):</td>
+                        <td>
+                            <select name="bigType" id="bigType" class="easyui-combobox filewidth" data-options="editable:false">
+                                <option value="0">@(BaseRes.PRO_ADD_003)</option>
+                                <option value="1">@(BaseRes.PRO_ADD_004)</option>
+                                <option value="2">@(BaseRes.PRO_ADD_005)</option>
+                            </select>
+                        </td>
+                        <td class="title95" >可用会员:</td>
+                        <td rowspan="18" colspan="2">
+                            <div style=" height:380px; overflow-y:scroll; ">
+                                <table cellpadding="0" cellspacing="0" class="table_new">
+                                    <tr>
+                                        <th width="20%">@(BaseRes.PRO_ADD_043)</th>
+                                        <th width="80%">@(BaseRes.PRO_ADD_044)</th>
+                                    </tr>
+                                    @{var memberGrades = (List<Valeo.Domain.MemberGrade.MemberGradeModel>)ViewBag.MemberGrades;}
+                                    @foreach (var item in memberGrades)
+                                    {
+                                        <tr>
+                                            <td><input type="checkbox" name="memberGradeIds" value="@item.MemberGradeID" /></td>
+                                            <td>@item.MemberGrade</td>
+                                        </tr>
+                                    }
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="title95">@(BaseRes.PRO_ADD_006):</td>
+                        <td><input class="easyui-textbox filewidth_n" type="text" name="ProductName" id="ProductName" data-options="required:true,validType:['EmptyString','length[0,64]']"></td>
+                        <td class="title95">@(BaseRes.PRO_ADD_007):</td>
+                        <td>
+                            <select name="SmallType" id="SmallType" class="easyui-combobox filewidth" data-options="editable:false">
+                                <option value="0">@(BaseRes.PRO_ADD_008)</option>
+                                <option value="1">@(BaseRes.PRO_ADD_009)</option>
+                                <option value="2">@(BaseRes.PRO_ADD_010)</option>
+                                <option value="3">@(BaseRes.PRO_ADD_011)</option>
+                                <option value="4">@(BaseRes.PRO_ADD_012)</option>
+                            </select>
+                            <!-- 0:法庭 1:公司 2:土地 3:信贷 4:公共-->
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="title95">@(BaseRes.PRO_ADD_014):</td>
+                        <td>
+                            <select name="Currency" id="AddCurrency" class="easyui-combobox filewidth" data-options="editable:false">
+                                @{var currencys = (List<Valeo.Domain.Parameter.ParameterModel>)ViewBag.Currencys;}
+                                @foreach (var item in currencys)
+                                {
+                                    <option value="@item.Paramvalue">@item.Paramvalue</option>
+                                }
+                            </select>
+                        </td>
+                        <td class="title95">@(BaseRes.PRO_ADD_013):</td>
+                        <td><input class="easyui-numberbox filewidth_n" type="text" name="Price" id="Price" value="0" data-options="required:true,min:0,precision:2,max:999999"><b class="unitCurrency">$</b></td>
+                        
+                    </tr>
+                    <tr>
+                        <td class="title95">折扣:</td>
+                        <td><input class="easyui-numberbox filewidth_n" type="text" name="Discount" id="Discount" value="0" data-options="required:true,min:0,precision:0,max:100">%</td>
+                        <td class="title95">折扣单价:</td>
+                        <td><input class="easyui-numberbox filewidth_n" type="text" name="DiscountPrice" id="DiscountPrice" value="0" data-options="min:0,precision:2" readonly="readonly"><b class="unitCurrency">$</b></td>
+                       
+                    </tr>
+                    <tr>
+                        <td class="title95">@(BaseRes.PRO_ADD_015):</td>
+                        <td><input class="easyui-numberbox filewidth_n" type="text" name="Validity" value="0" data-options="min:0,precision:0,max:99">@(BaseRes.PRO_ADD_016)</td>
+                        <td class="title95" id="tdAgeLimit1"><input type="radio" name="AgeLimit" value="0" checked="checked" style="width: 20px;">@(BaseRes.PRO_ADD_017)</td>
+                        <td id="tdAgeLimit2"><input type="radio" name="AgeLimit" value="1" style="width: 20px;">@(BaseRes.PRO_ADD_018)</td>
+
+                    </tr>
+                    <tr>
+                        <td class="title95">是否显示:</td>
+                        <td>
+                            <select name="Show" id="aisShow" class="easyui-combobox filewidth" data-options="editable:false">
+                                <option value="0">不显示</option>
+                                <option value="1" selected="selected">显示</option>
+                            </select>
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr id="trPeopleCount">
+                        <td class="title95">人数:</td>
+                        <td><input class="easyui-numberbox filewidth_n" type="text" name="PeopleCount" value="0" data-options="min:1,precision:0,max:99999"></td>
+                        <td></td>
+                        <td></td> 
+                    </tr>
+                    <tr id="trSeachAndRecord">
+                        <td class="title95">@(BaseRes.PRO_ADD_019):</td>
+                        <td>
+                            <select name="SeachType" id="SeachType" class="easyui-combobox filewidth" data-options="editable:false">
+                                <option value="1">@(BaseRes.PRO_ADD_020)</option>
+                                <option value="2">@(BaseRes.PRO_ADD_021)</option>
+                                <option value="3">@(BaseRes.PRO_ADD_022)</option>
+                                <option value="4">@(BaseRes.PRO_ADD_023)</option>
+                            </select>
+                            <!--1:土地查册 2:注册摘要 3;注册摘要表格 4:其他-->
+                        </td>
+                        <td class="title95" id="tdRecord1">@(BaseRes.PRO_ADD_024):</td>
+                        <td id="tdRecord2">
+                            <select name="RecordType" id="RecordType" class="easyui-combobox filewidth" data-options="editable:false">
+                                <option value="1">@(BaseRes.PRO_ADD_025)</option>
+                                <option value="2">@(BaseRes.PRO_ADD_026)</option>
+                            </select>
+                            <!--1:全部记录 2:现实记录-->
+                        </td>
+                    </tr>
+                    <tr id="trReport">
+                        <td class="title95">查询内容:</td>
+                        <td>
+                            <select name="IntReportTypes" id="ReportType" class="easyui-combobox filewidth"  data-options="editable:false,multiple:true,panelHeight:'200'">
+                                <option value="0">@(BaseRes.PRO_ADD_028)</option>
+                                <option value="1">@(BaseRes.PRO_ADD_029)</option>
+                                <option value="2">@(BaseRes.PRO_ADD_030)</option>
+                                <option value="3">@(BaseRes.PRO_ADD_031)</option>
+                                <option value="4">@(BaseRes.PRO_ADD_032)</option>
+                                <option value="5">@(BaseRes.PRO_ADD_033)</option>
+                                <option value="6">@(BaseRes.PRO_ADD_034)</option>
+                                <option value="7">@(BaseRes.PRO_ADD_035)</option>
+                                <option value="8">@(BaseRes.PRO_ADD_036)</option>
+                                @*<option value="9">@(BaseRes.PRO_ADD_037)</option>*@
+                                <option value="10">@(BaseRes.PRO_ADD_038)</option>
+                                <option value="11">@(BaseRes.PRO_ADD_039)</option>
+                                <option value="12">@(BaseRes.PRO_ADD_040)</option>
+                                <option value="13">@(BaseRes.PRO_ADD_041)</option>
+                                <option value="14">@(BaseRes.PRO_ADD_042)</option>
+                            </select>
+                            <!--报告类别：
+                            (离线公司会用到)公司:
+                            0:最近公司年报，
+                            1:组织章程大纲及章程细则，
+                            2:公司注册证书，
+                            3:公司年报-特别指明年份（需手动输入），
+                            4:抵押（需注明年份），
+                            5:有效地商业/分行登记证核证副本，
+                            6:其他，
+                            7:商业登记册内资料摘录的核证本，
+                            8:商业登记册内资料摘录的电子摘录，
+                            9:组织规章大纲及章程细则
+                            10:有效地商业/分行登记证核证副本，
+                            11:公司强制性清盘案记录查册
+                            ） 人个:(
+                            12:破产案查册，
+                            13:有限公司董事查册，
+                            14:其他
+                            )-->
+                        </td>
+                        <td> </td>
+                        <td></td>
+                    </tr>
+                    <tr id="trLender">
+                        <td class="title95">查询内容:</td>
+                        <td>
+                            <select name="LenderType" id="LenderType" class="easyui-combobox filewidth" data-options="editable:false">
+                                <option value="0">财务</option>
+                                <option value="1">证券</option> 
+                            </select>
+                            <!--财务:0/证券:1)-->
+                        </td>
+                        <td> </td>
+                        <td></td>
+                    </tr>
+                    <tr><td>&nbsp;</td></tr>
+                    <tr><td>&nbsp;</td></tr>
+                    <tr><td>&nbsp;</td></tr>
+                    <tr><td>&nbsp;</td></tr>
+                    <tr><td>&nbsp;</td></tr>
+                    <tr><td>&nbsp;</td></tr>
+                    <tr><td>&nbsp;</td></tr>
+                    <tr><td>&nbsp;</td></tr>
+</table>
+            </form>
+        </div>
+    </div>
+    <div data-options="region:'south',border:false" style="text-align:right;padding:5px 0 0;">
+        <a class="easyui-linkbutton width80" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="addProduct()">@(BaseRes.PRO_ADD_045)</a>
+        <a class="easyui-linkbutton width80" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="closeDialog()">@(BaseRes.PRO_ADD_046)</a>
+    </div>
+</div>
+<script>
+    function BigTypeChange() {
+        var bigTypeValue = $('#bigType').combobox('getValues');
+        if (bigTypeValue == '0') {
+            $('#SmallType').combobox({
+                data: [
+                    { value: 0, text: '法庭' },
+                    { value: 1, text: '公司' },
+                    { value: 2, text: '土地' },
+                    { value: 3, text: '信贷' },
+                    { value: 4, text: '公共' }
+                ]
+            });
+        }else if (bigTypeValue == "1") {
+            $('#SmallType').combobox({
+                data: [
+                    { value: 0, text: '法庭' },
+                    { value: 1, text: '公司' },
+                    { value: 2, text: '土地' },
+                    { value: 5, text: '其他' }
+                ]
+            });
+        } else {
+            $('#SmallType').combobox({
+                data: [
+                    { value: 0, text: '法庭' }
+                ]
+            });
+        } 
+    }
+    pageToken = 0;
+    function addProduct() {
+        if (!$("#AddProductForm").form('validate')) {
+            return false;
+        }
+ 
+      
+        if ($('#ProductId').val().replace(/^\s*|\s*$/g, "").length == 0) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', '@(BaseRes.PRO_ADD_047)！');
+            $("input", $("#ProductId").next("span")).focus();
+            return false;
+        }
+        if ($('#ProductName').val().replace(/^\s*|\s*$/g, "").length == 0) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', '产品名称不能为空！');
+            $("input", $("#ProductName").next("span")).focus();
+            return false;
+        }
+
+        var chkValue = [];
+        $('input[name="memberGradeIds"]:checked').each(function () {
+            chkValue.push($(this).val());
+        });
+        if (chkValue.length == 0) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', '至少要选择一个会员级别！');
+            return false;
+        }
+        if (pageToken) {
+            return false;
+        } else {
+            pageToken = 1;
+        }
+        submitForm("AddProductForm");
+    }
+</script>

@@ -1,0 +1,138 @@
+﻿@using Valeo.Domain.User;
+@using Valeo.Lang;
+@model UserModel
+@{ 
+    Layout = null;
+}
+<script src="~/Scripts/forms/EasyuiVerification.js"></script>
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'center'" class="padd10new">
+        <form id="userEditForm" action="/User/EditSave" class="easyui-form" method="post" >
+            <table class="sec">
+                <tr style="display: none;">
+                    <td class="title95">@BaseRes.USE_ADD_001</td>
+                    <td>
+
+                        <input type="text" class="easyui-textbox " id="UserName" name="UserName" value="@Model.UserName"  />
+                        <span style="color: #ff0000">*</span>
+                    </td>
+                    <td class="title95"></td>
+                    <td></td>
+                </tr>
+                <tr>
+
+                    <td class="title95">@BaseRes.USE_ADD_002</td>
+                    <td>
+                        <input type="text" class="easyui-textbox filewidth" id="EditUserId" name="UserID" value="@Model.UserID" readonly="readonly" />
+                        <span style="color: #ff0000">*</span>
+                    </td>
+            
+                    <td class="title95">@BaseRes.USE_ADD_003</td>
+                    <td>
+                        <select name="UserGradeID" class="easyui-combobox filewidth" id="UserGradeID" data-options="editable:false">
+                            @{var userGrades = (List<Valeo.Domain.UserGrade.UserGradeModelVM>) ViewBag.UserGrades;}
+                            @foreach (var item in userGrades)
+                            {
+                                <option value="@item.UserGradeID" @(Model.UserGradeID == item.UserGradeID ? "selected=selected" : "")>@item.UserGrade</option>
+                            }
+
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="title95">@BaseRes.USE_ADD_004</td>
+                    <td>
+                        <input type="password" class="easyui-textbox filewidth" id="Password" name="Password" value="@Model.Password" data-options="required:true,validType:['PASS','length[0,64]']" />
+                        <span style="color: #ff0000">*</span>
+                    </td>
+                    <td class="title95">@BaseRes.USE_ADD_005</td>
+                    <td>
+                        <input type="password" class="easyui-textbox filewidth" id="Password1" name="Password1" value="@Model.Password" data-options="required:true,validType:['PASS','equals[\'#Password\']',' length[0,64]']" />
+                        <span style="color: #ff0000">*</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="title95" valign="top">@BaseRes.USE_ADD_006</td>
+                    <td>
+                        <input type="text" class="easyui-textbox filewidth" id="" name="FullName_En" value="@Model.FullName_En" data-options="validType:['length[0,32]']" />
+                    </td>
+                    <td class="title95">@BaseRes.USE_ADD_007</td>
+                    <td>
+                        <input type="text" class="easyui-textbox filewidth" id="" name="FullName_Tm" value="@Model.FullName_Tm" data-options="validType:['length[0,32]']" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="title95" valign="top">@BaseRes.USE_ADD_008</td>
+                    <td>
+                        <input type="text" class="easyui-textbox filewidth" id="" name="FullName_Cn" value="@Model.FullName_Cn" data-options="validType:['length[0,32]']" />
+                    </td>
+                    <td class="title95">@BaseRes.USE_ADD_009</td>
+                    <td>
+                        <input type="text" class="easyui-validatebox easyui-textbox filewidth" id="" name="Email" value="@Model.Email" data-options="required:true,validType:['Emile','length[0,64]']" />
+                        <span style="color: #ff0000">*</span>
+                    </td>
+                </tr>
+                <tr style="display: none;">
+                    <td class="title95" valign="top">@BaseRes.USE_ADD_010</td>
+                    <td>
+                        <input type="text" class="easyui-textbox filewidth" id="" name="Tel" value="@Model.Tel" data-options="validType:['length[0,32]']" />
+                    </td>
+                    <td class="title95">@BaseRes.USE_ADD_011</td>
+                    <td>
+                        <input type="text" class="easyui-textbox filewidth" id="" name="MobilePhone" value="@Model.MobilePhone" data-options="validType:['length[0,32]']" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="title95" valign="center" align="center">
+                        @BaseRes.USE_ADD_012
+                    </td>
+                    <td>
+                        <select name="Status" class="easyui-combobox filewidth" id="FedexArea" data-options="editable:false">
+                            <option value="1" @(Model.Status == 1 ? "selected=selected" : "")>@BaseRes.USE_COL_012</option>
+                            <option value="0" @(Model.Status == 0 ? "selected=selected" : "")>@BaseRes.USE_COL_013</option>
+                        </select>
+                    </td>
+                    <td class="title95">&nbsp;</td>
+                    <td>
+                        &nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td class="title95" valign="center" align="center">
+                        @BaseRes.USE_ADD_013
+                    </td>
+                    <td colspan="3">
+                        <textarea name="Remark" class="easyui-validatebox" style="width: 99%;" rows="5" maxlength="256">@Model.Remark</textarea>
+                    </td>
+                </tr>
+            </table>
+   
+        </form>
+    </div>
+    <div data-options="region:'south',border:false" style="text-align:right;padding:5px 0 0;">
+        <a class="easyui-linkbutton width80" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="editUser()">保存</a>
+        <a class="easyui-linkbutton width80" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="closeDialog()">取消</a>
+    </div>
+</div>
+
+<script>
+    function editUser() {
+        if (!$("#userEditForm").form('validate')) {
+            return false;
+        }
+        if ($('#Password').val().replace(/(^s*)|(s*$)/g, "").length == 0) {
+            $("input", $("#Password").next("span")).focus();
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', '@(BaseRes.USE_MSG_011)', 'info', function () {
+                $("input", $("#Password").next("span")).focus();
+            });
+            return false;
+        }
+        if ($('#Password').val() != $('#Password1').val()) {
+            $.messager.alert('@BaseRes.COM_CTL_NOTICE', '@(BaseRes.USE_MSG_012)', 'info', function () {
+                $("input", $("#Password").next("span")).focus();
+            });
+            return false;
+        }
+        submitForm("userEditForm");
+    }
+</script>

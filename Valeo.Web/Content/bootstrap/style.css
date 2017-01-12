@@ -1,0 +1,280 @@
+/*公共*/
+.fl{
+	float: left;
+}
+.fr{
+	float: right;
+}
+.padd0{
+	padding: 0;
+}
+.padd20-tb{
+	padding: 20px 0;
+}
+.padd30{
+	padding: 15px 30px;
+}
+.paddl0{
+	padding-left: 0;
+}
+.paddr0{
+	padding-right: 0 !important;
+}
+.paddl10{
+	padding-left: 10px !important;
+}
+.paddl15{
+	padding-left: 15px !important;
+}
+.paddt0{
+	padding-top: 0px !important;
+}
+.paddr10{
+	padding-right: 0;
+}
+.paddt10{
+	padding-top: 10px;
+}
+.paddt15{
+	padding-top: 15px;
+}
+.viewall{
+	padding: 5px !important;
+}
+.mrl10{
+	margin-left: 10px;
+}
+.mr10{
+	margin: 10px;
+}
+.mrb0{
+	margin-bottom: 0;
+}
+.mrb10{
+	margin-bottom: 10px !important;
+}
+.mar20{
+	margin-bottom: 20px;
+}
+.black{
+	color: #000000 !important;
+}
+.mrt8{
+	    margin-top: 8px !important;
+}
+.nomargin{
+	margin: 0;
+}
+.nopadding_new{
+	padding: 0;
+}
+.wid40{
+	width: 40%;
+}
+.wid50{
+	width: 50%;
+}
+.wid60{
+	width: 60%;
+}
+.wid80c{
+	width: 80%;
+}
+.width40{
+	width: 40px !important;
+}
+.width50{
+	width: 50px !important;
+}
+.width70{
+	width: 70px !important;
+}
+.width75{
+	width: 75px !important;
+	margin-top: 6px !important;
+}
+.width90{
+	width: 80px !important;
+}
+.width120{
+	width: 110px !important;
+}
+.width150{
+	width: 165px;
+}
+.width165{
+	width: 165px !important;
+}
+.width158{
+	width: 158px;
+}
+.width225{
+	width:225px;
+}
+.inp-l{
+	margin-left: 0px !important;
+	padding-left: 15px !important;
+	
+}
+.text-in10{
+	text-indent:5px;
+}
+.con_p p{
+	margin: 10px 0;
+}
+.rodiobox{
+    height: 90px;
+    line-height: 90px;
+    text-align: center;
+}
+.tibg{
+	background-color: #9bcc00;
+}
+.tibg2{
+	background-color: #3f9bc6;
+}
+.tibg3{
+	background-color: #74c370;
+}
+.tcol{
+	color: #719dca;
+}
+.tcolb{
+	color: #323232;
+}
+.tibgnone{
+	background: none;
+	color: #000000;
+	text-align: left;
+	height: auto;
+    line-height: inherit;
+    padding: 20px;	
+}
+.tr_top, .tr_top1, .tr_top2, .tr_top3{
+    background: #fcfcf6;
+    /*border-top: 1px solid #74c370 !important;*/
+}
+.table-bordered{
+	background: #FFFFFF;
+}
+.table-bordered>thead>tr>.tr_top{
+	border-top: 2px solid #74c370 !important;
+}
+.table-bordered>thead>tr>.tr_top1{
+	border-top: 2px solid #3f9bc6 !important;
+}
+.table-bordered>thead>tr>.tr_top2{
+	border-top: 2px solid #9bcc00 !important;
+}
+.table-bordered>thead>tr>.tr_top3{
+	border-top: 2px solid #ecbb45 !important;
+}
+#con{
+    background: #719dca;
+}
+.ft_boder_l{
+    border: 1px solid #ddd;
+    padding: 17px;
+    border-right: none;
+    font-size: 17px;
+}
+.ft_boder_r{
+    border: 1px solid #ddd;
+    padding: 12px;
+}
+.ft_boder_r_new{
+    padding: 10px;
+}
+.control-label{
+	padding: 0px 0 !important;
+}
+.width80{
+	width: 70px !important;
+}
+.width145{
+	width: 145px !important;
+}
+.width350{
+	width: 350px;
+}
+.wid540{
+	width: 540px !important;
+}
+.borderr{
+	/*border: 1px solid #ddd !important;*/
+	background: #fafafa;
+}
+.borderr1Old{
+	/*border: 1px solid #ddd !important;*/
+	background: #51A0E4;
+	color: #FFFFFF;
+}
+.borderr2Old{
+	/*border: 1px solid #ddd !important;*/
+	background: #F181BF;
+	color: #FFFFFF;
+}
+.borderr1{
+	/*border: 1px solid #ddd !important;*/
+	background: #DFE9F3;
+	color: #16479A;
+}
+.borderr2{
+	/*border: 1px solid #ddd !important;*/
+	background: #FEE5CC;
+	color: #CD17A1;
+}
+.bacbg{
+	/*border: 1px solid #ddd !important;*/
+	background: #fafafa;
+}
+.pos-lab{
+    position: relative;
+    top: 20px;
+}
+.ver-align-mid{
+	vertical-align:middle !important;
+}
+.topl ,.topc ,.topr{
+	
+}
+.pointer{
+	cursor: pointer;
+}
+.clearl{
+	clear: left;
+}
+.clearr{
+	clear: right;
+}
+.padddingr30{
+	padding-right: 30px;
+}
+.span_new{
+    display: block;
+    width: 30px !important;
+    height: 30px;
+    margin-left: 15px !important;
+    text-indent: 10px;
+    background: #ecbb45;
+    color: #fff;
+    line-height: 30px;
+}
+.bordernone{
+	border:none !important;
+}
+.fontw{
+	font-weight: normal !important;
+}
+.font12{
+	font-size: 12px;
+}
+.marginl10{
+	margin-left: 10px;
+}
+.btn-new {
+    background-color:#f0ad4e !important;
+}
+.table tr:nth-child(even) {
+    background: #E0ECFF;
+}

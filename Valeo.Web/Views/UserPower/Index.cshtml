@@ -1,0 +1,198 @@
+﻿@using Valeo.Domain;
+@using Valeo.Domain.Common
+@using Valeo.Domain.Enum
+@using Valeo.Lang;
+@{
+    Layout = "~/Views/Shared/_Layout_Index.cshtml";
+}
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@BaseRes.UPR_TIT_001</title>
+    <style>
+        .rright{
+            font-size:large;
+            color:green;
+        }
+        .rerror{
+            font-size:large;
+            color:red;
+        }
+        .rnothing{
+            font-size:large;
+            color:gray;
+        }
+    </style>
+    <script src="~/Scripts/forms/userpower/userpower.js?t=20160912003"></script>
+    <script src="~/Scripts/jQuery.Form.js"></script>
+    <script type="text/javascript">
+
+    $(function getSelected() {
+        var pars = {
+            UserGradeID: $("#UserGradeID").val()
+        }
+        @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Search))
+        {
+            @:loadData(pars); 
+        }
+
+        $('#PowerList').datagrid('clearSelections');
+    });
+    function loadData(pars) {
+
+        $('#PowerList').datagrid({
+            url: '/UserPower/UserPowerPage',
+            //width: 1000,
+            //height: 400,
+            //width: ($(window).width() * 0.90),
+            height: ($(window).height() * 0.99) - 70,
+            //fit:true,
+            fitColumns: true, //列自适应
+            nowrap: false,
+            idField: 'Mod_id', //主键列的列名
+            loadMsg: '正在加载信息...',
+            pagination: false, //是否有分页
+            striped: true,
+            queryParams: pars, //往后台传递参数
+            columns: [
+                [{
+                    field: 'Mod_id',
+                    title: 'ID',
+                    align: 'center',
+                    hidden: true,
+                }, {
+                    field: 'Mod_nm',
+                    title: '@BaseRes.UPR_CTL_001',
+                    width: 80,
+                    align: 'center',
+                }, {
+                    field: 'Search',
+                    title: '@BaseRes.UPR_CTL_002',
+                    width: 30,
+                    align: 'center',
+                    editor: { type: 'checkbox', options: { on: '1', off: '0' } },
+                    formatter: function (value, rowData, rowIndex) {
+                        return checkboxFormatter(value, rowData, rowIndex);
+
+                    },
+                }, {
+                    field: 'Create',
+                    title: '@BaseRes.UPR_CTL_003',
+                    width: 30,
+                    align: 'center',
+                    editor: { type: 'checkbox', options: { on: '1', off: '0' } },
+                    formatter: function (value, rowData, rowIndex) {
+                        return checkboxFormatter(value, rowData, rowIndex);
+
+                    },
+                }, {
+                    field: 'Edit',
+                    title: '@BaseRes.UPR_CTL_004',
+                    width: 30,
+                    align: 'center',
+                    editor: { type: 'checkbox', options: { on: '1', off: '0' } },
+                    formatter: function (value, rowData, rowIndex) {
+                        return checkboxFormatter(value, rowData, rowIndex);
+
+                    },
+                }, {
+                    field: 'Delete',
+                    title: '@BaseRes.UPR_CTL_005',
+                    width: 30,
+                    align: 'center',
+                    editor: { type: 'checkbox', options: { on: '1', off: '0' } },
+                    formatter: function (value, rowData, rowIndex) {
+                        return checkboxFormatter(value, rowData, rowIndex);
+
+                    },
+                }, {
+                    field: 'Check',
+                    title: '@BaseRes.UPR_CTL_006',
+                    width: 30,
+                    align: 'center',
+                    editor: { type: 'checkbox', options: { on: '1', off: '0' } },
+                    formatter: function (value, rowData, rowIndex) {
+                        return checkboxFormatter(value, rowData, rowIndex);
+
+                    },
+                }, {
+                    field: 'Import',
+                    title: '@BaseRes.UPR_CTL_007',
+                    width: 30,
+                    align: 'center',
+                    editor: { type: 'checkbox', options: { on: '1', off: '0' } },
+                    formatter: function (value, rowData, rowIndex) {
+                        return checkboxFormatter(value, rowData, rowIndex);
+
+                    },
+                }, {
+                    field: 'Export',
+                    title: '@BaseRes.UPR_CTL_008',
+                    width: 30,
+                    align: 'center',
+                    editor: { type: 'checkbox', options: { on: '1', off: '0' } },
+                    formatter: function (value, rowData, rowIndex) {
+                        return checkboxFormatter(value, rowData, rowIndex);
+
+                    },
+                }]
+            ],
+            toolbar: [
+                 @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Edit))
+                 {
+                     @:{ text: '@BaseRes.UPR_CTL_009', iconCls: 'icon-save', handler: function () { SavePower(); } },
+                 }
+                @if (RoleOperate.IsOperateType(ViewBag.RoleInfo, EnumOperateType.Export))
+                {
+                    @:{ text: '@BaseRes.UPR_CTL_008', iconCls: 'icon_export', handler: function () { exportPower(); } }
+                }
+
+            ]
+        });
+
+        }
+
+
+        //导出Excel文件
+        function exportPower() {
+            var form = $("#SearchUserPower");//定义一个form表单
+            form.submit();//表单提交
+        }
+
+    </script>
+</head>
+<body>
+    <div class="mar10" data-options="fit:true,plain:true">
+    <div class="padd10">
+        <form id="SearchUserPower" method="post" action="/UserPower/exportPower">
+            <table class="">
+                <tr>
+                    <td class="title95">@BaseRes.UPR_CTL_010</td>
+                    <td>
+                        <select name="UserGradeID" class="easyui-combobox filewidth" id="UserGradeID" panelheight="auto" data-options="editable:false" onchange="getSelected()">
+                            @{var userGrades = (List<Valeo.Domain.UserGrade.UserGradeModelVM>)ViewBag.UserGrades;}
+                            @foreach (var item in userGrades)
+                            {
+                                <option value="@item.UserGradeID">@item.UserGrade</option>
+                            }
+                        </select>
+
+                    </td>
+                </tr>
+            </table>
+        </form>
+            <br />
+            <table id="PowerList" title="查询结果" style="width: 99%;"  data-options="
+				
+				singleSelect: true,
+				onClickCell: onClickCell "></table>
+
+</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,178 @@
+﻿@using Valeo.Lang;
+@using Valeo.Domain.Valeo;
+@model v_material
+@{
+    Layout = null;
+
+    var postUrl = "";
+    var isAdd = false;
+    var isSearch = false;
+    if (ViewBag.isAdd == true)
+    {
+        isAdd = true;
+        postUrl = "/MaterialManage/AddSave";
+    }
+    else
+    {
+        isSearch = ViewBag.isSearch;
+        postUrl = "/MaterialManage/EditSave";
+
+    }
+}
+
+<script src="~/Scripts/forms/EasyuiVerification.js"></script>
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'center'" class="padd10new">
+        <form id="MaterialForm" action="@postUrl" class="easyui-form" method="post">
+            <table>
+                <tr>
+                    <td class="title95">Valeo料号</td>
+                    <td>
+                        @if (ViewBag.isAdd == true)
+                        {
+                            <input type="text" id="partNO" name="partNO" class="easyui-textbox filewidth" value="" data-options="required:true,validType:['length[0,64]']" />
+                        }
+                        else
+                        {
+                            <input type="text" id="partNO" name="partNO" class="easyui-textbox filewidth" readonly="readonly" />
+                        }
+                        <span style="color: #ff0000">*</span>
+                    </td>
+                    <td class="title95">客户料号</td>
+                    <td>
+                        <input type="text" id="customerPartNO" name="customerPartNO" class="easyui-textbox filewidth" data-options="required:true,validType:['length[0,64]']" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="title95">货名</td>
+                    <td colspan="5">
+                        <input type="text" id="partName" name="partName" class="easyui-textbox" style="width: 100%;"  data-options="required:true,validType:['length[0,255]']" />
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="title95">使用纸箱型号</td>
+                    <td>
+                        <input class="easyui-combobox" type="text" name="cartonType" id="cartonType" editable="false" data-options="
+                                                                            required:true,
+                                                                            url:'/Combox/cartonType',
+                                                                            method:'get',
+                                                                            valueField:'cartonNO',
+                                                                            textField:'cartonNO',
+                                                                            panelHeight:'auto'" />
+                    </td>
+                    <td class="title95">每箱数量</td>
+                    <td>
+                        <input type="text" id="pcsNumber" name="pcsNumber" class="easyui-numberbox filewidth" data-options="min:0" />
+                    </td>
+                </tr>
+                <tr>
+
+                    <td class="title95">单重kg</td>
+                    <td>
+                        <input type="text" id="weight" name="weight" class="easyui-numberbox filewidth" data-options="min:0" />
+                    </td>
+                    <td class="title95">单位</td>
+                    <td>
+                        <input class="easyui-combobox" type="text" name="unit" id="unit" editable="false" data-options="
+                                                                            required:true,
+                                                                            url:'/Combox/get/Unit',
+                                                                            method:'get',
+                                                                            valueField:'ComboxListKey',
+                                                                            textField:'ComboxListName',
+                                                                            panelHeight:'auto'" />
+                    </td>
+                </tr>
+                <tr>
+
+                    <td class="title95">备注</td>
+                    <td colspan="5">
+                        <textarea name="remark" style="width: 99%;" rows="3" maxlength="255" data-options="validType:['length[0,255]']"></textarea>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div data-options="region:'south',border:false" style="text-align:right;padding:5px 0 0;">
+        @if (!isSearch)
+        {
+            <a class="easyui-linkbutton width80" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="saveMaterial(this)">保存</a>
+        }
+        <a class="easyui-linkbutton width80" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="closeDialog()">取消</a>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        @if (isAdd==false)
+        {
+          @: { setEditDataMaterial(); }
+                                                                            }
+        else
+        {
+        @: { setAddDataMaterial(); }
+                                                                            }
+    });
+    ///////////
+    function setEditDataMaterial() {
+        $.ajax({
+            type: 'get',
+            url: "/MaterialManage/getModel",
+            data: { id: '@Model.partNO' },
+            success: function (data) {
+                if (data.result) {
+                    $('#MaterialForm').form('load', data.value);
+                } else {
+                    $.messager.alert('提示信息 ', data.Msg);
+                }
+            },
+            error: function (e) {
+                console.log(e);
+                disablelinkbutton(btn, 0)
+                $.messager.alert('提示信息 ', "服务器没有响应", 'error');
+            }
+        });
+    }
+    function setAddDataMaterial() {
+        $('#MaterialForm').form('clear');
+        //$('#MaterialForm').form('load',
+        //    {
+        //        cartonType: 1
+        //    });
+    }
+
+    function submitForm(formId, btn) {
+        var submitform = $('#' + formId);
+        $.ajax({
+            type: 'POST',
+            url: submitform.attr('action'),
+            data: submitform.serialize(),
+            success: function (data) {
+                disablelinkbutton(btn, 0)
+
+                if (data.result) {
+                    $.messager.alert('提示信息 ', data.Msg, 'info', function () {
+                        submitform[0].reset();
+                        closeDialog();
+                        loadData();
+                    });
+                } else {
+                    $.messager.alert('提示信息 ', data.Msg, 'error');
+                }
+            },
+            error: function (e) {
+                console.log(e);
+                disablelinkbutton(btn, 0)
+                $.messager.alert('提示信息 ', "服务器没有响应", 'error');
+            }
+        });
+    }
+    /////////////
+    function saveMaterial(btn) {
+        if (!$("#MaterialForm").form('validate')) {
+            return false;
+        }
+        disablelinkbutton(btn, 1)
+        submitForm("MaterialForm", btn);
+    }
+</script>

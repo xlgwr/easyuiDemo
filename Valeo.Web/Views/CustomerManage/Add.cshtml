@@ -1,0 +1,782 @@
+﻿@using Valeo.Lang;
+@using Valeo.Domain.Valeo;
+@model v_customer
+@{
+    Layout = null;
+
+    var postUrl = "";
+    var isAdd = false;
+    var isSearch = false;
+    if (ViewBag.isAdd == true)
+    {
+        isAdd = true;
+        postUrl = "/CustomerManage/AddSave";
+    }
+    else
+    {
+        isSearch = ViewBag.isSearch;
+        postUrl = "/CustomerManage/EditSave";
+
+    }
+}
+
+<script src="~/Scripts/forms/EasyuiVerification.js"></script>
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'center'" class="padd10new">
+        <form id="CustomerForm" action="@postUrl" class="easyui-form" method="post">
+            <table>
+                <tr>
+                    <td class="title95">客户编号</td>
+                    <td>
+                        @if (ViewBag.isAdd == true)
+                        {
+                            <input type="text" id="customerNo" name="customerNo" class="easyui-textbox filewidth" value="" data-options="required:true,validType:['length[0,64]']" />
+                        }
+                        else
+                        {
+                            <input type="text" id="customerNo" name="customerNo" class="easyui-textbox filewidth" readonly="readonly" />
+                        }
+                        <span style="color: #ff0000">*</span>
+                    </td>
+                    <td class="title95"></td>
+                    <td></td>
+                    <td class="title95"></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="title95">客户名称</td>
+                    <td colspan="3">
+                        <input type="text" id="customerName" name="customerName" class="easyui-textbox " style="width: 100%;" data-options="required:true,validType:['length[0,64]']" />
+                    </td>
+                </tr>
+                <tr>
+
+                    <td class="title95">联系人</td>
+                    <td>
+                        <input type="text" id="contacts" name="contacts" class="easyui-textbox filewidth" data-options="validType:['length[0,255]']" />
+                    </td>
+                    <td class="title95">电话</td>
+                    <td>
+                        <input type="text" id="tel" name="tel" class="easyui-textbox filewidth" data-options="validType:['length[0,64]']" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="title95">传真</td>
+                    <td>
+                        <input type="text" id="fax" name="fax" class="easyui-textbox filewidth" data-options="validType:['length[0,64]']" />
+                    </td>
+                </tr>
+                <tr>
+
+                    <td class="title95">地址</td>
+                    <td colspan="3">
+                        <input type="text" id="address" name="address" class="easyui-textbox " style="width: 100%;" data-options="validType:['length[0,255]']" />
+                    </td>
+                </tr>
+                <tr>
+
+                    <td class="title95">备注</td>
+                    <td colspan="3">
+                        <textarea name="remark" style="width: 99%;" rows="3" maxlength="255" data-options="validType:['length[0,255]']"></textarea>
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <div id="divTabs" style="width:620px;height:280px; ">
+            <div id="currTabs" style=" width:100%;height:100%;">
+                <div title="文档">
+                    <table id="dgDoc" class="easyui-datagrid" style="width:100%;height:100%;" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div data-options="region:'south',border:false" style="text-align:right;padding:5px 0 0;">
+        @if (!isSearch)
+        {
+            <a class="easyui-linkbutton width80" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="saveCustomer(this)">保存</a>
+        }
+        <a class="easyui-linkbutton width80" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="closeDialog()">取消</a>
+    </div>
+</div>
+
+<script>
+
+    ///////////////////////////////
+    ///////////Tabs//////////////
+    ///////////////////////////////
+    var EditID = '@Model.customerNo';
+    var EditNextNo = undefined;
+    var $tabs = $("#currTabs");
+    // undefined;
+    $tabs.tabs({
+        //border: false,
+        onSelect: function (title) {
+            //alert(title + ' is selected');
+        }
+    });
+    ///////////////////////////////
+    ///////////////////////////////
+    ///////////////////////////////
+
+
+
+    ////////////////////////明细文件新增等
+    //////////////////////////////////////
+    //////////////////for dgDoc
+    //////////文档
+    /////////////////////////////////////
+    var dgDoc = {
+        dg: $('#dgDoc'),
+        title: '文档',
+        tab: $tabs,
+        tabIndex: 0,
+        EditID: EditID,//当前ID
+        EditNextNo: "",//次要编号
+        saveFlag: undefined,//当前保存标记
+        editIndex: undefined,//当前修改index
+        tmpCurrIndex: undefined,//当前行index
+        tmprowAdd: undefined,//当前行
+        isChange: undefined,//是否修改、新增过
+        isDialog: undefined,//是否引用弹窗
+        loadDataDG: [],//当前Datagrid 初始data
+        idField: 'docID',//dataGrid id
+        getDataUrl: '',//获取PostUrl
+        getDialogUrl: '',///SearchDialog/EntityIndex
+        uploadImgUrl: "",//上传地址
+        formatterType: function (value, row) {
+            if (value == 2) {
+                return "公司";
+            } else if (value == 1) {
+                return "个人";
+            } else {
+                return "Other";
+            }
+        },
+        formatterFileBoxPathPDF: function (value, row, index) {
+            var _curr = dgDoc;
+            //console.log("formatterFileBoxPathPDF")
+            //console.log(row)
+            if (row.editing) {
+                var a = '<form id="ffPathPDF" > '
+                var b = '<input style="width: 148px;cursor: pointer;" type="file" id="filePath" name="addPicPathFile" onchange="dgDoc.UploadImg(' + index + ',1)" />'
+                var c = '<input style="width: 148px;" type="hidden" name="Path" id="addPath" value="" />'
+                var d = '';
+                if (row.Path) {
+                    var href = "/DownloadFile/Uploads?filePath=" + row.Path + "&flieName=" + _curr.EditID + _curr.title + row.AddressID;
+                    d = '<a target="_blank" href="' + href + '" class="easyui-linkbutton c1" style="width:50px">浏览</a>'
+                }
+                var end = '</form>';
+                return a + d + b + c + end;
+            } else {
+                if (row.Path) {
+                    var href = "/DownloadFile/Uploads?filePath=" + row.Path + "&flieName=" + _curr.EditID + _curr.title + row.AddressID;
+                    var a = '<a target="_blank" href="' + href + '" class="easyui-linkbutton c1" style="width:50px">浏览</a>'
+                    return a;
+                }
+                return '';
+
+            }
+        },
+        formattercomboboxtType: function (value, row) {
+            console.log(row);
+            console.log(value);
+            var arrlist = ['', '个人', '公司'];
+            if (arrlist[row.Type]) {
+                return arrlist[row.Type];
+            }
+            return ''
+        },
+        checkOneTwo: function () {
+            try {
+                var _curr = dgDoc;
+                console.log('名称（英） 和名称（中）至少填一项。');
+                for (var i = 0; i < _curr.loadDataDG.length; i++) {
+                    var curritem = _curr.loadDataDG[i]
+                    console.log(curritem);
+                    if(!curritem.FullName_En && !curritem.FullName_Cn) {
+                        $.messager.alert(_curr.title, "名称（英） 和名称（中）至少填一项。", 'error', function () {
+                            _curr.tab.tabs('select', _curr.tabIndex);
+                            _curr.onClickRow(i);
+                        });
+                        return false;
+                    }
+                }
+                return true;
+            } catch (e) {
+                console.log(e);
+            }
+        },
+        editorcomboboxType: function () {
+            return {
+                type: 'combobox',
+                editable: false,
+                options: {
+                    panelHeight: 'auto',
+                    valueField: 'Type',
+                    textField: 'label',
+                    data: [{
+                        label: '',
+                        Type: '-1'
+                    }, {
+                        label: '个人',
+                        Type: '1'
+                    }, {
+                        label: '公司',
+                        Type: '2'
+                    }],
+                    required: true
+                }
+            }
+        },
+        UploadImg: function UploadImg(rowindex, flag) {
+            var _curr = dgDoc;
+            //console.log("UploadImg:" + rowindex + "," + flag);
+            var ff = $('#ffPathPDF');
+            //console.log(rowindex);
+            ff.ajaxSubmit({
+                url: _curr.uploadImgUrl,
+                type: 'post',
+                success: function (res) {
+                    if (res.result) {
+                        _curr.loadDataDG[rowindex].Path = res.path
+                        $("#addPath").val(res.path);
+                        $("#filePath").attr("src", res.path);
+                        _curr.accept();
+                        //$.messager.alert(_curr.title,"上传成功。");
+                        $.messager.alert(_curr.title, "上传成功。");
+                    } else {
+                        $.messager.alert(_curr.title, "上传失败。" + res.msg);
+                    }
+                },
+                error: function (er) {
+                    //alert('操作失败！');
+                    $.messager.alert(_curr.title, '操作失败！');
+                },
+                dataType: 'json'
+            });
+        },
+        newRow: function () {
+            var _curr = dgDoc;
+            _curr.EditNextNo = EditNextNo;
+            return {
+                docID: _curr.loadDataDG.length+1,
+                customerNo: _curr.EditID,
+                isDialog: undefined,//0:新增，1:引用.
+                ck: true,
+                docName: undefined,
+                sortNo:_curr.loadDataDG.length+1
+            }
+        },
+        isExitEntit: function (v) {
+            try {
+                console.log("****************");
+                var _curr = dgDoc;
+                var arrlist = ['', '个人', '公司'];
+                var row = _curr.dg.datagrid('getSelected');
+                console.log(row);
+                if (row.Entityid) {
+
+                    var ed = _curr.dg.datagrid('getEditor', { index: _curr.editIndex, field: 'Type' });
+                    console.log(ed);
+                    console.log("isExitEntit:" + _curr.editIndex);
+
+                    var textField = $(ed.target).combobox('getText');
+                    var textValue = $(ed.target).combobox('getValue');
+
+                    $(ed.target).combobox('clear'); //清除原来的数据
+
+                    //console.log(textField);
+                    //console.log(textValue);
+                    //console.log(arrlist[textValue]);
+
+                    $(ed.target).combobox({
+                        editable:false,
+                        data: [{
+                            label: arrlist[textValue],
+                            Type: textValue
+                        }]
+                    });
+
+                    $(ed.target).combobox('select', textValue);
+                    $(ed.target).combobox('readonly', true);
+                }
+            } catch (e) {
+                console.log(e);
+            }
+
+        },
+        //初始化表格 1:显示tabs
+        loaddg: function (tabflag) {
+            try {
+                var _curr = dgDoc;
+                _curr.tab.tabs('disableTab', _curr.tabIndex);
+                console.log("Start:" + _curr.title)
+                //console.log(_curr.loadDataDG)
+
+                var tmpEditor = _curr.editorcomboboxType()
+
+                _curr.dg = _curr.dg.datagrid({
+                    iconCls: 'icon-edit',
+                    idField: _curr.idField,
+                    //rownumbers: true,
+                    singleSelect: true,
+                    striped: true, //奇偶行是否区分
+                    width: 600,
+                    height: 250,
+                    selectOnCheck: true,
+                    checkOnSelect: true,
+                    fitColumns: true,
+                    nowrap: false,
+                    columns: [[
+                         { field: 'docID', hidden: true, align: 'center' },
+                         { field: 'customerNo', hidden: true, align: 'center' },
+                         { field: 'isDialog', hidden: true, align: 'center' },
+						 //{ field: 'ck', checkbox: true, align: 'center' },
+                         { field: 'sortNo', title: '排序', editor: numberboxEdit, align: 'center', width: 30 },
+                         { field: 'docName', title: '文档名称', editor: validateboxTextBox128, align: 'center', width: 100 },
+                         { field: 'remark', title: '备注', editor: validateboxTextBoxNo128, align: 'center', width: 100 },
+                    ]],
+                    onClickRow: _curr.onClickRow,
+                    onSelect: function (rowIndex, rowData) {
+                        _curr.tmpCurrIndex = rowIndex,
+                        _curr.tmprowAdd = rowData;
+                    },
+                    onCheck: function (rowIndex, rowData) {
+                        _curr.tmpCurrIndex = rowIndex,
+                       _curr.tmprowAdd = rowData;
+                    },
+                    beginEdit: function (i) {
+                        // _curr.isExitEntit();
+                    },
+                    onBeforeEdit: function (index, row) {
+                        _curr.isChange = true;
+                        row.editing = true;
+                        _curr.dg.datagrid('refreshRow', index);
+                    },
+                    onAfterEdit: function (index, row) {
+                        _curr.isChange = true;
+                        row.editing = false;
+                        _curr.dg.datagrid('refreshRow', index);
+
+                    },
+                    onCancelEdit: function (index, row) {
+                        row.editing = false;
+                        _curr.dg.datagrid('refreshRow', index);
+                    },
+                    loadData: _curr.loadDataDG,
+                    onLoadSuccess: function (data) {
+                        //console.log(data);
+                        _curr.loadDataDG = data.rows;
+                    },
+                    toolbar: [
+                    @if (!isSearch)
+                    {
+                        @:   {text: '添加',id: 'add1',iconCls: 'icon-add',handler: function () { _curr.appendRow(); }}
+                        @:   , '-', {text: '删除',id: 'delete1',iconCls: 'icon-remove',handler: function () { _curr.remove(); }}
+                    }
+                    //, {
+                    //    text: '修改',
+                    //    iconCls: 'icon-edit',
+                    //    id: 'EditEntityID',
+                    //    handler: function () { _curr.EditRow(); }
+                    //}
+                    ],
+                });
+                if (tabflag) {
+                    _curr.tab.tabs('enableTab', _curr.tabIndex);
+                }
+            } catch (e) {
+                console.log(e);
+            }
+
+        },
+        isToDisableFlag:undefined,
+        toDisableBtn: function (name) {
+            var _curr = dgDoc;
+            try {
+                var tmpName = "#" + name;
+                if (_curr.isToDisableFlag) {
+                    $(tmpName).linkbutton();
+                    $(tmpName).linkbutton('disable');
+                } else {
+                    $(tmpName).linkbutton();
+                    $(tmpName).linkbutton('enable');
+                }
+
+            } catch (e) {
+                console.log(e);
+            }
+        },
+        getDataToDG: function (pars) {
+            var _curr = dgDoc;
+            _curr.tab.tabs('disableTab', _curr.tabIndex);
+            _curr.loadDataDG = [];
+            //获取数据
+            $.get(_curr.getDataUrl, pars, function (res) {
+                console.log("load Success:" + _curr.title);
+                _curr.tab.tabs('enableTab', _curr.tabIndex);
+                _curr.toDisableBtn('delete1');
+                //console.log(res);
+                if (res.result) {
+                    _curr.dg.datagrid('loadData', res.rows);
+                    return res.rows;
+                } else {
+                    //alert(res.message);
+                    console.log(res.message)
+                    return [];
+                }
+
+            });
+            _curr.isChange = undefined;
+        },
+        checkEndEditing: function () {
+            var _curr = dgDoc;
+            var allCount = _curr.loadDataDG.length;
+
+            console.log(allCount)
+
+            if (allCount) {
+                if (!_curr.endEditing()) {
+                    $.messager.alert(_curr.title, "请把修改中的记录，修改完成，谢谢。");
+                    return false;
+                }
+            }
+            return true;
+        },
+        EditRow:function() {
+            var _curr = dgDoc;
+
+            var i=_curr.editIndex;
+
+            if (!_curr.checkEndEditing()) {
+                return;
+            }
+            var datagridJson = _curr.loadDataDG[i];
+
+            //console.log(datagridJson)
+            if (!datagridJson.Entityid) {
+                $("#EditEntityID").linkbutton('disable');
+                return;
+            }else{
+                $("#EditEntityID").linkbutton('enable');
+            }
+
+            var para = {
+                isEdit:@((ViewBag.isSearch != null && ViewBag.isSearch == true) ? "true" : "false"),
+                functionName: 'dgDoc.editallbackEntity',
+                Entityid: datagridJson.Entityid,
+                Type: datagridJson.Type,
+                Flag: 5,
+                EditRow:i
+            };
+            $('#selectEntitypubdlg').dialog({
+                title: "@((ViewBag.isSearch != null && ViewBag.isSearch == true) ? "编辑个人或公司" : "查看个人或公司")",
+                closed: false,
+                cache: false,
+                method: 'post',
+                queryParams: para,
+                href: '/OnlineEntity/Edit',
+                modal: true
+            });
+        },
+        editallbackEntity:function(dataJson, i) {
+
+            var _curr = dgDoc;
+            try {
+                var datagridJson = _curr.loadDataDG[i];
+                console.log("***************")
+                console.log(dataJson)
+                console.log(datagridJson)
+                if (dataJson.Types == 1) {
+                    _curr.loadDataDG[i].FullName_En = dataJson.personInfo.FullName_En;
+                    _curr.loadDataDG[i].FullName_Cn = dataJson.personInfo.FullName_Cn;
+                } else {
+                    _curr.loadDataDG[i].FullName_En = dataJson.companyInfo.FullName_En;
+                    _curr.loadDataDG[i].FullName_Cn = dataJson.companyInfo.FullName_Cn;
+                }
+                _curr.dg.datagrid("loadData", _curr.loadDataDG);
+
+                _curr.onClickRow(i)
+            } catch (e) {
+                console.log(e);
+            }
+            addEntityClosePubDialg();
+        },
+        ////加新行
+        appendRow: function (dialogRow) {
+            try {
+                var _curr = dgDoc;
+                _curr.EditID = EditID;
+                _curr.EditNextNo = EditNextNo;
+
+                var newrow = _curr.newRow();
+
+                if (_curr.isDialog) {
+                    if (!dialogRow) {
+                        $.messager.alert(_curr.title, "请选择有效记录，谢谢。");
+                        return;
+                    }
+                }
+                if (dialogRow) {
+                    console.log(dialogRow)
+                    newrow.AddressID = dialogRow.AddressID
+                }
+
+                if (!_curr.checkEndEditing()) {
+                    return;
+                }
+                _curr.accept();
+
+                _curr.dg.datagrid('appendRow', newrow);
+
+                _curr.onClickRow(_curr.loadDataDG.length - 1)
+
+                _curr.isChange = true;
+
+            } catch (e) {
+                console.log(e)
+            }
+
+
+        },
+        appendRowDialog: function () {
+            try {
+                var _curr = dgDoc;
+                _curr.EditID = EditID;
+                _curr.EditNextNo = EditNextNo;
+
+                //if (!_curr.EditID) {
+                //    $.messager.alert(_curr.title, "请先保存土地资料，谢谢。");
+                //    return;
+                //}
+
+                if (!_curr.checkEndEditing()) {
+                    return;
+                }
+                var para = {
+                    functionName: 'dgDoc.appendRow',
+                    Entityid: 0,
+                    Type: 1,
+                    Flag: 3,
+                    Param1: 1
+                };
+
+                $('#selectEntitydlg').window({
+                    title: "添加:" + _curr.title,
+                    closed: false,
+                    cache: false,
+                    method: 'get',
+                    queryParams: para,
+                    href: _curr.getDialogUrl,
+                    modal: true
+                });
+                _curr.isDialog = true;
+            } catch (e) {
+
+                _curr.isDialog = undefined;
+                console.log(e)
+            }
+
+        },
+        ///////////////////////////////
+        updateLoadData: function () {
+            var _curr = dgDoc;
+            _curr.isChange = true;
+            try {
+                var arrList = _curr.loadDataDG;
+                //console.log(arrList);
+                _curr.dg.datagrid("loadData", arrList);
+                _curr.dg.datagrid("clearSelections");
+                _curr.editIndex = undefined;
+
+            } catch (e) {
+                console.log(e);
+            }
+
+        },
+        loadData: function (data) {
+            var _curr = dgDoc;
+            _curr.isChange = false;
+            try {
+                console.log(data);
+                _curr.dg.datagrid("loadData", data);
+                _curr.dg.datagrid("clearSelections");
+                _curr.editIndex = undefined;
+
+            } catch (e) {
+                console.log(e);
+            }
+
+        },
+        //flag，0：add,1:edit
+        endEditing: function () {
+            var _curr = dgDoc;
+            console.log("endedit:" + _curr.editIndex);
+
+            if (_curr.editIndex == undefined) { return true }
+            try {
+                try {
+                    if (!_curr.dg.datagrid('getRows')[_curr.editIndex].editing) {
+                        _curr.dg.datagrid('selectRow', _curr.editIndex);
+                        _curr.editIndex == undefined
+                        return true;
+                    };
+                } catch (e) {
+                    console.log(e);
+                }
+
+                if (_curr.dg.datagrid('validateRow', _curr.editIndex)) {
+
+                    //var ed = _curr.dg.datagrid('getEditor', { index: _curr.editIndex, field: 'Type' });
+                    ////console.log(ed);
+                    ////console.log("Edit:" + _curr.editIndex);
+
+                    //var textField = $(ed.target).combobox('getText');
+                    //_curr.dg.datagrid('getRows')[_curr.editIndex]['label'] = textField;
+
+                    _curr.dg.datagrid('endEdit', _curr.editIndex);
+
+                    _curr.editIndex == undefined
+
+                    return true;
+                } else {
+
+                    _curr.dg.datagrid('selectRow', _curr.editIndex);
+                    return false;
+                }
+            } catch (e) {
+                //console.log(e);
+                return false;
+            }
+
+        },
+        onClickRow: function (index,rowData) {
+            var _curr = dgDoc;
+            if (_curr.editIndex != index) {
+                if (_curr.endEditing()) {
+                    _curr.dg.datagrid('selectRow', index)
+                            .datagrid('beginEdit', index);
+                    _curr.editIndex = index;
+                    _curr.isExitEntit(index);
+                } else {
+                    _curr.dg.datagrid('selectRow', _curr.editIndex);
+                }
+
+            }else{
+                _curr.dg.datagrid('selectRow', _curr.editIndex);
+            }
+            //if (!rowData.Entityid) {
+            //    $("#EditEntityID").linkbutton('disable');
+            //    return;
+            //}else{
+            //    $("#EditEntityID").linkbutton('enable');
+            //}
+            console.log("index:"+index+",EditIndex:"+_curr.editIndex);
+        },
+        accept: function accept() {
+            var _curr = dgDoc
+            try {
+                if (_curr.endEditing()) {
+                    _curr.dg.datagrid('acceptChanges');
+                } else {
+                    $.messager.alert(_curr.title, "请把修改中的记录，修改完成，谢谢。", 'error', function () {
+                        _curr.tab.tabs('select', _curr.tabIndex);
+                    });
+                    return false;
+                }
+                _curr.editIndex = undefined;
+
+                _curr.updateLoadData();
+
+                return true;
+            } catch (e) {
+                console.log(e);
+                return false;
+            }
+        },
+        remove: function () {
+            var _curr = dgDoc;
+            //console.log(_curr.tmpCurrIndex);
+            if (_curr.tmpCurrIndex == undefined || _curr.tmpCurrIndex < 0) { $.messager.alert(_curr.title, "请选择要处理的记录"); return; }
+
+            $.messager.confirm('@BaseRes.COM_CTL_NOTICE', '您确定要删除当前选择的记录.', function (r) {
+                if (r) {
+                    try {
+                        //_curr.accept();
+                        //删除产品记录
+                        _curr.loadDataDG.splice(_curr.tmpCurrIndex, 1);
+                        _curr.tmpCurrIndex = undefined;
+                        _curr.editIndex = undefined;
+
+                        _curr.updateLoadData();
+
+                    } catch (e) {
+                        console.log(e);
+                    }
+                }
+            });
+
+        }
+    }
+
+    //////////////////////初始化
+    $(function () {
+        @if (isAdd==false)
+       {
+           @: { setEditDataCustomer(); }
+                                       }
+       else
+       {
+           @: { setAddDataCustomer(); }
+                                       }
+    });
+    ///////////
+    function setEditDataCustomer() {
+        $.ajax({
+            type: 'get',
+            url: "/CustomerManage/getModel",
+            data: { id: '@Model.customerNo' },
+            success: function (data) {
+                console.log(data)
+
+                if (data.result) {
+                    $('#CustomerForm').form('load', data.value);
+                    dgDoc.loaddg(1)
+                    dgDoc.loadDataDG= data.valueList
+                    dgDoc.updateLoadData();
+                } else {
+                    dgDoc.loaddg(1)
+                    $.messager.alert('提示信息 ', data.Msg);
+                }
+            },
+            error: function (e) {
+                console.log(e);
+                disablelinkbutton(btn, 0)
+                $.messager.alert('提示信息 ', "服务器没有响应", 'error');
+            }
+        });
+    }
+    function setAddDataCustomer() {
+        $('#CustomerForm').form('clear');
+        //$('#CustomerForm').form('load',
+        //    {
+        //        cartonType: 1
+        //    });
+        dgDoc.loaddg(1)
+    }
+    /////////////
+    function saveCustomer(btn) {
+        if (!$("#CustomerForm").form('validate')) {
+            return false;
+        }
+        //检测明细记录
+        if (dgDoc.isChange) {
+            if (!dgDoc.accept()) {
+                return;
+            };
+        }
+        disablelinkbutton(btn, 1)
+        var modelsDetails = [];
+        submitForm("CustomerForm", btn, dgDoc.loadDataDG);
+    }
+</script>

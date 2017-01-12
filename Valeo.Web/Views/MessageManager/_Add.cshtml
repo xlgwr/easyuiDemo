@@ -1,0 +1,64 @@
+﻿@using Valeo.Lang;
+
+@{
+    Layout = null;
+}
+
+
+    <div class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'center'" class="padd10">
+            <form id ="AddInvoiceForm" action="/MessageManager/AddSave" class="easyui-form" method="post" >
+                <table class="sec" style="margin-top:10px" >
+                    <tr>
+                        <td class="title95">@BaseRes.MML_COL_023</td>
+                        <td>
+                            <textarea name="MemberName" rows="2" id="addMemberName" cols="15" style="width: 350px" maxlength="256" ></textarea>
+                            @*<input type="text" class="easyui-textbox" id="addMemberName" style="width: 350px;height:25px" readonly="readonly" name="MemberName" data-options="required:true" />*@
+                            <input type="hidden" id="addMemberId" name="MemberID" />
+                            <a id="AddMemberName" class="easyui-linkbutton c6 width70 tdcenter" style="width: 47px;" onclick="GetUserList()" >@BaseRes.PRO_EDT_043</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="title95">@BaseRes.MML_COL_017</td>
+                        <td>
+                            <input type="text" class="easyui-textbox" id="messageTitle" name="messageTitle" style="width: 397px" data-options="validType:'length[0,64]'" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="title95" >@BaseRes.MML_COL_025</td>
+                        <td>
+                            <textarea name="Message" rows="10" cols="70" style="width: 397px" maxlength="512"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="title95" valign="center" align="center">
+                            &nbsp;
+                        </td>
+                        <td>
+                            &nbsp;
+                        </td>
+                    </tr>
+                </table>
+                </form>
+</div>
+        <div data-options="region:'south',border:false" style="text-align:right;padding:5px 0 0;">
+            <a class="easyui-linkbutton width80" data-options="iconCls:'icon-ok'" href="javascript:void(0)" onclick="AddMessage()">@BaseRes.MML_COL_029</a>
+            <a class="easyui-linkbutton width80" data-options="iconCls:'icon-cancel'" href="javascript:void(0)" onclick="closeDialog()">@BaseRes.MML_COL_027</a>
+        </div>
+        <script>
+            function AddMessage() {
+                if (!$("#AddInvoiceForm").form('validate')) {
+                    return false;
+                }
+                var submitform = $('#AddInvoiceForm');
+
+                if ($("#addMemberName").val().trim()=="") {
+                    $.messager.alert('@BaseRes.COM_CTL_NOTICE', "@BaseRes.MML_COL_030");
+                    return false;
+                } else {
+                    submitForm("AddInvoiceForm");
+                }
+                
+            }
+        </script>
+    </div>

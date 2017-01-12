@@ -1,0 +1,67 @@
+﻿@*@using XU.RMS.ViewModel.SysConfig
+@model IEnumerable<ModuleVM>*@
+
+<!--
+            作者：zhoul86@163.com
+            时间：2016-06-07
+            描述：左边导航栏
+        -->
+
+<script type="text/javascript">
+
+    //页面初始化
+    $(function () {
+        
+        if(linkPId != '') $(linkPId).addClass("submenu active open");
+        if(linkSId != '') $(linkSId).addClass("active");
+    });
+
+</script>
+ 
+<div id="sidebar">
+    <ul>
+        <li id="lnkPackageBuy"><a href="/PackageBuy/Index"><i class="glyphicon glyphicon-home"></i> <span>套餐购买</span></a></li>
+        <li id="lnkOnline" class="submenu">
+            <a href="#"><i class="glyphicon glyphicon-search"></i> <span>在线搜索</span> </a>
+            <ul>
+                <li id="lnkCourtOnline"><a href="/CourtOnline/Index">法庭查册</a></li>
+                <li id="lnkLandOnline"><a href="/LandOnline/Index">土地查册</a></li>
+                <li id="lnkCompanyOnline"><a href="/CompanyOnline/Index">公司查册</a></li>
+                <li id="lnkCreditOnline"><a href="/CreditOnline/Index">信贷查询</a></li>
+                <li id="lnkComOnline"><a href="/ComOnline/Index">公共数据</a></li>
+
+            </ul>
+        </li>
+        <li id="lnkAutoMintor" class="submenu">
+            <a href="#"><i class="glyphicon glyphicon-facetime-video"></i> <span>自动监察</span> </a>
+            <ul>
+                <li id="lnkCourtMintor"><a href="/CourtMintor/Index">法庭查册</a></li>
+            </ul>
+        </li>
+        <li id="lnkOffline" class="submenu">
+            <a href="#"><i class="glyphicon glyphicon-camera"></i> <span>离线搜索</span> </a>
+            <ul>
+                <li id="lnkCourtOffline"><a href="/CourtOffline/Index">法庭查册</a></li>
+                <li id="lnkLandOffline"><a href="/LandOffline/Index">土地查册</a></li>
+                <li id="lnkCompanyOffline"><a href="/CompanyOffline/Index">公司查册</a></li>
+                <li id="lnkOtherOffline"><a href="/OtherOffline/Index">其他服务</a></li>
+
+            </ul>
+        </li>
+        <li id="lnkManage" class="submenu" >
+            <a href="#"><i class="glyphicon glyphicon-asterisk"></i> <span>管理中心</span> </a>
+            <ul>
+                <li id="lnkMaster"><a href="/Master/Index">基本信息</a></li>
+                <li id="lnkMember"><a href="/Member/Index">密码管理</a></li>
+                <li id="lnkOrder"><a href="/Order/Index?id=">我的订单</a></li>
+                <li id="lnkProduct"><a href="/Product/Index">产品使用明细</a></li>  
+                <li id="lnkSearchHistory"><a href="/SearchHistory/Index">搜索记录</a></li>
+                <!--<li><a href="purchase.html">购买记录</a></li>-->
+                <li id="lnkMessage"><a href="/Message/Index">消息管理</a></li>
+                <!--<li><a href="bill_man.html">发票管理</a></li>-->
+            </ul>
+        </li>
+    </ul>
+
+</div>	
+ 

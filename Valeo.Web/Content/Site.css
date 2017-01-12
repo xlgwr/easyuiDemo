@@ -1,0 +1,172 @@
+body
+{
+    /*font-size: .85em;
+    font-family: "Trebuchet MS", Verdana, Helvetica, Sans-Serif;
+    color: #232323;*/
+    background-color: #fff;
+
+    font-family: Î¢ÈíÑÅºÚ;
+    font-size: 18px;
+}
+ 
+.table th, .table td {
+    text-align: center;
+}
+ 
+
+
+/*¹«¹²*/
+.padd0{
+	padding: 0;
+}
+.padd20{
+	padding: 20px 0;
+}
+.padd30{
+	padding: 15px 30px;
+}
+.paddl0{
+	padding-left: 0;
+}
+.paddr0{
+	padding-right: 0;
+}
+.paddl10{
+	padding-left: 10px !important;
+}
+.paddt0{
+	padding-top: 0px !important;
+}
+.paddr10{
+	padding-right: 0;
+}
+.paddt10{
+	padding-top: 10px;
+}
+.paddt15{
+	padding-top: 15px;
+}
+.viewall{
+	padding: 5px !important;
+}
+.mrl10{
+	margin-left: 10px;
+}
+.mr10{
+	margin: 10px;
+}
+.mrb0{
+	margin-bottom: 0;
+}
+.mrb10{
+	margin-bottom: 10px !important;
+}
+.mar20{
+	margin-bottom: 20px;
+}
+.mrt8{
+	    margin-top: 8px !important;
+}
+.nomargin{
+	margin: 0;
+}
+.nopadding_new{
+	padding: 0;
+}
+.wid40{
+	width: 40%;
+}
+.wid50{
+	width: 50%;
+}
+.wid80{
+	width: 80%;
+}
+.width50{
+	width: 50px;
+}
+.con_p p{
+	margin: 10px 0;
+}
+.rodiobox{
+    height: 90px;
+    line-height: 90px;
+    text-align: center;
+}
+.tibg2{
+	background-color: #3f9bc6;
+}
+.tibg3{
+	background-color: #74c370;
+}
+.tcol{
+	color: #719dca;
+}
+.tcolb{
+	color: #323232;
+}
+.tibgnone{
+	background: none;
+	color: #000000;
+	text-align: left;
+	height: auto;
+    line-height: inherit;
+    padding: 20px;	
+}
+.tr_top, .tr_top1, .tr_top2, .tr_top3{
+    background: #fcfcf6;
+    /*border-top: 1px solid #74c370 !important;*/
+}
+.table-bordered{
+	background: #FFFFFF;
+}
+.table-bordered>thead>tr>.tr_top{
+	border-top: 2px solid #74c370 !important;
+}
+.table-bordered>thead>tr>.tr_top1{
+	border-top: 2px solid #3f9bc6 !important;
+}
+.table-bordered>thead>tr>.tr_top2{
+	border-top: 2px solid #9bcc00 !important;
+}
+.table-bordered>thead>tr>.tr_top3{
+	border-top: 2px solid #ecbb45 !important;
+}
+#con{
+    background: #719dca;
+}
+.ft_boder_l{
+    border: 1px solid #ddd;
+    padding: 17px;
+    border-right: none;
+    font-size: 17px;
+}
+.ft_boder_r{
+    border: 1px solid #ddd;
+    padding: 12px;
+}
+.control-label{
+	padding: 7px 0 !important;
+}
+.width80{
+	width: 70px !important;
+}
+.width145{
+	width: 145px !important;
+}
+.borderr{
+	/*border: 1px solid #ddd !important;*/
+	background: #fafafa;
+}
+.bacbg{
+	/*border: 1px solid #ddd !important;*/
+	background: #fafafa;
+}
+
+
+ }
+
+.validation-summary-valid
+{
+    display: none;
+}*/*/
